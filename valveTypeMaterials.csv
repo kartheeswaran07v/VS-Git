@@ -1,0 +1,104 @@
+﻿id,valveType,data,name
+1,butterfly,shaft,316SS
+2,butterfly,shaft,17-4 PH
+3,butterfly,shaft,UNS 20910 XM-19
+4,butterfly,shaft,UNS 31254/6Mo
+5,butterfly,shaft,Monel K500
+6,butterfly,shaft,UNS 32760/SDSS
+7,butterfly,shaft,UNS 31803/SDSS
+8,butterfly,shaft,Titanium Gr%
+9,butterfly,shaft,Alloy 625
+10,butterfly,shaft,Alloy 718
+11,butterfly,disc,316SS
+12,butterfly,disc,316 / Stellite Overlay
+13,butterfly,disc,316L SS
+14,butterfly,disc,316L / Stellite Overlay
+15,butterfly,disc,UNS 31254 / 6Mo
+16,butterfly,disc,UNS 31803 / DSS
+17,butterfly,disc,Al. Bronze
+18,butterfly,disc,UNS 32760 / SDSS
+19,butterfly,disc,Hastelloy C
+20,butterfly,disc,Alloy 625
+21,butterfly,disc,Monel 400
+22,butterfly,disc,Monel 500
+23,butterfly,disc,Titanium
+24,butterfly,disc,Alloy 800
+25,butterfly,seat,PTFE
+26,butterfly,seat,Metal
+27,butterfly,seat,Laminated 316L + Graphite
+28,butterfly,seat,Laminated 625 + Graphite
+29,butterfly,packing,PTFE / Ceramic
+30,butterfly,packing,PTFE / Ni-Resist
+31,butterfly,packing,PTFE / DU Glaciers
+32,butterfly,packing,PTFE / DUB Glaciers
+33,butterfly,packing,PTFE / MP2
+34,butterfly,packing,PTFE / MP3
+35,butterfly,packing,PTFE / 316 Armaloy
+36,butterfly,packing,PTFE / N.60 Armaloy
+37,butterfly,packing,RPTFE
+38,butterfly,packing,Graphite / Ceramic
+39,butterfly,packing,Graphite / Ni-Resist
+40,butterfly,packing,Graphite / DU Glaciers
+41,butterfly,packing,Graphite / DUB Glaciers
+42,butterfly,packing,Graphite / MP2
+43,butterfly,packing,Graphite / MP3
+44,butterfly,packing,Graphite / 316 Armaloy
+45,butterfly,packing,Graphite / N.60 Armaloy
+46,butterfly,packing,High Integrity Gland
+47,butterfly,packing,HIG Supagrapf
+48,globe,trim,316 SS
+49,globe,trim,304 SS
+50,globe,trim,304 SS / Stellite FC
+51,globe,trim,304 SS / Stellite SA
+52,globe,trim,304L SS
+53,globe,trim,304L SS / Stellite FC
+54,globe,trim,304L SS / Stellite SA
+55,globe,trim,316 SS / Stellite FC
+56,globe,trim,316 SS / Stellite SA
+57,globe,trim,316L SS
+58,globe,trim,316L SS / Stellite FC
+59,globe,trim,316L SS / Stellite SA
+60,globe,trim,410 SS
+61,globe,trim,410 SS Hardened
+62,globe,trim,440C SS Hardened
+63,globe,trim,Al. Bronze
+64,globe,trim,Duplex SS
+65,globe,trim,Duplex SS / Stellite FC
+66,globe,trim,Duplex SS / Stellite SA
+67,globe,trim,Hastelloy B
+68,globe,trim,Hastelloy C
+69,globe,trim,Alloy 625
+70,globe,trim,Alloy 625 / Stellite FC
+71,globe,trim,Alloy 625 / Stellite SA
+72,globe,trim,Monel 400/ K500
+73,globe,trim,Monel / Col / LG2
+74,globe,trim,Super Duplex SS
+75,globe,trim,Super Duplex SS / Stellite FC
+76,globe,trim,Super Duplex SS / Stellite SA
+77,globe,trim,Tugsten. Co / 17-4 PH
+78,globe,trim,Tugsten. Co / 316 SS
+79,globe,seat,None
+80,globe,seat,PTFE Virgin
+81,globe,seat,FCTFE (KEL-F)
+82,globe,seat,PTFE Filled
+83,globe,seat,Metal
+84,globe,packing,PTFE Chevron
+85,globe,packing,PTFE Braid
+86,globe,packing,RPTFE
+87,globe,packing,Graphite
+88,globe,packing,Low Emission EVSP
+89,globe,packing,High Intensity Gland
+90,globe,packing,HIG Spagrapf
+91,globe,packing,Gland Security System
+92,globe,packing,Packing + Wiper PTFE
+93,globe,packing,Packing + Wiper Graphite
+94,globe,stem,316SS
+95,globe,stem,17-4 PH
+96,globe,stem,UNS 20910 XM-19
+97,globe,stem,UNS 31254/6Mo
+98,globe,stem,Monel K500
+99,globe,stem,UNS 32760/SDSS
+100,globe,stem,UNS 31803/SDSS
+101,globe,stem,Titanium Gr%
+102,globe,stem,Alloy 625
+103,globe,stem,Alloy 718

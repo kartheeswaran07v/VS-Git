@@ -1,0 +1,56 @@
+﻿Valve Style,min. size,max. size,Trim Material,TRIM,min. Delta P,max. Delta P,Kc
+globe,1,4,316 SST,contour,0,75,2
+globe,1,4,316 SST,contour,75,100,5
+globe,1,4,316 SST,contour,100,9000,4
+globe,1,4,416 SST,contour,0,75,2
+globe,1,4,416 SST,contour,75,100,5
+globe,1,4,416 SST,contour,100,9000,4
+globe,1,4,440C,contour,0,75,2
+globe,1,4,440C,contour,75,100,5
+globe,1,4,440C,contour,100,9000,4
+globe,1,4,316 / Alloy,contour,0,75,2
+globe,1,4,316 / Alloy,contour,75,100,5
+globe,1,4,316 / Alloy,contour,100,9000,4
+globe,1,2,416 SST,ported,0,300,2
+globe,1,2,416 SST,ported,300,9000,5
+globe,1,2,440C,ported,0,300,2
+globe,1,2,440C,ported,300,9000,5
+globe,1,2,440C,ported,0,200,2
+globe,1,2,316 / Alloy 6,ported,0,300,2
+globe,1,2,317 / Alloy 6,ported,300,9000,5
+globe,1,2,318 / Alloy 6,ported,0,200,2
+globe,1,2,319 / Alloy 6,ported,200,9000,5
+globe,1,12,316 SST,ported,0,100,2
+globe,1,12,316 SST,ported,100,9000,5
+globe,3,4,416 SST,ported,0,200,2
+globe,3,4,416 SST,ported,200,9000,5
+globe,3,4,440C,ported,200,9000,5
+globe,6,12,416 SST,ported,0,100,2
+globe,6,12,416 SST,ported,100,9000,5
+globe,6,12,440C,ported,0,100,2
+globe,6,12,440C,ported,100,9000,5
+globe,6,12,320 / Alloy 6,ported,0,100,2
+globe,6,12,321 / Alloy 6,ported,100,9000,5
+globe,16,24,416 SST,ported,0,50,2
+globe,16,24,416 SST,ported,50,9000,5
+globe,16,24,440C,ported,0,50,2
+globe,16,24,440C,ported,50,9000,5
+globe,16,24,322 / Alloy 6,ported,0,50,2
+globe,16,24,323 / Alloy 6,ported,50,9000,5
+butterly,2,4,-,do,0,50,2
+butterly,2,4,-,do,50,9000,3
+butterly,6,36,-,do,0,9000,3
+globe,1,2,,cavitrol_3_1,0,600,2
+globe,1,2,,cavitrol_3_1,600,9000,5
+globe,1,2,,cavitrol_3_1,0,500,2
+globe,1,2,,cavitrol_3_1,500,1440,5
+globe,1,2,,cavitrol_3_1,0,400,2
+globe,1,2,,cavitrol_3_1,400,1440,5
+globe,1,2,,cavitrol_3_2,0,2160,2
+globe,3,6,,cavitrol_3_2,0,1800,2
+globe,3,6,,cavitrol_3_2,1800,9000,5
+globe,8,24,,cavitrol_3_2,0,1200,2
+globe,8,24,,cavitrol_3_2,1200,9000,5
+globe,1,24,,cavitrol_3_3,0,3000,2
+globe,1,12,,cavitrol_3_4,0,3000,2
+globe,1,12,,cavitrol_3_4,3000,4000,1

@@ -1,0 +1,480 @@
+{% block content %}
+{% include "header.html" %}
+
+
+  <div class="col-10">
+    <div class="row head">
+
+      <div class="col-1">
+        <div class="row" style="margin-top:30px;">
+          <div class="col-12">
+            <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="User"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+          <h5 style="text-align: center;">Project</h5>
+          <div class="col-2">
+            <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="row">
+          <div class="col-12" style="text-align: center;">
+            <p style="border: groove; border-radius: 0px;">AQ 00051 002 A</p>
+          </div>
+          <div class="col-3">
+            <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+            <label for="">First</label>
+          </div>
+          <div class="col-3">
+            <i class="fa-solid fa-backward-step fa-1x"></i><br>
+            <label for="">Prev.</label>
+          </div>
+          <div class="col-3">
+            <i class="fa-solid fa-forward-step fa-1x"></i><br>
+            <label for="">Next</label>
+          </div>
+          <div class="col-3">
+            <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+            <label for="">Last</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-3" >
+        <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+        <h5 style="text-align: center;">Item</h5>
+          <div class="col-2">
+            <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Copy From"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-solid fa-file-import fa-1x" data-toggle="tooltip" title="Copy To"></i>
+          </div>
+          <div class="col-2">
+            <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-1">
+        <div class="row" style="margin-top:30px;">
+          <div class="col-12">
+            <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
+          </div>
+        </div>
+      </div>
+</div>
+    <form action="{{ url_for('actuator') }}" method="post">
+      <div class="row Silding" style="margin-top: 30px;">
+        <div class="row">
+          <div class="col-2" style="text-align: right">
+            <label>Trim Type</label>
+          </div>
+          <div class="col-2">
+            <input type="text" value="{{data[0]}}" style="width: 75px;">
+          </div>
+          <div class="col-2" style="text-align: right">
+            <label>Balancing</label>
+          </div>
+          <div class="col-2">
+            <select name="balance" style="border-left: 1px groove;">
+              <option value="unbalanced">Unbalanced</option>
+              <option value="balanced">Balanced</option>
+            </select>
+          </div>
+          <div class="col-2" style="text-align: right">
+            <label>Flow Direction</label>
+          </div>
+          <div class="col-2">
+            <input type="text" value="{{data[1]}}" style="width: 75px;">
+          </div>
+
+        </div>
+        <div class="row" style="margin-top:20px;">
+          <div class="col-5">
+            <h5 style="margin-bottom: 0px;">Inputs</h5>
+            <table>
+                <tr>
+                  <th >Description</th>
+                  <th style="width:90px;">Units</th>
+                  <th style="width:130px;">Values</th>
+                </tr>
+
+                <tr>
+                  <td >Valve Size</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                   <td style="width:130px;"><input type="text" name="vSize" style="width:130px;border: 1px solid white;" value="{{data[2]}}"></td>
+                </tr>
+
+                <tr>
+                  <td >Seat Dia</td>
+                  <td style="width:90px;">
+                    <select name=""  style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="seatDia" style="width:130px;border: 1px solid white;" value="{{v_list[2]}}"></td>
+                </tr>
+                <tr>
+                  <td >Unbalance Area</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="ua" style="width:130px;border: 1px solid white;" value="{{v_list[5]}}"></td>
+                </tr>
+                <tr>
+                  <td>Stem Dia</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="stemDia" style="width:130px;border: 1px solid white;" value="{{v_list[4]}}"></td>
+                </tr>
+                <tr>
+                  <td>Plug Dia</td>
+                  <td style="width:90px;">
+                    <select name=""  style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="plugDia" style="width:130px;border: 1px solid white;" value="{{v_list[3]}}"></td>
+                </tr>
+                <tr>
+                  <td>Valve Travel</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="stroke" style="width:130px;border: 1px solid white;" value="{{v_list[1]}}"></td>
+                </tr>
+                <tr>
+                  <td>Packing Friction</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-11]}}"></td>
+                </tr>
+                <tr>
+                  <td>Seat Load Force</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-10]}}"></td>
+                </tr>
+                <tr>
+                  <td>P1</td>
+                  <td style="width:90px;">
+                    <select name=""  style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="iPres" style="width:130px;border: 1px solid white;" value="{{data[4]}}"></td>
+                </tr>
+                <tr>
+                  <td>P2</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                 <td style="width:130px;"><input type="text" name="oPres" style="width:130px;border: 1px solid white;" value="{{data[5]}}"></td>
+                </tr>
+
+                <tr>
+                  <td>ΔP Shutoff</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                 <td style="width:130px;"><input type="text" name="shutoffDelP" style="width:130px;border: 1px solid white;" value="{{data[6]}}"></td>
+                </tr>
+
+
+                <tr>
+                  <td >Unbal Force(Open)</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                 <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{v_data[2]}}"></td>
+                </tr>
+
+
+
+                <tr>
+                  <td>Fluid Neg.Gradient</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="kn" style="width:130px;border: 1px solid white;" value="{{act_list[-9]}}"></td>
+                </tr>
+
+
+                <tr>
+                  <td>ΔP Flowing</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="delP" style="width:130px;border: 1px solid white;" value="{{data[7]}}"></td>
+                </tr>
+
+
+            </table>
+            <div class="row">
+              <div class="col-12">
+                <input type="submit" name="valve" value="Calculate">
+                <input type="submit" name="actuator" value="Select Actuator">
+<!--                <button class=" btn:hover btn" style="width: 100px;margin-left: 0px;margin-top: 20px;text-align: center;" type="submit" name="valve">Calculate</button>-->
+<!--                <button class=" btn:hover btn" style="margin-left: 0px;margin-top: 20px;text-align: center;" type="submit" name="actuator">Select Actuator</button>-->
+
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
+        <div class="col-5" style="margin-left:50px;">
+            <h5 style="margin-bottom: 0px;">Calculated Results</h5>
+            <table >
+                <tr>
+                  <th>Description</th>
+                  <th>Units</th>
+                  <th>Values</th>
+                </tr>
+                <tr>
+                  <td>Valve Thrust (close)</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="vClosed" style="width:130px;border: 1px solid white;" value="{{v_data[3]}}"></td>
+                </tr>
+
+                <tr>
+                  <td>Valve Thrust (open)</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="vOpen" style="width:130px;border: 1px solid white;" value="{{v_data[2]}}"></td>
+                </tr>
+
+
+                <tr>
+                  <td>Shut Off Force</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="shutoff+" style="width:130px;border: 1px solid white;" value="{{v_data[1]}}"></td>
+                </tr>
+
+                  <td>Stem Area</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-8]}}"></td>
+                </tr>
+
+                <tr>
+                  <td>Actuator Size</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="actSize" style="width:130px;border: 1px solid white;" value="{{act_list[-7]}}"></td>
+                </tr>
+                <tr>
+                  <td> Actuator Travel</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="actStroke" style="width:130px;border: 1px solid white;" value="{{act_list[1]}}"></td>
+                </tr>
+                <tr>
+                  <td> Diaphragm Effective Area</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[0]}}"></td>
+                </tr>
+                <tr>
+                  <td>Lower Benchset</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="sMin" style="width:130px;border: 1px solid white;" value="{{act_list[2]}}"></td>
+                </tr>
+                <tr>
+                  <td>Upper Benchset</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="sMax" style="width:130px;border: 1px solid white;" value="{{act_list[3]}}"></td>
+                </tr>
+
+                <tr>
+                  <td>Spring Rate</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-6]}}"></td>
+                </tr>
+
+
+                <tr>
+                  <td>Spring Windup</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-5]}}"></td>
+                </tr>
+
+
+                <tr>
+                  <td>Max Spring Load</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-4]}}"></td>
+                </tr>
+
+
+
+                <tr>
+                  <td>Maximum Air Supply</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Set pressure</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="setPressure" style="width:130px;border: 1px solid white;" value="{{act_list[5]}}"></td>
+                </tr>
+                <tr>
+                  <td>Actuator Thrust (Valve close)</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  {% if act_list[4] == 'AFO' %}
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[8]}}"></td>
+                  {% else %}
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
+                  {% endif %}
+
+                </tr>
+                <tr>
+                  <td>Actuator Thrust (Valve open)</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  {% if act_list[4] == 'AFO' %}
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
+                  {% else %}
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[6]}}"></td>
+                  {% endif %}
+                </tr>
+
+                <tr>
+                  <td>Friction Band(+/-)</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-3]}}"></td>
+                </tr>
+
+                 <tr>
+                  <td>Req. HandWheel Thrust</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-2]}}"></td>
+                </tr>
+
+                <tr>
+                  <td>Max. Top / Side-Mount HW Thrust</td>
+                  <td style="width:90px;">
+                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-1]}}"></td>
+                </tr>
+
+
+
+            </table>
+          </div>
+        </div>
+
+        <div class="row" >
+
+<!--          <div class="col-12" style="text-align: right;">-->
+<!--            <button class=" btn:hover btn" id="Cancel" style="width: 100px; margin-top: 20px; margin-left: 20px; ">Cancel</button>-->
+<!--           <button class=" btn:hover btn" id="Ok" style="width: 100px;margin-left: 20px;margin-top: 20px;">Ok</button>-->
+<!--          </div>-->
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+
+{% include "footer.html" %}
+{% endblock %}

@@ -1,0 +1,473 @@
+{% block content %}
+{% include "header.html" %}
+
+
+
+    <div class="col-10">
+      <div class="row head">
+
+        <div class="col-1">
+          <div class="row" style="margin-top:30px;">
+            <div class="col-12">
+              <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="User"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+            <h5 style="text-align: center;">Project</h5>
+            <div class="col-2">
+              <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="row">
+            <div class="col-12" style="text-align: center;">
+              <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_d.id}} {{item_d.alt}}</p>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+              <label for="">First</label>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-backward-step fa-1x"></i><br>
+              <label for="">Prev.</label>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-forward-step fa-1x"></i><br>
+              <label for="">Next</label>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+              <label for="">Last</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-3" >
+          <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+          <h5 style="text-align: center;">Item</h5>
+            <div class="col-2">
+              <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Copy From"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-file-import fa-1x" data-toggle="tooltip" title="Copy To"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-1">
+          <div class="row" style="margin-top:30px;">
+            <div class="col-12">
+              <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row" style="margin-left:0px; margin-bottom:10px; margin-top:20px">
+        <div class="col-8" style='text-align: left;'>
+          <button class=" btn:hover btn" type="button" style="width: 250px;height:35px;">Sliding Stem Actuator Sizing</button>
+          <button class=" btn:hover btn" type="button" style="width: 200px;height:35px;">Rotary Actuator Sizing</button>
+        </div>
+      </div>
+
+      <form action="{{ url_for('actuatorSizing') }}" method="post">
+
+      <div class="row" style="margin-left: 3px;margin-top: 20px;">
+
+        <div class="col-4 tools" style="background-color: #EAEAEA;">
+          <div class="row" style="margin-top: 10px;">
+            <div class="col-12">
+              <h5 style="text-align: left" ;>Valve Data</h5>
+            </div>
+            <div class="row" style="margin-top: 0px;">
+              <div class="col-6" style='text-align: right;'>
+                <label for="vSize">Valve Size</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="vSize" id="vSize" style="width: 100px;height:20px;" value="{{data[3]}}" readonly>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="rating">Rating</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="rating" id="rating" style="width: 100px;height:20px;" value="{{data[4]}}" readonly>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="balance">Valve Balancing</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="balance" name="balance" style="width: 100px;height:20px;" value="{{v_list[0]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="tType">Trim Type</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" id="tType" name="tType" value="{{data[5]}}" readonly>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="stroke">Stroke</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="stroke" name="stroke" style="width: 100px;height:20px;" value="{{v_list[1]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="seatDia">Seat Dia</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" id="seatDia" name="seatDia" value="{{data[2]}}">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="plugDia">Plug Dia</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="plugDia" name="plugDia" style="width: 100px;height:20px;" value="{{v_list[3]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="stemDia">Stem Dia</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="stemDia" name="stemDia" style="width: 100px;height:20px;" value="{{v_list[4]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="ua">Unbalance Area</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="ua" name="ua" style="width: 100px;height:20px;" value="{{v_list[5]}}">
+              </div>
+            </div>
+
+
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="packingMat">Packing Material</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" id="packingMat" name="tType" value="{{data[7]}}" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="col-4 tools">
+          <div class="row"style="margin-top:10px;">
+            <div class="col-12">
+              <h5 style="text-align: left;" ;>Actuator Data</h5>
+            </div>
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="actSeries">Series</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="actSeries" style="width: 100px;height:20px;">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="actStroke">Act.Stroke</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="actStroke" style="width: 100px;height:20px;" value="{{act_list[1]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="actSize">Size</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="actSize" style="width: 100px;height:20px;" value="{{act_list[0]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="springRange">Spring</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="springRange" style="width: 100px;height:20px;" value="({{act_list[2]}}, {{act_list[3]}})">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="handweel">Handwheel</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="handweel" style="width: 100px;height:20px;">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="travelStops">Travel Stops</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="travelStops" style="width: 100px;height:20px;">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="failAction">Fail Action</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="failAction" style="width: 100px;height:20px;" value="{{act_list[4]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="orientation">Orientation</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="orientation" style="width: 100px;height:20px;">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="maxAir">Max.Air Supply</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="maxAir" style="width: 100px;height:20px;">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="setPressure">Set Pressure</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="number" id="setPressure" name="setPressure" style="width: 100px;height:20px;" value="{{act_list[5]}}">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h1></h1>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-3 tools" style="margin-bottom: 10px;margin-left: 10px;margin-right: 3px;">
+          <div class="row">
+            <div class="col-12">
+              <h5 style="text-align: left" ;>Comments</h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12" style='text-align: left;height: 200px;  width: 300px; border-style: groove'>
+              <p>{{act_list[10]}}</p>
+              <p>{{act_list[11]}}</p>
+              <p>{{act_list[12]}}</p>
+<!--              <input type="text" style="height: 200px;  width: 300px;" value="{{act_list[10]}};{{act_list[11]}};{{act_list[12]}}">-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="submit" name="valve" value="Valve Forces">
+      <input type="submit" name="actuator" value="Select Actuator">
+
+
+
+
+      <div class="row" style="margin-left: 3px;margin-top:0px; ">
+        <div class="col-4 tools" style=" margin-bottom:10px; margin-top:0px;background-color: #EAEAEA;">
+          <div class="row">
+            <div class="col-12">
+              <h5 style="text-align: left" ;>Valve Force lbf</h5>
+            </div>
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="vOpen">Valve Open</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="vOpen" style="width: 100px;height:20px;" value="{{v_data[2]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="vClosed">Valve Closed</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="vClosed" style="width: 100px;height:20px;" value="{{v_data[3]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="shutoff">Shut Off Case</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="shutoff" style="width: 100px;height:20px;" value="{{v_data[0]}}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6" style='text-align: right;'>
+                <label for="shutoff+">Shut Off & Seat</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" id="shutoff+" name="shutoff+" style="width: 100px;height:20px;" value="{{v_data[1]}}">
+              </div>
+            </div>
+
+<!--            <div class="row">-->
+<!--              <div class="col-6" style='text-align: right;'>-->
+<!--                <label for="">Shut Off & Seat P2<>0</label>-->
+<!--              </div>-->
+<!--              <div class="col-6" style='text-align: left;'>-->
+<!--                <input type="text" style="width: 100px;height:20px;">-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--              <div class="col-12" style='text-align: center;'>-->
+<!--                <label for="">Friction Included=25.0 lbsf</label>-->
+<!--              </div>-->
+<!--            </div>-->
+          </div>
+        </div>
+
+
+      </form>
+        <div class="col-6 tools">
+          <div class="row" style="margin-top:20px;">
+            <div class="col-12">
+              <h5 style="text-align: left" ;>Actuator Thrust lbf</h5>
+            </div>
+
+            <div class="row" style="margin-left:38px;">
+              <div class="col-3" style='text-align: center;'>
+                <label for=""></label>
+              </div>
+              <div class="col-3" style='text-align: center;'>
+                <label for="">Net Air Thrust</label>
+              </div>
+              <div class="col-3" style='text-align: center;'>
+                <label for="">Spring Thrust</label>
+              </div>
+              <div class="col-3" style='text-align: center;'>
+                <label for="">Air Failure</label>
+              </div>
+            </div>
+
+            <div class="row" style="margin-left:38px;">
+              <div class="col-3" style='text-align: right;'>
+                <label for="">Close</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" value="{{act_list[8]}}">
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" value="{{act_list[7]}}">
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;">
+              </div>
+            </div>
+
+
+            <div class="row" style="margin-left:38px;">
+              <div class="col-3" style='text-align: right;'>
+                <label for="">Open</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" value="{{act_list[9]}}">
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;" value="{{act_list[6]}}">
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;height:20px;">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <h1></h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+
+
+{% include "footer.html" %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% block content %}
+{% include "header.html" %}
+
+
+
+    <div class="col-10">
+      <div class="row">
+        {% for i in data %}
+          {% if i.id not in [1, 14, 7] %}
+            <div class="col-2" style="margin-left:80px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove;margin-top:20px">
+              <a href="{{url_for('renderData', topic=i.id)}}">{{i.name}}</a>
+
+            </div>
+<!--        <div class="col-2" style="margin-top:20px;width:40px;">-->
+<!--          <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>-->
+<!--        </div>-->
+<!--        <div class="col-2" style="margin-top:20px;width:40px;">-->
+<!--          <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>-->
+<!--        </div>-->
+
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+{% include "footer.html" %}
+{% endblock %}

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Actuator Sizing</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Crimson+Text&family=EB+Garamond&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a18974e73a.js" crossorigin="anonymous"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+  /*label{
+    margin-left: 20px;
+  }*/
+  input{
+    height: 24px;
+  }
+  .row{
+    margin-top: 5px;
+  }
+  
+
+  }
+</style>
+
+<script>
+  
+  $(document).ready(function(){
+
+$(".Actuator").show();
+$(".Silding").hide();
+$(".Rotary").hide();
+
+
+
+$("#Silding").click(function(){
+$(".Silding").show();
+$(".Rotary").hide();
+$(".Actuator").hide();
+});
+
+$("#Rotary").click(function(){
+$(".Silding").hide();
+$(".Rotary").show();
+$(".Actuator").hide();
+});
+
+$("#Cancel").click(function(){
+$(".Silding").hide();
+$(".Rotary").hide();
+$(".Actuator").show();
+});
+
+$("#Ok").click(function(){
+$(".Silding").hide();
+$(".Rotary").hide();
+$(".Actuator").show();
+});
+
+$("#RotaryCancel").click(function(){
+$(".Silding").hide();
+$(".Rotary").hide();
+$(".Actuator").show();
+});
+
+$("#RotaryOk").click(function(){
+$(".Silding").hide();
+$(".Rotary").hide();
+$(".Actuator").show();
+});
+
+});
+
+</script>
+</head>
+
+<body>
+
+  <div class="row back" style="margin-top:3px;">
+    <div class="col-2 nav-items" style="height: 597px;">
+      <img src="logo.png" alt="" style="width: 80%; text-align: left;margin-bottom: 10px;">
+      <p><a href=" DashBoard.html"> DashBoard</a></p>
+      <p><a href="Project Details.html">Project Details</a></p>
+      <p><a href="Valve Selection.html" >Valve Selection</a></p>
+      <p><a href="Valve Sizing.html" >Valve Sizing</a></p>
+      <!-- <p><a href="D:\FCC Sizing UI\Sizing UI\Materials.html">Materials</a></p> -->
+      <p><a href="Actuator Sizing.html" style="text-decoration: underline;">Actuator Sizing</a></p>
+      <p><a href="Accessories & Fittings.html">Accessories, Order Processing</a></p>
+      <p><a href="Item Notes.html">Item Notes</a></p>
+      <p><a href="Project Notes.html">Project Notes</a></p>
+      <button style="font-size:18px;border:1px groove;">Logout <i class="fa fa-sign-out"></i></button>
+    </div>
+
+    <div class="col-10">
+      <div class="row head">
+
+        <div class="col-1">
+          <div class="row" style="margin-top:30px;">
+            <div class="col-12">
+              <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="User"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+            <h5 style="text-align: center;">Project</h5>
+            <div class="col-2">
+              <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="row">
+            <div class="col-12" style="text-align: center;">
+              <p style="border: groove; border-radius: 0px;">AQ 00051 002 A</p>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+              <label for="">First</label>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-backward-step fa-1x"></i><br>
+              <label for="">Prev.</label>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-forward-step fa-1x"></i><br>
+              <label for="">Next</label>
+            </div>
+            <div class="col-3">
+              <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+              <label for="">Last</label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-3" >
+          <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+          <h5 style="text-align: center;">Item</h5>
+            <div class="col-2">
+              <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Copy From"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-solid fa-file-import fa-1x" data-toggle="tooltip" title="Copy To"></i>
+            </div>
+            <div class="col-2">
+              <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-1">
+          <div class="row" style="margin-top:30px;">
+            <div class="col-12">
+              <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row Actuator" >
+      <h3 style="margin-top: 20px;margin-left: 20px;">Actuator Selection</h3>
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Type</label>
+          </div>
+          <div class="col-2" style="width:150px;">
+            <select name="" id="" style="width: 120px;height:25px;">
+                <option value="">Manual Gearbox</option> 
+                <option value="">Spring & Diaphragm</option>
+                <option value="">Multi-Spring & Diaphragm</option>
+                <option value="">Piston Spring Return Single Acting</option>
+                <option value="">Piston Spring Return Double Acting</option>
+                <option value="">Piston Double Acting</option>                
+                <option value="">Electric Actuator</option>
+                <option value="">Electro hydraulic Actuator</option>  
+                <option value="">Scotch yoke</option>                     
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Spring Action / Fail Mode</label>
+          </div>
+          <div class="col-2" style="width:150px;">
+            <select name="" id="" style="width: 120px;height:25px;">
+                <option value="">N/A</option>
+                <option value="">Fail Open</option>
+                <option value="">Fail Close</option>
+                <option value="">Stay put</option>                        
+            </select>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Hand Wheel</label>
+          </div>
+          <div class="col-2">
+            <select name="" id="" style="width: 120px;height:25px;">
+                <option value="">N/A</option>
+                <option value="">Side Mounted</option>
+                <option value="">Top Mounted</option>
+            </select>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Orientation</label>
+          </div>
+          <div class="col-2">
+            <select name="" id="" style="width: 120px;height:25px;">
+                <option value="">N/A</option>
+                <option value="">Horizontal</option>
+                <option value="">Vertical</option>
+            </select>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Available Air Supply</label>
+          </div>
+          <div class="col-2" style="width:130px;">
+            <select name="" id="" style="width: 120px;height:25px;">
+                <option value="">psig</option>
+                <option value="">psia</option>
+                                  
+            </select>
+          </div>
+        
+
+        <div class="col-1" style="width:30px;">
+            <label>Min</label>
+        </div>
+        <div class="col-2" style="width:120px;">
+            <input style="width:100px;" type="Number" name="">
+        </div>
+
+         <div class="col-1" style="width:30px;">
+            <label>Max</label>
+        </div>
+        <div class="col-2">
+            <input style="width:100px;" type="Number" name="">
+        </div>
+        </div>
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Shut Off Pressure</label>
+          </div>
+          <div class="col-2"style="width:130px;">
+            <input style="width:120px;height: 25px;" type="Number" name="">
+          </div>
+          <div class="col-3">
+            <select name="" id="" style="width: 120px;height:25px;">
+
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-3">
+            <label style="margin-left: 20px;">Note</label>
+          </div>
+          <div class="col-6">
+            <input style="width:410px;" type="text" name="">
+          </div>
+       </div>
+      
+
+
+
+
+      <div class="row" style="margin-left:5px; margin-bottom:10px; margin-top:40px">
+        <div class="col-3" style='text-align: left;'>
+          <button class=" btn:hover btn" id="Silding" type="button" style="width: 250px;height:35px;">Sliding Stem Actuator Sizing</button>
+          
+        </div>
+        <div class="col-8" style='text-align: left;'>
+          
+          <button class=" btn:hover btn" id="Rotary" type="button" style="width: 250px;height:35px;">Rotary Actuator Sizing</button>
+        </div>
+      </div>
+      </div>
+
+
+
+
+
+    <div class="row Silding" style="margin-top: 30px;">        
+        <div class="row">
+
+          <div class="col-12">
+            <div class="row">
+
+              
+
+              <div class="col-1" >
+                <label>Trim Type</label>
+              </div>
+
+              <div class="col-1">
+                <label>Contour</label>
+              </div>
+              
+              <div class="col-1" style="border-left: 1px groove;">
+                <label>Balancing</label>
+              </div>
+
+              <div class="col-1">
+                <select name="" id="" style="width: 100px;height:25px;">
+                   
+                </select>
+              </div>
+
+              <div class="col-2" style=" margin-left: 30px;width: 110px;border-left: 1px groove;">
+                <label>Bonnet Type</label>
+              </div>
+
+              <div class="col-1">
+                <select name="" id="" style="width: 100px;height:25px;">
+                </select>
+              </div>
+              <div class="col-2" style=" margin-left: 30px;width: 130px;border-left: 1px groove;">
+                <label>Flow Direction</label>
+              </div>
+
+              <div class="col-1">
+                <select name="" id="" style="width: 100px;height:25px;">
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+         
+    
+
+ 
+
+        <div class="row" style="margin-top:20px;">
+          <div class="col-5">
+            <h5 style="margin-bottom: 0px;">Inputs</h5>
+            <table>
+                <tr>
+                  <th >Description</th>
+                  <th style="width:90px;">Units</th>
+                  <th style="width:130px;">Values</th>
+                </tr>
+
+                <tr>
+                  <td >Valve Size</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                   <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                <tr>
+                  <td >Seat Dia</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td >Unbalance Area</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Stem Dia</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Valve Travel</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Packing Friction</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Seat Load Force</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>P1</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>P2</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                 <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                <tr>
+                  <td>ΔP Shutoff</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                 <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+                <tr>
+                  <td >Unbal Force(Open)</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                 <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+
+                <tr>
+                  <td>Fluid Neg.Gradient</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+                <tr>
+                  <td>ΔP Flowing</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+            </table>
+            <div class="row">
+              <div class="col-12">
+                <button class=" btn:hover btn" style="width: 100px;margin-left: 0px;margin-top: 20px;text-align: center;">Calculate</button>
+                <button class=" btn:hover btn" style="margin-left: 0px;margin-top: 20px;text-align: center;">Select Actuator</button>
+                
+              </div>
+            </div>
+          </div>
+        
+
+
+
+
+
+
+        <div class="col-5" style="margin-left:50px;">
+            <h5 style="margin-bottom: 0px;">Calculated Results</h5>
+            <table >
+                <tr>
+                  <th>Description</th>
+                  <th>Units</th>
+                  <th>Values</th>
+                </tr>
+                <tr>
+                  <td>Valve Thrust (close)</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                <tr>
+                  <td>Valve Thrust (open)</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+                <tr>
+                  <td>Shut Off Force</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                  <td>Stem Area</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                <tr>
+                  <td>Actuator Size</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td> Actuator Travel</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td> Diaphragm Effective Area</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Lower Benchset</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Upper Benchset</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                <tr>
+                  <td>Spring Rate</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+                <tr>
+                  <td>Spring Windup</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+                <tr>
+                  <td>Max Spring Load</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+
+
+                <tr>
+                  <td>Maximum Air Supply</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Set pressure</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Actuator Thrust (Valve close)</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                <tr>
+                  <td>Actuator Thrust (Valve open)</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                <tr>
+                  <td>Friction Band(+/-)</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                 <tr>
+                  <td>Req. HandWheel Thrust</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+                
+                <tr>
+                  <td>Max. Top / Side-Mount HW Thrust</td>
+                  <td style="width:90px;">
+                    <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                      <option value="">kg/hr</option>
+                      <option value="">psia</option>
+                      <option value="">bar</option>
+                      <option value="">Psig</option>
+                    </select>
+                  </td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                </tr>
+
+                
+
+            </table>
+          </div>
+        </div>
+
+        <div class="row" >
+          
+          <div class="col-12" style="text-align: right;">
+            <button class=" btn:hover btn" id="Cancel" style="width: 100px; margin-top: 20px; margin-left: 20px; ">Cancel</button>
+           <button class=" btn:hover btn" id="Ok" style="width: 100px;margin-left: 20px;margin-top: 20px;">Ok</button>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+      <div class="row Rotary">
+        <h1>Loading............</h1>
+
+        <button class=" btn:hover btn" id="RotaryCancel" style="width: 100px; margin-top: 20px; margin-left: 20px; ">Cancel</button>
+        <button class=" btn:hover btn" id="RotaryOk" style="width: 100px;margin-left: 20px;margin-top: 20px;">Ok</button>
+      </div>
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
+
+</body>
+
+</html>
