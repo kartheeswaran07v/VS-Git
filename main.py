@@ -751,6 +751,30 @@ class knValue(db.Model):
     kn = Column(String(100))
 
 
+# 60
+class portArea(db.Model):
+    __tablename__ = "portArea"
+    id = Column(Integer, primary_key=True)
+    model = Column(String(20))
+    v_size = Column(String(20))
+    seat_bore = Column(String(20))
+    travel = Column(String(20))
+    trim_type = Column(String(20))
+    flow_char = Column(String(20))
+    area = Column(String(20))
+
+
+# 61
+class hwThrust(db.Model):
+    __tablename__ = "hwThrust"
+    id = Column(Integer, primary_key=True)
+    failAction = Column(String(20))
+    mount = Column(String(20))
+    ac_size = Column(String(20))
+    max_thrust = Column(String(20))
+    dia = Column(String(20))
+
+
 # #
 # with app.app_context():
 #     db.create_all()
@@ -908,6 +932,55 @@ itemsList = [item3]
 #         db.session.add(new_entry_globe)
 #         db.session.commit()
 
+
+# handwheel thrust
+
+# filename = "handwheel.csv"
+# fields_hw = []
+# rows = []
+#
+# # reading csv file
+# with open(filename, 'r') as csvfile:
+#     # creating a csv reader object
+#     csvreader = csv.reader(csvfile)
+#
+#     # extracting field names through first row
+#     fields_hw = next(csvreader)
+#
+#     # extracting each data row one by one
+#     for row in csvreader:
+#         rows.append(row)
+#
+# for row in rows:
+#     new_entry_globe = hwThrust(failAction=row[0], mount=row[1], ac_size=row[2], max_thrust=row[3],
+#                                dia=row[4])
+#     with app.app_context():
+#         db.session.add(new_entry_globe)
+#         db.session.commit()
+#
+# # port _area
+# filename = "port_area.csv"
+# fields_pa = []
+# rows = []
+#
+# # reading csv file
+# with open(filename, 'r') as csvfile:
+#     # creating a csv reader object
+#     csvreader = csv.reader(csvfile)
+#
+#     # extracting field names through first row
+#     fields_pa = next(csvreader)
+#
+#     # extracting each data row one by one
+#     for row in csvreader:
+#         rows.append(row)
+#
+# for row in rows:
+#     new_entry_globe = portArea(model=row[0], v_size=row[1], seat_bore=row[2], travel=row[3],
+#                                trim_type=row[4], flow_char=row[5], area=row[6])
+#     with app.app_context():
+#         db.session.add(new_entry_globe)
+#         db.session.commit()
 
 # Add KC table
 # filename = "kc_table.csv"
@@ -1487,13 +1560,16 @@ def fP(C, valveDia, inletDia, outletDia, N2_value):
 
 def flP(C, valveDia, inletDia, N2_value, Fl):
     K1 = eta1(valveDia, inletDia) + etaB(valveDia, inletDia)
+    print(f"k1, valvedia, inlet, C: {K1}, {valveDia}, {inletDia}, {N2_value}, {Fl}, {C}")
     a = (K1 / N2_value) * ((C / valveDia ** 2) ** 2)
+    print(f"a for flp: {a}")
     b_ = 1 / math.sqrt((1 / (Fl * Fl)) + a)
     return round(b_, 3)
 
 
 def delPMax(Fl, Ff, inletPressure, vaporPressure):
     a_ = Fl * Fl * (inletPressure - (Ff * vaporPressure))
+    print(f"delpmax: {Fl}, {inletPressure}, {Ff}, {vaporPressure}")
     return round(a_, 3)
 
 
@@ -1743,6 +1819,29 @@ def Cv_gas(inletPressure, outletPressure, gamma, C, valveDia, inletDia, outletDi
     return output_list
 
 
+# TODO - New Trim Exit velocity formulae
+
+def outletDensity(iPres, oPres, MW, R, iTemp):
+    Pi = inletDensity(iPres, MW, R, iTemp)
+    a = Pi * (oPres / iPres)
+    return round(a, 2)
+
+
+def tex_new(calculatedCV, ratedCV, port_area, flowrate, iPres, oPres, MW, R, iTemp, fluid_state):
+    # density in kg/m3, fl in m3/hr, area in m2
+    port_area = port_area * 0.000645
+    tex_area = (calculatedCV / ratedCV) * port_area
+    tex_vel = flowrate / tex_area
+    oDensity = outletDensity(iPres, oPres, MW, R, iTemp)
+    ke = (oDensity * tex_vel ** 2) / 19.62
+    print(
+        f"tex_new inputs: {calculatedCV}, {ratedCV}, {port_area}, {flowrate}, {iPres}, {oPres}, {MW}, {R}, {iTemp}, {fluid_state}, {tex_vel}")
+    if fluid_state == 'Liquid':
+        return round(tex_vel, 3)
+    else:
+        return round(ke, 3)
+
+
 # TODO - Trim exit velocities and other velocities
 
 def trimExitVelocity(inletPressure, outletPressure, density, trimType, numberOfTurns):
@@ -1852,7 +1951,7 @@ def valveForces(p1_, p2_, d1, d2, d3, ua, rating, material, leakageClass, trimty
     a1 = 0.785 * d1 * d1  # seat bore - seat dia
     a2 = 0.785 * d2 * d2  # plug dia
     a3 = 0.785 * d3 * d3  # stem dia
-    shutoffDelP = 14.5 * shutoffDelP
+    shutoffDelP = shutoffDelP
     with app.app_context():
         friction_element = db.session.query(packingFriction).filter_by(stemDia=d3, pressure=rating).first()
         a_ = {'ptfe1': friction_element.ptfe1, 'ptfe2': friction_element.ptfe2, 'ptfer': friction_element.ptfer,
@@ -1899,7 +1998,7 @@ def valveForces(p1_, p2_, d1, d2, d3, ua, rating, material, leakageClass, trimty
     elif num == 9:
         a_ = shutoffDelP * (a3 - ua) + B + C
         UA = ua
-        # print(a3, ua)
+        print(f"inputs for equation 9: {a3, ua, shutoffDelP, B, C}")
     elif num == 10:
         a_ = (shutoffDelP * ua) + B + C
         UA = ua
@@ -1927,7 +2026,7 @@ def valveForces(p1_, p2_, d1, d2, d3, ua, rating, material, leakageClass, trimty
         a_ = 1
         UA = a2 - a1
 
-    return_list = [round(a_, 3), UA]
+    return_list = [round(a_, 3), UA, B, b_[leakageClass]]
 
     return return_list
 
@@ -1987,6 +2086,7 @@ def compareForces(p1, p2, d1, d2, d3, ua, rating, material, leakageClass, trimty
         else:
             kn_value = 0
         print(f"Packing friction: {B}, Seat Load Force: {round(C, 3)}, kn value: {kn_value}")
+        print(f"Kn inputs: portDia: {d1}, flow direction: {flow}, flow character: {flowChar}, trim type: {trimtype}")
     # print(f"Valve Forces: Shutoff: {vForce_shutoff}, Shutoff+: {vForce}, Open: {vForce_open}, Close: {vForce_close}")
     result, comment1, comment2, comment3 = None, None, None, None
     if vForce < 0:
@@ -2001,7 +2101,10 @@ def compareForces(p1, p2, d1, d2, d3, ua, rating, material, leakageClass, trimty
     elif balance == 'unbalanced' and flow == 'over':
         kn = (2 * vForce_[1] / valveTravel)
     else:
-        kn = kn_value
+        if kn_value == 0:
+            kn = (2 * vForce_[1] / valveTravel)
+        else:
+            kn = kn_value
     # print(f"Unbalanced area: {vForce_[1]}")
     if failAction == 'AFC':
         if natMin > B:
@@ -2055,7 +2158,7 @@ def compareForces(p1, p2, d1, d2, d3, ua, rating, material, leakageClass, trimty
             result = f"Fail{case1}, {case2}"
 
     result_list = [result, springrate, sfMax, sfMin, natMax, natMin, B, C, vForce, vForce_shutoff, vForce_close,
-                   vForce_open, comment1, comment2, comment3, kn]
+                   vForce_open, comment1, comment2, comment3, kn, b_[leakageClass]]
     print(result_list)
     return result_list
 
@@ -2290,10 +2393,12 @@ def home():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
 
         data = projectMaster.query.all()
-        data2 = itemMaster.query.all()
+        data2 = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = data2.index(item_details)
 
         data_update_list2 = convert_project_data(data)
         item_list = convert_item_data(data2)
+        len_items = len(item_list)
         proj_id = 1
 
         if request.method == 'POST':
@@ -2302,19 +2407,24 @@ def home():
             proj_id_2 = projectId
             data = projectMaster.query.all()
             data3 = db.session.query(itemMaster).filter_by(projectID=projectId).all()
+            item_index = 1
             data_updated_list = convert_project_data(data)
             item_list = convert_item_data(data3)
+            len_items = len(item_list)
 
             return render_template("dashboard_with_db.html", title='Dashboard', data=data_updated_list, data2=item_list,
-                                   item_d=item_details, p_id=proj_id_2)
+                                   item_d=item_details, p_id=proj_id_2, page='home', item_index=item_index,
+                                   len_items=len_items)
 
         return render_template("dashboard_with_db.html", title='Dashboard', data=data_update_list2, data2=item_list,
-                               item_d=item_details, p_id=proj_id)
+                               item_d=item_details, p_id=proj_id, page='home', item_index=item_index,
+                               len_items=len_items)
 
 
 # Website routes
 @app.route('/get-proj/<proj_id>', methods=["GET", "POST"])
 def getItemProject(proj_id):
+    global selected_item
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
         # print(projectId)
@@ -2323,9 +2433,14 @@ def getItemProject(proj_id):
         data3 = db.session.query(itemMaster).filter_by(projectID=proj_id).all()
         data_updated_list = convert_project_data(data)
         item_list = convert_item_data(data3)
+        selected_item = data3[0]
+        item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_index = data3.index(item_details)
+        len_items = len(item_list)
 
         return render_template("dashboard_with_db.html", title='Dashboard', data=data_updated_list, data2=item_list,
-                               item_d=item_details, p_id=proj_id_2)
+                               item_d=item_details, p_id=proj_id_2, page='home', item_index=item_index,
+                               len_items=len_items)
 
 
 @app.route('/filter', methods=["GET", "POST"])
@@ -2393,11 +2508,14 @@ def filter_dashboard():
                     project_data = projectMaster.query.all()
                 data_update_list2 = convert_project_data(project_data)
 
-            data2 = itemMaster.query.all()
+            item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+            data2 = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).first()
+            item_index = data2.index(item_details)
             item_list = convert_item_data(data2)
+            len_items = len(item_list)
 
             return render_template("dashboard_with_db.html", title='Dashboard', data=data_update_list2, data2=item_list,
-                                   item_d=selected_item)
+                                   item_d=selected_item, page='home', item_index=item_index, len_items=len_items)
 
 
 @app.route('/items/<item_id>', methods=["GET", "POST"])
@@ -2439,6 +2557,10 @@ def getItems(item_id):
 
 @app.route('/project-details', methods=["GET", "POST"])
 def projectDetails():
+    with app.app_context():
+        item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
     if request.method == 'POST':
         customer = request.form.get('customer')
         engRef = request.form.get('eRef')
@@ -2498,9 +2620,11 @@ def projectDetails():
             db.session.add(new_project)
             db.session.commit()
 
-            return render_template("Project Details.html", title='Project Details', item_d=selected_item)
+            return render_template("Project Details.html", title='Project Details', item_d=selected_item,
+                                   page='projectDetails', item_index=item_index)
 
-    return render_template("Project Details.html", title='Project Details', item_d=selected_item)
+    return render_template("Project Details.html", title='Project Details', item_d=selected_item, page='projectDetails',
+                           item_index=item_index)
 
 
 # @app.route('/valve-selection', methods=["GET", "POST"])
@@ -2782,8 +2906,10 @@ def valveSelection():
                 db.session.add(new_valve_details)
                 db.session.commit()
 
+        item_list = db.session.query(itemMaster).filter_by(projectID=itemdetails.projectID).all()
+        item_index = item_list.index(itemdetails)
         return render_template("Valve Selection.html", title='Valve Selection', data=template_list,
-                               item_d=selected_item, v_mat=v_materials)
+                               item_d=selected_item, v_mat=v_materials, page='valveSelection', item_index=item_index)
 
 
 def sort_list_latest(list_1, selected):
@@ -3242,7 +3368,7 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
               xt_fl, viscosity, seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, item_selected, fl_unit_form,
               iPresUnit_form, oPresUnit_form, vPresUnit_form, cPresUnit_form, iPipeUnit_form, oPipeUnit_form,
               vSizeUnit_form,
-              iSch, iPipeSchUnit_form, oSch, oPipeSchUnit_form, iTempUnit_form, open_percent, fd):
+              iSch, iPipeSchUnit_form, oSch, oPipeSchUnit_form, iTempUnit_form, open_percent, fd, travel, rated_cv_tex):
     # check whether flowrate, pres and l are in correct units
     inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
                                                  1000))
@@ -3365,6 +3491,8 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
 
     ff_liq = FF(service_conditions_1['vPres'], service_conditions_1['cPres'])
     chokedP = delPMax(service_conditions_1['Fl'], ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'])
+    print("liq sizing function, delpMax")
+    print(service_conditions_1['Fl'], ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'])
 
     # noise and velocities
     # Liquid Noise - need flowrate in kg/s, valves in m, density in kg/m3, pressure in pa
@@ -3457,6 +3585,34 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
         t_caps = 'other'
 
     tEX = trimExitVelocity(inletPressure_v, outletPressure_v, specificGravity * 1000, t_caps, 'other')
+
+    if v_det_element.flowCharacter_v == 1:
+        flow_character = 'equal'
+    else:
+        flow_character = 'linear'
+    # new trim exit velocity
+    # for port area, travel filter not implemented
+    # tex new
+    if float(travel) in [2, 3, 8]:
+        travel = int(travel)
+    else:
+        travel = float(travel)
+
+    if float(seatDia) in [1, 11, 2, 3, 4, 7, 8]:
+        seatDia = int(seatDia)
+    else:
+        seatDia = float(seatDia)
+    port_area_ = db.session.query(portArea).filter_by(v_size=vSize_v, seat_bore=seatDia, trim_type=trimtype,
+                                                      flow_char=flow_character, travel=travel).first()
+    print(f"port area table inputs: {vSize_v}, {seatDia}, {trimtype}, {flow_character}, {travel}")
+    if port_area_:
+        port_area = float(port_area_.area)
+        tex_ = tex_new(result, int(rated_cv_tex), port_area, flowrate_v / 3600, inletPressure_form, inletPressure_form, 1, 8314,
+                       inletTemp_form, 'Liquid')
+    else:
+        port_area = 1
+        tex_ = 'None'
+
     # ipipeSch_v = meta_convert_P_T_FR_L('L', float(iPipeSch_form), iPipeSchUnit_form,
     #                                    'inch',
     #                                    1000)
@@ -3527,8 +3683,8 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
                                service_conditions_1['sGravity'])
     fp_liq = fP(service_conditions_1['C'], service_conditions_1['valveDia'], service_conditions_1['iPipeDia'],
                 service_conditions_1['oPipeDia'], N2_val)
-    if service_conditions_1['valveDia'] != service_conditions_1['oPipeDia']:
-        FL_ = FLP_liq / fp_liq
+    if valveSize_form != inletPipeDia_form:
+        FL_ = round((FLP_liq / fp_liq), 2)
     else:
         FL_ = service_conditions_1['Fl']
     chokedP = delPMax(FL_, ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'])
@@ -3539,7 +3695,7 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
 
     vp_ar = meta_convert_P_T_FR_L('P', vaporPressure, vPres_unit, iPresUnit_form, 1000)
     application_ratio = (inletPressure_form - outletPressure_form) / (inletPressure_form - vp_ar)
-    other_factors_string = f"{ff}+{Kc}+{Fd_liq}+{FLP_liq}+{RE_number}+{fp_liq}+{round(application_ratio, 3)}"
+    other_factors_string = f"{ff}+{Kc}+{Fd_liq}+{FLP_liq}+{RE_number}+{fp_liq}+{round(application_ratio, 3)}+{ratedCV}"
 
     new_case = itemCases(flowrate=flowrate_form, iPressure=inletPressure_form,
                          oPressure=outletPressure_form,
@@ -3550,7 +3706,7 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
                          valveSPL=round(summation, 3), iVelocity=round(iVelocity, 3),
                          oVelocity=round(oVelocity, 3), pVelocity=round(pVelocity, 3),
                          chokedDrop=chokedP,
-                         Xt=xt_fl, warning=1, trimExVelocity=data['texVelocity'],
+                         Xt=xt_fl, warning=1, trimExVelocity=tex_,
                          sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Liquid",
                          criticalPressure=criticalPressure_form, iPipeSize=inletPipeDia_form,
                          oPipeSize=outletPipeDia_form,
@@ -3570,7 +3726,7 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
               sosPipe, densityPipe, criticalPressure_form, viscosity, item_selected, fl_unit_form, iPresUnit_form,
               oPresUnit_form, vPresUnit_form, iPipeUnit_form, oPipeUnit_form, vSizeUnit_form, iSch,
               iPipeSchUnit_form, oSch, oPipeSchUnit_form, iTempUnit_form, xt_fl, sg_vale, sg_choice,
-              open_percent, fd):
+              open_percent, fd, travel, rated_cv_tex):
     # Unit Conversion
     # 1. Flowrate
 
@@ -3917,9 +4073,9 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
     # endof get gas
 
     # convert pressure for tex, p in bar, l in in
-    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
+    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'pa',
                                             1000)
-    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
+    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'pa',
                                              1000)
     # print(f"Outlet Pressure V{outletPressure_v}")
 
@@ -3961,7 +4117,7 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
     dp_kc = inletPressure_psia - outletPressure_psia
     Kc = getKCValue(size_in_in, trimtype, dp_kc, valve_type_.lower(), xt_fl)
 
-    # get other req values - Ff, Kc, Fd, Flp, Reynolds Number
+    # get other req values - Ff, Kc, Fd, Flp, Reynolds Number#####
     Ff_gas = 0.96
     Fd_gas = fd
     xtp = xTP_gas(inputDict['xT'], inputDict['C'], inputDict['valveDia'], inputDict['inletDia'], inputDict['outletDia'],
@@ -3993,7 +4149,37 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
 
     vp_ar = meta_convert_P_T_FR_L('P', vaporPressure, iPresUnit_form, iPresUnit_form, 1000)
     application_ratio = (inletPressure_form - outletPressure_form) / (inletPressure_form - vp_ar)
-    other_factors_string = f"{Cv__[1]}+{Cv__[2]}+{Cv__[3]}+{Cv__[4]}+{Cv__[5]}+{Cv__[6]}+{Cv__[7]}+{Fd_gas}+{RE_number}+{Kc}+{mac_sonic_list[0]}+{mac_sonic_list[1]}+{mac_sonic_list[2]}+{mac_sonic_list[3]}+{mac_sonic_list[4]}+{mac_sonic_list[5]}+{mac_sonic_list[6]}+{round(application_ratio, 3)}"
+    other_factors_string = f"{Cv__[1]}+{Cv__[2]}+{Cv__[3]}+{Cv__[4]}+{Cv__[5]}+{Cv__[6]}+{Cv__[7]}+{Fd_gas}+{RE_number}+{Kc}+{mac_sonic_list[0]}+{mac_sonic_list[1]}+{mac_sonic_list[2]}+{mac_sonic_list[3]}+{mac_sonic_list[4]}+{mac_sonic_list[5]}+{mac_sonic_list[6]}+{round(application_ratio, 3)}+{ratedCV}"
+
+    # tex new
+    if v_det_element.flowCharacter_v == 1:
+        flow_character = 'equal'
+    else:
+        flow_character = 'linear'
+        # new trim exit velocity
+        # for port area, travel filter not implemented
+
+    if float(travel) in [2, 3, 8]:
+        travel = int(travel)
+    else:
+        travel = float(travel)
+
+    if float(seatDia) in [1, 11, 2, 3, 4, 7, 8]:
+        seatDia = int(seatDia)
+    else:
+        seatDia = float(seatDia)
+
+    port_area_ = db.session.query(portArea).filter_by(v_size=size_in_in, seat_bore=seatDia, trim_type=trimtype,
+                                                      flow_char=flow_character, travel=travel).first()
+
+    if port_area_:
+        port_area = float(port_area_.area)
+        tex_ = tex_new(Cv1, int(rated_cv_tex), port_area, flowrate_re / 3600, inletPressure_v, outletPressure_v, mw,
+                       8314, temp_gnoise, 'Gas')
+    else:
+        port_area = 1
+        tex_ = 'None'
+
     new_case = itemCases(flowrate=flowrate_form, iPressure=inletPressure_form,
                          oPressure=outletPressure_form,
                          iTemp=inletTemp_form, sGravity=specificGravity,
@@ -4003,7 +4189,7 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
                          valveSPL=data['spl'], iVelocity=data['iVelocity'], oVelocity=data['oVelocity'],
                          pVelocity=data['pVelocity'],
                          chokedDrop=round((data['choked'] * inletPressure_form), 3),
-                         Xt=float(xt_fl), warning=1, trimExVelocity=data['texVelocity'],
+                         Xt=float(xt_fl), warning=1, trimExVelocity=tex_,
                          sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Gas",
                          criticalPressure=round(criticalPressure_form, 3), iPipeSize=inletPipeDia_form,
                          oPipeSize=outletPipeDia_form,
@@ -4021,6 +4207,791 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
     return redirect(url_for('valveSizing'))
 
 
+# liq sizing outputs
+def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, outletPressure_form, oPresUnit_form,
+               inletTemp_form,
+               iTempUnit_form, vaporPressure, vPresUnit_form, specificGravity, viscosity, xt_fl, criticalPressure_form,
+               cPresUnit_form,
+               inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe, sosPipe,
+               valveSize_form, vSizeUnit_form,
+               seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected):
+    # change into float/ num
+    flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, outletPressure_form, oPresUnit_form, inletTemp_form, iTempUnit_form, vaporPressure, vPresUnit_form, specificGravity, viscosity, xt_fl, criticalPressure_form, cPresUnit_form, inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe, sosPipe, valveSize_form, vSizeUnit_form, seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected = float(
+        flowrate_form), fl_unit_form, float(inletPressure_form), iPresUnit_form, float(
+        outletPressure_form), oPresUnit_form, float(inletTemp_form), iTempUnit_form, float(
+        vaporPressure), vPresUnit_form, float(specificGravity), float(viscosity), float(xt_fl), float(
+        criticalPressure_form), cPresUnit_form, float(inletPipeDia_form), iPipeUnit_form, iSch, float(
+        outletPipeDia_form), oPipeUnit_form, oSch, float(densityPipe), float(sosPipe), float(
+        valveSize_form), vSizeUnit_form, float(seatDia), seatDiaUnit, float(ratedCV), float(rw_noise), item_selected
+
+    # check whether flowrate, pres and l are in correct units
+    # 1. flowrate
+    inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                                 1000))
+    i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
+                                                              schedule=iSch).first()
+    thickness_pipe = float(i_pipearea_element.thickness)
+    print(f"thickness: {thickness_pipe}")
+    if fl_unit_form not in ['m3/hr', 'gpm']:
+        flowrate_liq = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form,
+                                             'm3/hr',
+                                             specificGravity * 1000)
+        fr_unit = 'm3/hr'
+    else:
+        fr_unit = fl_unit_form
+        flowrate_liq = flowrate_form
+
+    # 2. Pressure
+    # A. inletPressure
+    if iPresUnit_form not in ['kpa', 'bar', 'psia']:
+        inletPressure_liq = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                                  'bar', specificGravity * 1000)
+        iPres_unit = 'bar'
+    else:
+        iPres_unit = iPresUnit_form
+        inletPressure_liq = inletPressure_form
+
+    # B. outletPressure
+    if oPresUnit_form not in ['kpa', 'bar', 'psia']:
+        outletPressure_liq = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                                   'bar', specificGravity * 1000)
+        oPres_unit = 'bar'
+    else:
+        oPres_unit = oPresUnit_form
+        outletPressure_liq = outletPressure_form
+
+    # C. vaporPressure
+    if vPresUnit_form not in ['kpa', 'bar', 'psia']:
+        vaporPressure = meta_convert_P_T_FR_L('P', vaporPressure, vPresUnit_form, 'bar',
+                                              specificGravity * 1000)
+        vPres_unit = 'bar'
+    else:
+        vPres_unit = vPresUnit_form
+
+    # D. Critical Pressure
+    if cPresUnit_form not in ['kpa', 'bar', 'psia']:
+        criticalPressure_liq = meta_convert_P_T_FR_L('P', criticalPressure_form,
+                                                     cPresUnit_form, 'bar',
+                                                     specificGravity * 1000)
+        cPres_unit = 'bar'
+    else:
+        cPres_unit = cPresUnit_form
+        criticalPressure_liq = criticalPressure_form
+
+    # 3. Length
+    if iPipeUnit_form not in ['mm']:
+        inletPipeDia_liq = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form,
+                                                 'mm',
+                                                 specificGravity * 1000) - 2 * thickness_pipe
+        iPipe_unit = 'mm'
+    else:
+        iPipe_unit = iPipeUnit_form
+        inletPipeDia_liq = inletPipeDia_form - 2 * thickness_pipe
+
+    if oPipeUnit_form not in ['mm']:
+        outletPipeDia_liq = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
+                                                  'mm', specificGravity * 1000) - 2 * thickness_pipe
+        oPipe_unit = 'mm'
+    else:
+        oPipe_unit = oPipeUnit_form
+        outletPipeDia_liq = outletPipeDia_form - 2 * thickness_pipe
+
+    if vSizeUnit_form not in ['mm']:
+        vSize_liq = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                          'mm', specificGravity * 1000)
+        vSize_unit = 'mm'
+    else:
+        vSize_unit = vSizeUnit_form
+        vSize_liq = valveSize_form
+
+    print(f"dia of pipe: {outletPipeDia_liq}, {inletPipeDia_liq}")
+
+    service_conditions_sf = {'flowrate': flowrate_liq, 'flowrate_unit': fr_unit,
+                             'iPres': inletPressure_liq, 'oPres': outletPressure_liq,
+                             'iPresUnit': iPres_unit,
+                             'oPresUnit': oPres_unit, 'temp': inletTemp_form,
+                             'temp_unit': iTempUnit_form, 'sGravity': specificGravity,
+                             'iPipeDia': inletPipeDia_liq,
+                             'oPipeDia': outletPipeDia_liq,
+                             'valveDia': vSize_liq, 'iPipeDiaUnit': iPipe_unit,
+                             'oPipeDiaUnit': oPipe_unit, 'valveDiaUnit': vSize_unit,
+                             'C': ratedCV, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl, 'Ff': 0.90,
+                             'cPres': criticalPressure_liq,
+                             'FD': 1, 'viscosity': viscosity}
+    print(service_conditions_sf)
+
+    service_conditions_1 = service_conditions_sf
+    N1_val = N1[(service_conditions_1['flowrate_unit'], service_conditions_1['iPresUnit'])]
+    N2_val = N2[service_conditions_1['valveDiaUnit']]
+    N4_val = N4[(service_conditions_1['flowrate_unit'], service_conditions_1['valveDiaUnit'])]
+
+    result_1 = CV(service_conditions_1['flowrate'], service_conditions_1['C'],
+                  service_conditions_1['valveDia'],
+                  service_conditions_1['iPipeDia'],
+                  service_conditions_1['oPipeDia'], N2_val, service_conditions_1['iPres'],
+                  service_conditions_1['oPres'],
+                  service_conditions_1['sGravity'], N1_val, service_conditions_1['FD'],
+                  service_conditions_1['vPres'],
+                  service_conditions_1['Fl'], service_conditions_1['cPres'], N4_val,
+                  service_conditions_1['viscosity'])
+
+    result = CV(service_conditions_1['flowrate'], result_1,
+                service_conditions_1['valveDia'],
+                service_conditions_1['iPipeDia'],
+                service_conditions_1['oPipeDia'], N2_val, service_conditions_1['iPres'],
+                service_conditions_1['oPres'],
+                service_conditions_1['sGravity'], N1_val, service_conditions_1['FD'],
+                service_conditions_1['vPres'],
+                service_conditions_1['Fl'], service_conditions_1['cPres'], N4_val,
+                service_conditions_1['viscosity'])
+    ff_liq = FF(service_conditions_1['vPres'], service_conditions_1['cPres'])
+    chokedP = delPMax(service_conditions_1['Fl'], ff_liq, service_conditions_1['iPres'],
+                      service_conditions_1['vPres'])
+    # chokedP = selectDelP(service_conditions_1['Fl'], service_conditions_1['cPres'],
+    #                      service_conditions_1['iPres'],
+    #                      service_conditions_1['vPres'], service_conditions_1['oPres'])
+
+    # noise and velocities
+    # Liquid Noise - need flowrate in kg/s, valves in m, density in kg/m3, pressure in pa
+    # convert form data in units of noise formulae
+    valveDia_lnoise = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form, 'm', 1000)
+    iPipeDia_lnoise = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'm',
+                                            1000)
+    oPipeDia_lnoise = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form, 'm',
+                                            1000)
+    seat_dia_lnoise = meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'm',
+                                            1000)
+    inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                                 1000))
+    i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
+                                                              schedule=iSch).first()
+
+    iPipeSch_lnoise = meta_convert_P_T_FR_L('L', float(i_pipearea_element.thickness),
+                                            'mm', 'm', 1000)
+    flowrate_lnoise = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'kg/hr',
+                                            specificGravity * 1000) / 3600
+    outletPressure_lnoise = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                                  'pa', 1000)
+    inletPressure_lnoise = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                                 'pa', 1000)
+    vPres_lnoise = meta_convert_P_T_FR_L('P', vaporPressure, vPresUnit_form, 'pa', 1000)
+    # print(f"3 press: {outletPressure_lnoise, inletPressure_lnoise, vPres_lnoise}")
+    # service conditions for 4 inch vale with 8 as line size. CVs need to be changed
+    sc_liq_sizing = {'valveDia': valveDia_lnoise, 'ratedCV': ratedCV, 'reqCV': result, 'FL': xt_fl,
+                     'FD': 0.42,
+                     'iPipeDia': iPipeDia_lnoise, 'iPipeUnit': 'm', 'oPipeDia': oPipeDia_lnoise,
+                     'oPipeUnit': 'm',
+                     'internalPipeDia': oPipeDia_lnoise,
+                     'inPipeDiaUnit': 'm', 'pipeWallThickness': iPipeSch_lnoise, 'speedSoundPipe': sosPipe,
+                     'speedSoundPipeUnit': 'm/s',
+                     'densityPipe': densityPipe, 'densityPipeUnit': 'kg/m3', 'speedSoundAir': 343,
+                     'densityAir': 1293,
+                     'massFlowRate': flowrate_lnoise, 'massFlowRateUnit': 'kg/s',
+                     'iPressure': inletPressure_lnoise,
+                     'iPresUnit': 'pa',
+                     'oPressure': outletPressure_lnoise,
+                     'oPresUnit': 'pa', 'vPressure': vPres_lnoise, 'densityLiq': specificGravity * 1000,
+                     'speedSoundLiq': 1400,
+                     'rw': rw_noise,
+                     'seatDia': seat_dia_lnoise,
+                     'fi': 8000}
+
+    sc_1 = sc_liq_sizing
+    summation = Lpe1m(sc_1['fi'], sc_1['FD'], sc_1['reqCV'], sc_1['iPressure'], sc_1['oPressure'],
+                      sc_1['vPressure'],
+                      sc_1['densityLiq'], sc_1['speedSoundLiq'], sc_1['massFlowRate'], sc_1['rw'],
+                      sc_1['FL'],
+                      sc_1['seatDia'], sc_1['valveDia'], sc_1['densityPipe'], sc_1['pipeWallThickness'],
+                      sc_1['speedSoundPipe'],
+                      sc_1['densityAir'], sc_1['internalPipeDia'], sc_1['speedSoundAir'],
+                      sc_1['speedSoundPipe'])
+    # summation = 56
+
+    # Power Level
+    outletPressure_p = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                             'psia', specificGravity * 1000)
+    inletPressure_p = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                            'psia', specificGravity * 1000)
+    pLevel = power_level_liquid(inletPressure_p, outletPressure_p, specificGravity, result)
+
+    # convert flowrate and dias for velocities
+    flowrate_v = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
+                                       1000)
+    inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                                 1000))
+    outletPipeDia_v = round(meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form, 'inch',
+                                                  1000))
+    vSize_v = round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                          'inch', specificGravity * 1000))
+
+    # convert pressure for tex, p in bar, l in in
+    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
+                                            1000)
+    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
+                                             1000)
+    v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
+    trimtype = v_det_element.body_v
+    if trimtype == 'contour':
+        t_caps = 'Contoured'
+    elif trimtype == 'ported':
+        t_caps = 'Cage'
+    else:
+        t_caps = 'other'
+
+    tEX = trimExitVelocity(inletPressure_v, outletPressure_v, 1000 * specificGravity, t_caps,
+                           'other')
+    if v_det_element.flowCharacter_v == 1:
+        flow_character = 'equal'
+    else:
+        flow_character = 'linear'
+    # new trim exit velocity
+    # for port area, travel filter not implemented
+
+    port_area_ = db.session.query(portArea).filter_by(v_size=vSize_v, seat_bore=seatDia, trim_type=trimtype,
+                                                      flow_char=flow_character).first()
+
+    if port_area_:
+        port_area = float(port_area_.area)
+    else:
+        port_area = 1
+    tex_ = tex_new(result, ratedCV, port_area, flowrate_v / 3600, inletPressure_form, inletPressure_form, 1, 8314,
+                   inletTemp_form, 'Liquid')
+
+    # ipipeSch_v = meta_convert_P_T_FR_L('L', float(iPipeSch_form), iPipeSchUnit_form,
+    #                                    'inch',
+    #                                    1000)
+    # opipeSch_v = meta_convert_P_T_FR_L('L', float(oPipeSch_form), oPipeSchUnit_form,
+    #                                    'inch',
+    #                                    1000)
+    # iVelocity, oVelocity, pVelocity = getVelocity(flowrate_v, inletPipeDia_v,
+    #                                               outletPipeDia_v,
+    #                                               vSize_v)
+    # print(flowrate_v, (inletPipeDia_v - ipipeSch_v),
+    #       (outletPipeDia_v - opipeSch_v),
+    #       vSize_v)
+    i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
+                                                              schedule=iSch).first()
+    area_in2 = float(i_pipearea_element.area)
+    a_i = 0.00064516 * area_in2
+    iVelocity = flowrate_v / (3600 * a_i)
+
+    o_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(outletPipeDia_v),
+                                                              schedule=oSch).first()
+    print(f"oPipedia: {outletPipeDia_v}, sch: {oSch}")
+    area_in22 = float(o_pipearea_element.area)
+    a_o = 0.00064516 * area_in22
+    oVelocity = flowrate_v / (3600 * a_o)
+
+    valve_element_current = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
+    rating_current = db.session.query(rating).filter_by(id=valve_element_current.rating).first()
+    valvearea_element = db.session.query(valveArea).filter_by(rating=rating_current.size,
+                                                              nominalPipeSize=vSize_v).first()
+    v_area_in = float(valvearea_element.area)
+    v_area = 0.00064516 * v_area_in
+    pVelocity = flowrate_v / (3600 * v_area)
+
+    data = {'cv': round(result, 3),
+            'percent': 80,
+            'spl': round(summation, 3),
+            'iVelocity': iVelocity,
+            'oVelocity': round(oVelocity, 3), 'pVelocity': round(pVelocity, 3), 'choked': round(chokedP, 3),
+            'texVelocity': round(tEX, 3)}
+
+    units_string = f"{seatDia}+{seatDiaUnit}+{sosPipe}+{densityPipe}+{rw_noise}+{fl_unit_form}+{iPresUnit_form}+{oPresUnit_form}+{vPresUnit_form}+{cPresUnit_form}+{iPipeUnit_form}+{oPipeUnit_form}+{vSizeUnit_form}+mm+mm+{iTempUnit_form}+sg"
+    # update valve size in item
+    size_in_in = int(round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form, 'inch', 1000)))
+    size_id = db.session.query(valveSize).filter_by(size=size_in_in).first()
+    print(size_id)
+    item_selected.size = size_id
+    # load case data with item ID
+    # get valvetype - kc requirements
+    v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
+    valve_type_ = v_det_element.ratedCV
+    trimtype = v_det_element.body_v
+    outletPressure_psia = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                                'psia', 1000)
+    inletPressure_psia = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                               'psia', 1000)
+    dp_kc = inletPressure_psia - outletPressure_psia
+
+    print(f"kc inputs: {size_in_in}, {trimtype}, {dp_kc}, {valve_type_.lower()}, {xt_fl},")
+    Kc = getKCValue(size_in_in, trimtype, dp_kc, valve_type_.lower(), xt_fl)
+    print(f"kc inputs: {size_in_in}, {trimtype}, {dp_kc}, {valve_type_.lower()}, {xt_fl}, {Kc}")
+
+    # get other req values - Ff, Kc, Fd, Flp, Reynolds Number
+    Ff_liq = round(FF(service_conditions_1['vPres'], service_conditions_1['cPres']), 2)
+    Fd_liq = service_conditions_1['FD']
+    FLP_liq = flP(result_1, service_conditions_1['valveDia'],
+                  service_conditions_1['iPipeDia'], N2_val,
+                  service_conditions_1['Fl'])
+    RE_number = reynoldsNumber(N4_val, service_conditions_1['FD'], service_conditions_1['flowrate'],
+                               service_conditions_1['viscosity'], service_conditions_1['Fl'], N2_val,
+                               service_conditions_1['iPipeDia'], N1_val, service_conditions_1['iPres'],
+                               service_conditions_1['oPres'],
+                               service_conditions_1['sGravity'])
+    fp_liq = fP(result_1, service_conditions_1['valveDia'],
+                service_conditions_1['iPipeDia'], service_conditions_1['oPipeDia'], N2_val)
+    if chokedP == (service_conditions_1['iPres'] - service_conditions_1['oPres']):
+        ff = 0.96
+    else:
+        ff = round(ff_liq, 3)
+
+    vp_ar = meta_convert_P_T_FR_L('P', vaporPressure, vPres_unit, iPresUnit_form, 1000)
+    application_ratio = (inletPressure_form - outletPressure_form) / (inletPressure_form - vp_ar)
+    print(
+        f"AR facts: {inletPressure_form}, {outletPressure_form}, {inletPressure_form}, {vp_ar}, {vaporPressure}, {vPres_unit}")
+    other_factors_string = f"{ff}+{Kc}+{Fd_liq}+{FLP_liq}+{RE_number}+{fp_liq}+{round(application_ratio, 3)}+{ratedCV}"
+
+    result_list = [flowrate_form, inletPressure_form, outletPressure_form, inletTemp_form, specificGravity,
+                   vaporPressure, viscosity, None,
+                   valveSize_form, other_factors_string, round(result, 3), data['percent'],
+                   round(summation, 3), round(iVelocity, 3),
+                   round(oVelocity, 3), round(pVelocity, 3),
+                   round(chokedP, 4), xt_fl, 1, tex_, pLevel, units_string, None, "Liquid",
+                   criticalPressure_form, inletPipeDia_form,
+                   outletPipeDia_form, iSch, oSch,
+                   item_selected]
+
+    return result_list
+
+
+# Gas sizng outputs
+def getOutputsGas(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, outletPressure_form, oPresUnit_form,
+                  inletTemp_form,
+                  iTempUnit_form, vaporPressure, vPresUnit_form, specificGravity, viscosity, xt_fl,
+                  criticalPressure_form,
+                  cPresUnit_form,
+                  inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe,
+                  sosPipe,
+                  valveSize_form, vSizeUnit_form,
+                  seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected, sg_choice, z_factor, sg_vale):
+    flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, outletPressure_form, oPresUnit_form, inletTemp_form, iTempUnit_form, vaporPressure, vPresUnit_form, specificGravity, viscosity, xt_fl, criticalPressure_form, cPresUnit_form, inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe, sosPipe, valveSize_form, vSizeUnit_form, seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected, z_factor, sg_vale = float(
+        flowrate_form), fl_unit_form, float(inletPressure_form), iPresUnit_form, float(
+        outletPressure_form), oPresUnit_form, float(inletTemp_form), iTempUnit_form, float(
+        vaporPressure), vPresUnit_form, float(specificGravity), float(viscosity), float(xt_fl), float(
+        criticalPressure_form), cPresUnit_form, float(inletPipeDia_form), iPipeUnit_form, iSch, float(
+        outletPipeDia_form), oPipeUnit_form, oSch, float(densityPipe), float(sosPipe), float(
+        valveSize_form), vSizeUnit_form, float(seatDia), seatDiaUnit, float(ratedCV), float(
+        rw_noise), item_selected, float(z_factor), float(sg_vale)
+
+    fl_unit = fl_unit_form
+    if fl_unit in ['m3/hr', 'scfh', 'gpm']:
+        fl_bin = 1
+    else:
+        fl_bin = 2
+
+    sg_unit = sg_choice
+    if sg_unit == 'sg':
+        sg_bin = 1
+    else:
+        sg_bin = 2
+
+    def chooses_gas_fun(flunit, sgunit):
+        eq_dict = {(1, 1): 1, (1, 2): 2, (2, 1): 3, (2, 2): 4}
+        return eq_dict[(flunit, sgunit)]
+
+    sg__ = chooses_gas_fun(fl_bin, sg_bin)
+
+    inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                                 1000))
+    i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
+                                                              schedule=iSch).first()
+    thickness_pipe = float(i_pipearea_element.thickness)
+    thickness_in = meta_convert_P_T_FR_L('L', thickness_pipe, 'mm', 'inch', 1000)
+
+    if sg__ == 1:
+        # to be converted to scfh, psi, R, in
+        # 3. Pressure
+        inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                              'psia',
+                                              1000)
+        outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                               'psia',
+                                               1000)
+        # 4. Length
+        inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                             1000) - 2 * thickness_in
+        outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
+                                              'inch',
+                                              1000) - 2 * thickness_in
+        vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                      'inch', specificGravity * 1000)
+        # 1. Flowrate
+        flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'scfh',
+                                         1000)
+        # 2. Temperature
+        inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'R',
+                                          1000)
+    elif sg__ == 2:
+        # to be converted to m3/hr, kPa, C, in
+        # 3. Pressure - 2*thickness_in
+        inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'kpa',
+                                              1000)
+        outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                               'kpa',
+                                               1000)
+        # 4. Length
+        inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                             1000) - 2 * thickness_in
+        outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
+                                              'inch',
+                                              1000) - 2 * thickness_in
+        vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                      'inch', specificGravity * 1000)
+        # 1. Flowrate
+        flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
+                                         1000)
+        # 2. Temperature
+        inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K',
+                                          1000)
+    elif sg__ == 3:
+        # to be converted to lbhr, psi, F, in
+        # 3. Pressure
+        inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                              'psia',
+                                              1000)
+        outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                               'psia',
+                                               1000)
+        # 4. Length
+        inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                             1000) - 2 * thickness_in
+        # print(iPipeUnit_form)
+        outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
+                                              'inch',
+                                              1000) - 2 * thickness_in
+        vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                      'inch', specificGravity * 1000)
+        # 1. Flowrate
+        flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'lb/hr',
+                                         1000)
+        # 2. Temperature
+        inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'F',
+                                          1000)
+    else:
+        # to be converted to kg/hr, bar, K, in
+        # 3. Pressure
+        inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
+                                              1000)
+        outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                               'bar',
+                                               1000)
+        # 4. Length
+        inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                             1000) - 2 * thickness_in
+        outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
+                                              'inch',
+                                              1000) - 2 * thickness_in
+        vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                      'inch', specificGravity * 1000)
+        # 1. Flowrate
+        flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'kg/hr',
+                                         1000)
+        # 2. Temperature
+        inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K',
+                                          1000)
+
+    print(f"dia of pipe: {outletPipeDia}, {inletPipeDia}")
+
+    # python sizing function - gas
+
+    inputDict_4 = {"inletPressure": inletPressure, "outletPressure": outletPressure,
+                   "gamma": specificGravity,
+                   "C": ratedCV,
+                   "valveDia": vSize,
+                   "inletDia": inletPipeDia,
+                   "outletDia": outletPipeDia, "xT": float(xt_fl),
+                   "compressibilityFactor": z_factor,
+                   "flowRate": flowrate,
+                   "temp": inletTemp, "sg": float(sg_vale), "sg_": sg__}
+
+    print(inputDict_4)
+
+    inputDict = inputDict_4
+    N2_val = N2['inch']
+    CV__ = Cv_gas(inletPressure=inputDict['inletPressure'], outletPressure=inputDict['outletPressure'],
+                  gamma=inputDict['gamma'],
+                  C=inputDict['C'], valveDia=inputDict['valveDia'], inletDia=inputDict['inletDia'],
+                  outletDia=inputDict['outletDia'], xT=inputDict['xT'],
+                  compressibilityFactor=inputDict['compressibilityFactor'],
+                  flowRate=inputDict['flowRate'], temp=inputDict['temp'], sg=inputDict['sg'],
+                  sg_=inputDict['sg_'], N2_value=N2_val)
+    Cv__ = Cv_gas(inletPressure=inputDict['inletPressure'], outletPressure=inputDict['outletPressure'],
+                  gamma=inputDict['gamma'],
+                  C=CV__[0], valveDia=inputDict['valveDia'], inletDia=inputDict['inletDia'],
+                  outletDia=inputDict['outletDia'], xT=inputDict['xT'],
+                  compressibilityFactor=inputDict['compressibilityFactor'],
+                  flowRate=inputDict['flowRate'], temp=inputDict['temp'], sg=inputDict['sg'],
+                  sg_=inputDict['sg_'], N2_value=N2_val)
+    Cv1 = Cv__[0]
+
+    xChoked = xChoked_gas(gamma=inputDict['gamma'], C=inputDict['C'], valveDia=inputDict['valveDia'],
+                          inletDia=inputDict['inletDia'], outletDia=inputDict['outletDia'],
+                          xT=inputDict['xT'], N2_value=N2_val)
+
+    # noise and velocities
+    # Liquid Noise - need flowrate in kg/s, valves in m, density in kg/m3, pressure in pa
+    inletPressure_gnoise = float(meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                                       'pa',
+                                                       1000))
+    outletPressure_gnoise = float(meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                                        'pa',
+                                                        1000))
+    # vaporPressure_gnoise = meta_convert_P_T_FR_L('P', vaporPressure, vPresUnit_form, 'pa',
+    #                                              1000)
+    flowrate_gnoise = conver_FR_noise(flowrate_form, fl_unit)
+    inletPipeDia_gnoise = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'm',
+                                                specificGravity * 1000)
+    outletPipeDia_gnoise = meta_convert_P_T_FR_L('L', outletPipeDia_form, iPipeUnit_form,
+                                                 'm',
+                                                 specificGravity * 1000)
+    size_gnoise = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                        'm', specificGravity * 1000)
+    seat_dia_gnoise = meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'm',
+                                            1000)
+    # summation1 = summation(C=113.863, inletPressure=inletPressure_noise, outletPressure=outletPressure_noise, density=specificGravity*1000,
+    #                        vaporPressure=vaporPressure_noise,
+    #                        speedS=4000, massFlowRate=flowrate_noise, Fd=0.23, densityPipe=7800, speedSinPipe=5000,
+    #                        wallThicknessPipe=0.0002, internalPipeDia=inletPipeDia_noise, seatDia=0.1, valveDia=size_noise,
+    #                        densityAir=1.293,
+    #                        holeDia=0, rW=0.25)
+
+    # molecular weight needs to be made on case to case basis = here we're taking 19.8, but it needs to come from form or table
+    mw = float(sg_vale)
+    if sg_unit == 'sg':
+        mw = 22.4 * float(sg_vale)
+    elif sg_unit == 'mw':
+        mw = float(sg_vale)
+
+    temp_gnoise = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K', 1000)
+    flp = fLP(Cv1, valveSize_form, inletPipeDia_form)
+    fp = fP_gas(Cv1, valveSize_form, inletPipeDia_form, outletPipeDia_form, N2_val)
+    sigmeta = sigmaEta_gas(valveSize_form, inletPipeDia_form, outletPipeDia_form)
+    flowrate_gv = int(flowrate_form) / 3600
+    inlet_density = inletDensity(inletPressure_gnoise, mw, 8314, temp_gnoise)
+    # print('inlet density input:')
+    # print(inletPressure_gnoise, mw, 8314, temp_gnoise)
+    if sigmeta == 0:
+        sigmeta = 0.86
+    sc_initial_1 = {'valveSize': size_gnoise, 'valveOutletDiameter': outletPipeDia_gnoise,
+                    'ratedCV': ratedCV,
+                    'reqCV': 175,
+                    'No': 6,
+                    'FLP': flp,
+                    'Iw': 0.181, 'valveSizeUnit': 'm', 'IwUnit': 'm', 'A': 0.00137,
+                    'xT': float(xt_fl),
+                    'iPipeSize': inletPipeDia_gnoise,
+                    'oPipeSize': outletPipeDia_gnoise,
+                    'tS': 0.008, 'Di': outletPipeDia_gnoise, 'SpeedOfSoundinPipe_Cs': sosPipe,
+                    'DensityPipe_Ps': densityPipe,
+                    'densityUnit': 'kg/m3',
+                    'SpeedOfSoundInAir_Co': 343, 'densityAir_Po': 1.293, 'atmPressure_pa': 101325,
+                    'atmPres': 'pa',
+                    'stdAtmPres_ps': 101325, 'stdAtmPres': 'pa', 'sigmaEta': sigmeta, 'etaI': 1.2, 'Fp': fp,
+                    'massFlowrate': flowrate_gnoise, 'massFlowrateUnit': 'kg/s',
+                    'iPres': inletPressure_gnoise, 'iPresUnit': 'pa',
+                    'oPres': outletPressure_gnoise, 'oPresUnit': 'pa', 'inletDensity': 5.3,
+                    'iAbsTemp': temp_gnoise,
+                    'iAbsTempUnit': 'K',
+                    'specificHeatRatio_gamma': specificGravity, 'molecularMass': mw, 'mMassUnit': 'kg/kmol',
+                    'internalPipeDia': inletPipeDia_gnoise,
+                    'aEta': -3.8, 'stp': 0.2, 'R': 8314, 'RUnit': "J/kmol x K", 'fs': 1}
+
+    sc_initial_2 = {'valveSize': size_gnoise, 'valveOutletDiameter': outletPipeDia_gnoise,
+                    'ratedCV': ratedCV,
+                    'reqCV': Cv1, 'No': 1,
+                    'FLP': flp,
+                    'Iw': 0.181, 'valveSizeUnit': 'm', 'IwUnit': 'm', 'A': 0.00137,
+                    'xT': float(xt_fl),
+                    'iPipeSize': inletPipeDia_gnoise,
+                    'oPipeSize': outletPipeDia_gnoise,
+                    'tS': 0.008, 'Di': inletPipeDia_gnoise, 'SpeedOfSoundinPipe_Cs': sosPipe,
+                    'DensityPipe_Ps': densityPipe,
+                    'densityUnit': 'kg/m3',
+                    'SpeedOfSoundInAir_Co': 343, 'densityAir_Po': 1.293, 'atmPressure_pa': 101325,
+                    'atmPres': 'pa',
+                    'stdAtmPres_ps': 101325, 'stdAtmPres': 'pa', 'sigmaEta': sigmeta, 'etaI': 1.2,
+                    'Fp': 0.98,
+                    'massFlowrate': flowrate_gv, 'massFlowrateUnit': 'kg/s', 'iPres': inletPressure_gnoise,
+                    'iPresUnit': 'pa',
+                    'oPres': outletPressure_gnoise, 'oPresUnit': 'pa', 'inletDensity': inlet_density,
+                    'iAbsTemp': temp_gnoise,
+                    'iAbsTempUnit': 'K',
+                    'specificHeatRatio_gamma': specificGravity, 'molecularMass': mw,
+                    'mMassUnit': 'kg/kmol',
+                    'internalPipeDia': inletPipeDia_gnoise,
+                    'aEta': -3.8, 'stp': 0.2, 'R': 8314, 'RUnit': "J/kmol x K", 'fs': 1}
+
+    sc_initial = sc_initial_2
+    # print(sc_initial)
+
+    summation1 = lpae_1m(sc_initial['specificHeatRatio_gamma'], sc_initial['iPres'], sc_initial['oPres'],
+                         sc_initial['FLP'],
+                         sc_initial['Fp'],
+                         sc_initial['inletDensity'], sc_initial['massFlowrate'], sc_initial['aEta'],
+                         sc_initial['R'],
+                         sc_initial['iAbsTemp'],
+                         sc_initial['molecularMass'], sc_initial['oPipeSize'],
+                         sc_initial['internalPipeDia'], sc_initial['stp'],
+                         sc_initial['No'],
+                         sc_initial['A'], sc_initial['Iw'], sc_initial['reqCV'],
+                         sc_initial['SpeedOfSoundinPipe_Cs'],
+                         sc_initial['SpeedOfSoundInAir_Co'],
+                         sc_initial['valveSize'], sc_initial['tS'], sc_initial['fs'],
+                         sc_initial['atmPressure_pa'],
+                         sc_initial['stdAtmPres_ps'], sc_initial['DensityPipe_Ps'], -3.002)
+
+    print(f"gas summation: {summation1}")
+    # summation1 = 97
+
+    # convert flowrate and dias for velocities
+    flowrate_v = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
+                                       mw / 22.4)
+    inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
+                                                 1000))
+    outletPipeDia_v = round(meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form, 'inch',
+                                                  1000))
+
+    size_v = round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                         'inch', specificGravity * 1000))
+
+    # get gas velocities
+    inletPressure_gv = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'pa',
+                                             1000)
+    outletPressure_gv = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'pa',
+                                              1000)
+    flowrate_gv = flowrate_form / 3600
+    print(f'flowrate_gv: {flowrate_gv}')
+    inletPipeDia_gnoise = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'm',
+                                                specificGravity * 1000)
+    outletPipeDia_gnoise = meta_convert_P_T_FR_L('L', outletPipeDia_form, iPipeUnit_form,
+                                                 'm',
+                                                 specificGravity * 1000)
+    size_gnoise = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
+                                        'm', specificGravity * 1000)
+    temp_gnoise = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K', 1000)
+
+    gas_vels = getGasVelocities(sc_initial['specificHeatRatio_gamma'], inletPressure_gv, outletPressure_gv,
+                                8314, temp_gnoise, mw, flowrate_gv,
+                                size_gnoise, inletPipeDia_gnoise, outletPipeDia_gnoise)
+
+    # Power Level
+    # getting fr in lb/s
+    flowrate_p = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'kg/hr',
+                                       specificGravity * 1000)
+    inletPressure_p = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'pa',
+                                            1000)
+    outletPressure_p = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                             'pa',
+                                             1000)
+    pLevel = power_level_gas(specificGravity, inletPressure_p, outletPressure_p, flowrate_p, gas_vels[9])
+
+    # print(sc_initial['specificHeatRatio_gamma'], inletPressure_gv, outletPressure_gv, 8314,
+    #       temp_gnoise, mw, flowrate_gv, size_gnoise,
+    #       inletPipeDia_gnoise, outletPipeDia_gnoise)
+
+    # convert pressure for tex, p in bar, l in in
+    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'pa',
+                                            1000)
+    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'pa',
+                                             1000)
+    # get tex pressure in psi
+    inletPressure_tex = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'psia',
+                                              1000)
+    outletPressure_tex = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'psia',
+                                               1000)
+
+    tEX = trimExitVelocityGas(inletPressure_tex, outletPressure_tex) / 3.281
+    print(
+        f"tex: {tEX}, {inletPressure_tex}, {outletPressure_tex}, {inletPressure_tex - outletPressure_tex}")
+    # print(summation1)
+    iVelocity = gas_vels[6]
+    oVelocity = gas_vels[7]
+    pVelocity = gas_vels[8]
+
+    data = {'cv': round(Cv1, 3),
+            'percent': 83,
+            'spl': round(summation1, 3),
+            'iVelocity': round(iVelocity, 3),
+            'oVelocity': round(oVelocity, 3), 'pVelocity': round(pVelocity, 3), 'choked': round(xChoked, 4),
+            'texVelocity': round(tEX, 3)}
+
+    units_string = f"{seatDia}+{seatDiaUnit}+{sosPipe}+{densityPipe}+{z_factor}+{fl_unit_form}+{iPresUnit_form}+{oPresUnit_form}+{oPresUnit_form}+{oPresUnit_form}+{iPipeUnit_form}+{oPipeUnit_form}+{vSizeUnit_form}+mm+mm+{iTempUnit_form}+{sg_choice}"
+    # update valve size in item
+    size_in_in = int(round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form, 'inch', 1000)))
+    size_id = db.session.query(valveSize).filter_by(size=size_in_in).first()
+    # print(size_id)
+    item_selected.size = size_id
+    # load case data with item ID
+    # get valvetype - kc requirements
+    v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
+    valve_type_ = v_det_element.ratedCV
+    trimtype = v_det_element.body_v
+    outletPressure_psia = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
+                                                'psia', 1000)
+    inletPressure_psia = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
+                                               'psia', 1000)
+    dp_kc = inletPressure_psia - outletPressure_psia
+    Kc = getKCValue(size_in_in, trimtype, dp_kc, valve_type_.lower(), xt_fl)
+
+    # get other req values - Ff, Kc, Fd, Flp, Reynolds Number
+    Ff_gas = 0.96
+    Fd_gas = 1
+    xtp = xTP_gas(inputDict['xT'], inputDict['C'], inputDict['valveDia'], inputDict['inletDia'],
+                  inputDict['outletDia'], N2_val)
+    N1_val = 0.865
+    N4_val = 76000
+    inletPressure_re = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
+                                             1000)
+    outletPressure_re = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
+                                              1000)
+    inletPipeDia_re = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'mm',
+                                                  1000))
+    flowrate_re = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
+                                        mw / 22.4)
+    RE_number = reynoldsNumber(N4_val, Fd_gas, flowrate_re,
+                               1, 0.9, N2_val,
+                               inletPipeDia_re, N1_val, inletPressure_re,
+                               outletPressure_re,
+                               mw / 22400)
+    fpgas = fP(inputDict['C'], inputDict['valveDia'], inputDict['inletDia'], inputDict['outletDia'], N2_val)
+
+    mac_sonic_list = [gas_vels[0], gas_vels[1], gas_vels[2],
+                      gas_vels[3], gas_vels[4], gas_vels[5], gas_vels[9]]
+
+    vp_ar = meta_convert_P_T_FR_L('P', vaporPressure, iPresUnit_form, iPresUnit_form, 1000)
+    application_ratio = (inletPressure_form - outletPressure_form) / (inletPressure_form - vp_ar)
+    # other_factors_string = f"{Ff_gas}+{Kc}+{Fd_gas}+{xtp}+{RE_number}+{fpgas}"
+    other_factors_string = f"{Cv__[1]}+{Cv__[2]}+{Cv__[3]}+{Cv__[4]}+{Cv__[5]}+{Cv__[6]}+{Cv__[7]}+{Fd_gas}+{RE_number}+{Kc}+{mac_sonic_list[0]}+{mac_sonic_list[1]}+{mac_sonic_list[2]}+{mac_sonic_list[3]}+{mac_sonic_list[4]}+{mac_sonic_list[5]}+{mac_sonic_list[6]}+{round(application_ratio, 3)}+{z_factor}+{ratedCV}"
+    # print(other_factors_string)
+    valve_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
+    # tex new
+    if valve_det_element.flowCharacter_v == 1:
+        flow_character = 'equal'
+    else:
+        flow_character = 'linear'
+        # new trim exit velocity
+        # for port area, travel filter not implemented
+    port_area_ = db.session.query(portArea).filter_by(v_size=size_in_in, seat_bore=seatDia,
+                                                      trim_type=trimtype,
+                                                      flow_char=flow_character).first()
+    if port_area_:
+        port_area = float(port_area_.area)
+    else:
+        port_area = 1
+    tex_ = tex_new(Cv1, ratedCV, port_area, flowrate_re / 3600, inletPressure_v, outletPressure_v, mw,
+                   8314, temp_gnoise, 'Gas')
+
+    result_list = [flowrate_form, inletPressure_form, outletPressure_form, inletTemp_form, specificGravity,
+                   vaporPressure, viscosity, float(sg_vale), valveSize_form, other_factors_string,
+                   round(Cv1, 3), data['percent'], data['spl'], data['iVelocity'], data['oVelocity'],
+                   data['pVelocity'], round(data['choked'] * inletPressure_form, 3), float(xt_fl), 1, tex_,
+                   pLevel, units_string, None, "Gas", round(criticalPressure_form, 3), inletPipeDia_form,
+                   outletPipeDia_form, iSch, oSch, item_selected]
+
+    return result_list
+
+
 @app.route('/valve-sizing', methods=["GET", "POST"])
 def valveSizing():
     with app.app_context():
@@ -4028,7 +4999,6 @@ def valveSizing():
         itemCases_1 = db.session.query(itemCases).filter_by(itemID=item_selected.id).all()
         fluid_data = fluidName.query.all()
         pipe_schedule = ['std', 10, 20, 30, 40, 80, 120, 160, 'xs', 'xxs']
-
         case_len = len(itemCases_1)
         valveD = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
         if valveD:
@@ -4040,386 +5010,65 @@ def valveSizing():
 
         if request.method == 'POST':
             # get data from html
-            flowrate_form = float(request.form.get('flowrate'))
-            inletPressure_form = float(request.form.get('iPressure'))
-            outletPressure_form = float(request.form.get('oPressure'))
-            inletTemp_form = float(request.form.get('iTemp'))
-            specificGravity = float(request.form.get('sGravity'))
-            if request.form.get('vPressure') and request.form.get('viscosity'):
-                vaporPressure = float(request.form.get('vPressure'))
-                viscosity = float(request.form.get('viscosity'))
-            else:
-                vaporPressure = 1
-                viscosity = 1
+            data = request.form.to_dict(flat=False)
+            a = jsonify(data).json
+            print(f"jsoinified form data: {a}")
 
             state = request.form.get('fState')
-            criticalPressure_form = float(request.form.get('cPressure'))
-            inletPipeDia_form = float(request.form.get('iPipeSize'))
-            outletPipeDia_form = float(request.form.get('oPipeSize'))
-            valveSize_form = float(request.form.get('vSize'))
-            ratedCV = float(request.form.get('ratedCV'))
-            cPresUnit_form = request.form.get('cPresUnit')
-            xt_fl = float(request.form.get('xt'))
-            z_factor = request.form.get('z')
-            densityPipe = float(request.form.get('densityP'))
-            sosPipe = float(request.form.get('sosPipe'))
-            seatDia = float(request.form.get('seatDia'))
-            seatDiaUnit = request.form.get('seatDiaUnit')
-            fl_unit_form = request.form.get('flowrate_unit')
-            iPresUnit_form = request.form.get('iPresUnit')
-            oPresUnit_form = request.form.get('oPresUnit')
-            vPresUnit_form = request.form.get('vPresUnit')
-            iPipeUnit_form = request.form.get('iPipeUnit')
-            oPipeUnit_form = request.form.get('oPipeUnit')
-            vSizeUnit_form = request.form.get('vSizeUnit')
-            iPipeSch_form = 0.47
-            iPipeSchUnit_form = 'mm'
-            iSch = request.form.get('iSch')
-            oSch = request.form.get('oSch')
-            oPipeSch_form = 0.47
-            oPipeSchUnit_form = 'mm'
-            iTempUnit_form = request.form.get('iTempUnit')
-            sg_vale = request.form.get('sg_value')
-            sg_choice = request.form.get('sg')
+
             valveType = request.form.get('vType')
             trimtype = request.form.get('tType')
             valve_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
             valve_det_element.ratedCV = valveType
             valve_det_element.body_v = trimtype
             db.session.commit()
-            if z_factor:
-                z_factor = float(z_factor)
-            else:
-                z_factor = 1
-            if specificGravity:
-                specificGravity = float(specificGravity)
-            else:
-                specificGravity = 1
+
             if v_style == 'globe':
                 rw_noise = 0.25
             else:
                 rw_noise = 0.5
 
             if state == 'Liquid':
-                # check whether flowrate, pres and l are in correct units
-                # 1. flowrate
-                inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                             1000))
-                i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
-                                                                          schedule=iSch).first()
-                thickness_pipe = float(i_pipearea_element.thickness)
-                print(f"thickness: {thickness_pipe}")
-                if fl_unit_form not in ['m3/hr', 'gpm']:
-                    flowrate_liq = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form,
-                                                         'm3/hr',
-                                                         specificGravity * 1000)
-                    fr_unit = 'm3/hr'
-                else:
-                    fr_unit = fl_unit_form
-                    flowrate_liq = flowrate_form
+                len_cases_input = len(a['iPressure'])
+                for i in itemCases_1:
+                    db.session.delete(i)
+                    db.session.commit()
 
-                # 2. Pressure
-                # A. inletPressure
-                if iPresUnit_form not in ['kpa', 'bar', 'psia']:
-                    inletPressure_liq = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                              'bar', specificGravity * 1000)
-                    iPres_unit = 'bar'
-                else:
-                    iPres_unit = iPresUnit_form
-                    inletPressure_liq = inletPressure_form
+                for k in range(len_cases_input):
+                    try:
+                        output = getOutputs(a['flowrate'][k], a['flowrate_unit'][0], a['iPressure'][k],
+                                            a['iPresUnit'][0],
+                                            a['oPressure'][k], a['oPresUnit'][0],
+                                            a['iTemp'][k], a['iTempUnit'][0], a['vPressure'][k], a['vPresUnit'][0],
+                                            a['sGravity'][k], a['viscosity'][k],
+                                            a['xt'][k], a['cPressure'][0], a['cPresUnit'][0], a['iPipeSize'][0],
+                                            a['iPipeUnit'][0], a['iSch'][0],
+                                            a['oPipeSize'][0], a['oPipeUnit'][0], a['oSch'][0], a['densityP'][0],
+                                            a['sosPipe'][0], a['vSize'][0],
+                                            a['vSizeUnit'][0], a['seatDia'][0], a['seatDiaUnit'][0], a['ratedCV'][0],
+                                            rw_noise, item_selected)
 
-                # B. outletPressure
-                if oPresUnit_form not in ['kpa', 'bar', 'psia']:
-                    outletPressure_liq = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                               'bar', specificGravity * 1000)
-                    oPres_unit = 'bar'
-                else:
-                    oPres_unit = oPresUnit_form
-                    outletPressure_liq = outletPressure_form
+                        new_case = itemCases(flowrate=output[0], iPressure=output[1],
+                                             oPressure=output[2],
+                                             iTemp=output[3], sGravity=output[4],
+                                             vPressure=output[5], viscosity=output[6], vaporMW=output[7],
+                                             vaporInlet=output[8], vaporOutlet=output[9],
+                                             CV=output[10], openPercent=output[11],
+                                             valveSPL=output[12], iVelocity=output[13],
+                                             oVelocity=output[14], pVelocity=output[15],
+                                             chokedDrop=output[16],
+                                             Xt=output[17], warning=output[18], trimExVelocity=output[19],
+                                             sigmaMR=output[20], reqStage=output[21], fluidName=output[22],
+                                             fluidState=output[23],
+                                             criticalPressure=output[24], iPipeSize=output[25],
+                                             oPipeSize=output[26],
+                                             iPipeSizeSch=output[27], oPipeSizeSch=output[28],
+                                             item=output[29])
 
-                # C. vaporPressure
-                if vPresUnit_form not in ['kpa', 'bar', 'psia']:
-                    vaporPressure = meta_convert_P_T_FR_L('P', vaporPressure, vPresUnit_form, 'bar',
-                                                          specificGravity * 1000)
-                    vPres_unit = 'bar'
-                else:
-                    vPres_unit = vPresUnit_form
-
-                # D. Critical Pressure
-                if cPresUnit_form not in ['kpa', 'bar', 'psia']:
-                    criticalPressure_liq = meta_convert_P_T_FR_L('P', criticalPressure_form,
-                                                                 cPresUnit_form, 'bar',
-                                                                 specificGravity * 1000)
-                    cPres_unit = 'bar'
-                else:
-                    cPres_unit = cPresUnit_form
-                    criticalPressure_liq = criticalPressure_form
-
-                # 3. Length
-                if iPipeUnit_form not in ['mm']:
-                    inletPipeDia_liq = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form,
-                                                             'mm',
-                                                             specificGravity * 1000) - 2 * thickness_pipe
-                    iPipe_unit = 'mm'
-                else:
-                    iPipe_unit = iPipeUnit_form
-                    inletPipeDia_liq = inletPipeDia_form - 2 * thickness_pipe
-
-                if oPipeUnit_form not in ['mm']:
-                    outletPipeDia_liq = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
-                                                              'mm', specificGravity * 1000) - 2 * thickness_pipe
-                    oPipe_unit = 'mm'
-                else:
-                    oPipe_unit = oPipeUnit_form
-                    outletPipeDia_liq = outletPipeDia_form - 2 * thickness_pipe
-
-                if vSizeUnit_form not in ['mm']:
-                    vSize_liq = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                      'mm', specificGravity * 1000)
-                    vSize_unit = 'mm'
-                else:
-                    vSize_unit = vSizeUnit_form
-                    vSize_liq = valveSize_form
-
-                print(f"dia of pipe: {outletPipeDia_liq}, {inletPipeDia_liq}")
-
-                service_conditions_sf = {'flowrate': flowrate_liq, 'flowrate_unit': fr_unit,
-                                         'iPres': inletPressure_liq, 'oPres': outletPressure_liq,
-                                         'iPresUnit': iPres_unit,
-                                         'oPresUnit': oPres_unit, 'temp': inletTemp_form,
-                                         'temp_unit': iTempUnit_form, 'sGravity': specificGravity,
-                                         'iPipeDia': inletPipeDia_liq,
-                                         'oPipeDia': outletPipeDia_liq,
-                                         'valveDia': vSize_liq, 'iPipeDiaUnit': iPipe_unit,
-                                         'oPipeDiaUnit': oPipe_unit, 'valveDiaUnit': vSize_unit,
-                                         'C': ratedCV, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl, 'Ff': 0.90,
-                                         'cPres': criticalPressure_liq,
-                                         'FD': 1, 'viscosity': viscosity}
-                print(service_conditions_sf)
-
-                service_conditions_1 = service_conditions_sf
-                N1_val = N1[(service_conditions_1['flowrate_unit'], service_conditions_1['iPresUnit'])]
-                N2_val = N2[service_conditions_1['valveDiaUnit']]
-                N4_val = N4[(service_conditions_1['flowrate_unit'], service_conditions_1['valveDiaUnit'])]
-
-                result_1 = CV(service_conditions_1['flowrate'], service_conditions_1['C'],
-                              service_conditions_1['valveDia'],
-                              service_conditions_1['iPipeDia'],
-                              service_conditions_1['oPipeDia'], N2_val, service_conditions_1['iPres'],
-                              service_conditions_1['oPres'],
-                              service_conditions_1['sGravity'], N1_val, service_conditions_1['FD'],
-                              service_conditions_1['vPres'],
-                              service_conditions_1['Fl'], service_conditions_1['cPres'], N4_val,
-                              service_conditions_1['viscosity'])
-
-                result = CV(service_conditions_1['flowrate'], result_1,
-                            service_conditions_1['valveDia'],
-                            service_conditions_1['iPipeDia'],
-                            service_conditions_1['oPipeDia'], N2_val, service_conditions_1['iPres'],
-                            service_conditions_1['oPres'],
-                            service_conditions_1['sGravity'], N1_val, service_conditions_1['FD'],
-                            service_conditions_1['vPres'],
-                            service_conditions_1['Fl'], service_conditions_1['cPres'], N4_val,
-                            service_conditions_1['viscosity'])
-                ff_liq = FF(service_conditions_1['vPres'], service_conditions_1['cPres'])
-                chokedP = delPMax(service_conditions_1['Fl'], ff_liq, service_conditions_1['iPres'],
-                                  service_conditions_1['vPres'])
-                # chokedP = selectDelP(service_conditions_1['Fl'], service_conditions_1['cPres'],
-                #                      service_conditions_1['iPres'],
-                #                      service_conditions_1['vPres'], service_conditions_1['oPres'])
-
-                # noise and velocities
-                # Liquid Noise - need flowrate in kg/s, valves in m, density in kg/m3, pressure in pa
-                # convert form data in units of noise formulae
-                valveDia_lnoise = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form, 'm', 1000)
-                iPipeDia_lnoise = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'm',
-                                                        1000)
-                oPipeDia_lnoise = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form, 'm',
-                                                        1000)
-                seat_dia_lnoise = meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'm',
-                                                        1000)
-                inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                             1000))
-                i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
-                                                                          schedule=iSch).first()
-
-                iPipeSch_lnoise = meta_convert_P_T_FR_L('L', float(i_pipearea_element.thickness),
-                                                        'mm', 'm', 1000)
-                flowrate_lnoise = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'kg/hr',
-                                                        specificGravity * 1000) / 3600
-                outletPressure_lnoise = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                              'pa', 1000)
-                inletPressure_lnoise = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                             'pa', 1000)
-                vPres_lnoise = meta_convert_P_T_FR_L('P', vaporPressure, vPresUnit_form, 'pa', 1000)
-                # print(f"3 press: {outletPressure_lnoise, inletPressure_lnoise, vPres_lnoise}")
-                # service conditions for 4 inch vale with 8 as line size. CVs need to be changed
-                sc_liq_sizing = {'valveDia': valveDia_lnoise, 'ratedCV': ratedCV, 'reqCV': result, 'FL': xt_fl,
-                                 'FD': 0.42,
-                                 'iPipeDia': iPipeDia_lnoise, 'iPipeUnit': 'm', 'oPipeDia': oPipeDia_lnoise,
-                                 'oPipeUnit': 'm',
-                                 'internalPipeDia': oPipeDia_lnoise,
-                                 'inPipeDiaUnit': 'm', 'pipeWallThickness': iPipeSch_lnoise, 'speedSoundPipe': sosPipe,
-                                 'speedSoundPipeUnit': 'm/s',
-                                 'densityPipe': densityPipe, 'densityPipeUnit': 'kg/m3', 'speedSoundAir': 343,
-                                 'densityAir': 1293,
-                                 'massFlowRate': flowrate_lnoise, 'massFlowRateUnit': 'kg/s',
-                                 'iPressure': inletPressure_lnoise,
-                                 'iPresUnit': 'pa',
-                                 'oPressure': outletPressure_lnoise,
-                                 'oPresUnit': 'pa', 'vPressure': vPres_lnoise, 'densityLiq': specificGravity * 1000,
-                                 'speedSoundLiq': 1400,
-                                 'rw': rw_noise,
-                                 'seatDia': seat_dia_lnoise,
-                                 'fi': 8000}
-
-                sc_1 = sc_liq_sizing
-                summation = Lpe1m(sc_1['fi'], sc_1['FD'], sc_1['reqCV'], sc_1['iPressure'], sc_1['oPressure'],
-                                  sc_1['vPressure'],
-                                  sc_1['densityLiq'], sc_1['speedSoundLiq'], sc_1['massFlowRate'], sc_1['rw'],
-                                  sc_1['FL'],
-                                  sc_1['seatDia'], sc_1['valveDia'], sc_1['densityPipe'], sc_1['pipeWallThickness'],
-                                  sc_1['speedSoundPipe'],
-                                  sc_1['densityAir'], sc_1['internalPipeDia'], sc_1['speedSoundAir'],
-                                  sc_1['speedSoundPipe'])
-                # summation = 56
-
-                # Power Level
-                outletPressure_p = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                         'psia', specificGravity * 1000)
-                inletPressure_p = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                        'psia', specificGravity * 1000)
-                pLevel = power_level_liquid(inletPressure_p, outletPressure_p, specificGravity, result)
-
-                # convert flowrate and dias for velocities
-                flowrate_v = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
-                                                   1000)
-                inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                             1000))
-                outletPipeDia_v = round(meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form, 'inch',
-                                                              1000))
-                vSize_v = round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                      'inch', specificGravity * 1000))
-
-                # convert pressure for tex, p in bar, l in in
-                inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
-                                                        1000)
-                outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
-                                                         1000)
-                v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
-                trimtype = v_det_element.body_v
-                if trimtype == 'contour':
-                    t_caps = 'Contoured'
-                elif trimtype == 'ported':
-                    t_caps = 'Cage'
-                else:
-                    t_caps = 'other'
-
-                tEX = trimExitVelocity(inletPressure_v, outletPressure_v, 1000 * specificGravity, t_caps,
-                                       'other')
-
-                # ipipeSch_v = meta_convert_P_T_FR_L('L', float(iPipeSch_form), iPipeSchUnit_form,
-                #                                    'inch',
-                #                                    1000)
-                # opipeSch_v = meta_convert_P_T_FR_L('L', float(oPipeSch_form), oPipeSchUnit_form,
-                #                                    'inch',
-                #                                    1000)
-                # iVelocity, oVelocity, pVelocity = getVelocity(flowrate_v, inletPipeDia_v,
-                #                                               outletPipeDia_v,
-                #                                               vSize_v)
-                # print(flowrate_v, (inletPipeDia_v - ipipeSch_v),
-                #       (outletPipeDia_v - opipeSch_v),
-                #       vSize_v)
-                i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
-                                                                          schedule=iSch).first()
-                area_in2 = float(i_pipearea_element.area)
-                a_i = 0.00064516 * area_in2
-                iVelocity = flowrate_v / (3600 * a_i)
-
-                o_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(outletPipeDia_v),
-                                                                          schedule=oSch).first()
-                print(f"oPipedia: {outletPipeDia_v}, sch: {oSch}")
-                area_in22 = float(o_pipearea_element.area)
-                a_o = 0.00064516 * area_in22
-                oVelocity = flowrate_v / (3600 * a_o)
-
-                valve_element_current = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
-                rating_current = db.session.query(rating).filter_by(id=valve_element_current.rating).first()
-                valvearea_element = db.session.query(valveArea).filter_by(rating=rating_current.size,
-                                                                          nominalPipeSize=vSize_v).first()
-                v_area_in = float(valvearea_element.area)
-                v_area = 0.00064516 * v_area_in
-                pVelocity = flowrate_v / (3600 * v_area)
-
-                data = {'cv': round(result, 3),
-                        'percent': 80,
-                        'spl': round(summation, 3),
-                        'iVelocity': iVelocity,
-                        'oVelocity': round(oVelocity, 3), 'pVelocity': round(pVelocity, 3), 'choked': round(chokedP, 3),
-                        'texVelocity': round(tEX, 3)}
-
-                units_string = f"{seatDia}+{seatDiaUnit}+{sosPipe}+{densityPipe}+{rw_noise}+{fl_unit_form}+{iPresUnit_form}+{oPresUnit_form}+{vPresUnit_form}+{cPresUnit_form}+{iPipeUnit_form}+{oPipeUnit_form}+{vSizeUnit_form}+{iPipeSchUnit_form}+{oPipeSchUnit_form}+{iTempUnit_form}+sg"
-                # update valve size in item
-                size_in_in = int(round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form, 'inch', 1000)))
-                size_id = db.session.query(valveSize).filter_by(size=size_in_in).first()
-                print(size_id)
-                item_selected.size = size_id
-                # load case data with item ID
-                # get valvetype - kc requirements
-                v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
-                valve_type_ = v_det_element.ratedCV
-                trimtype = v_det_element.body_v
-                outletPressure_psia = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                            'psia', 1000)
-                inletPressure_psia = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                           'psia', 1000)
-                dp_kc = inletPressure_psia - outletPressure_psia
-
-                print(f"kc inputs: {size_in_in}, {trimtype}, {dp_kc}, {valve_type_.lower()}, {xt_fl},")
-                Kc = getKCValue(size_in_in, trimtype, dp_kc, valve_type_.lower(), xt_fl)
-                print(f"kc inputs: {size_in_in}, {trimtype}, {dp_kc}, {valve_type_.lower()}, {xt_fl}, {Kc}")
-
-                # get other req values - Ff, Kc, Fd, Flp, Reynolds Number
-                Ff_liq = round(FF(service_conditions_1['vPres'], service_conditions_1['cPres']), 2)
-                Fd_liq = service_conditions_1['FD']
-                FLP_liq = flP(service_conditions_1['C'], service_conditions_1['valveDia'],
-                              service_conditions_1['iPipeDia'], N2_val,
-                              service_conditions_1['Fl'])
-                RE_number = reynoldsNumber(N4_val, service_conditions_1['FD'], service_conditions_1['flowrate'],
-                                           service_conditions_1['viscosity'], service_conditions_1['Fl'], N2_val,
-                                           service_conditions_1['iPipeDia'], N1_val, service_conditions_1['iPres'],
-                                           service_conditions_1['oPres'],
-                                           service_conditions_1['sGravity'])
-                fp_liq = fP(service_conditions_1['C'], service_conditions_1['valveDia'],
-                            service_conditions_1['iPipeDia'], service_conditions_1['oPipeDia'], N2_val)
-                if chokedP == (service_conditions_1['iPres'] - service_conditions_1['oPres']):
-                    ff = 0.96
-                else:
-                    ff = round(ff_liq, 3)
-
-                vp_ar = meta_convert_P_T_FR_L('P', vaporPressure, vPres_unit, iPresUnit_form, 1000)
-                application_ratio = (inletPressure_form - outletPressure_form) / (inletPressure_form - vp_ar)
-                print(
-                    f"AR facts: {inletPressure_form}, {outletPressure_form}, {inletPressure_form}, {vp_ar}, {vaporPressure}, {vPres_unit}")
-                other_factors_string = f"{ff}+{Kc}+{Fd_liq}+{FLP_liq}+{RE_number}+{fp_liq}+{round(application_ratio, 3)}"
-                new_case = itemCases(flowrate=flowrate_form, iPressure=inletPressure_form,
-                                     oPressure=outletPressure_form,
-                                     iTemp=inletTemp_form, sGravity=specificGravity,
-                                     vPressure=vaporPressure, viscosity=viscosity, vaporMW=None,
-                                     vaporInlet=valveSize_form, vaporOutlet=other_factors_string,
-                                     CV=round(result, 3), openPercent=data['percent'],
-                                     valveSPL=round(summation, 3), iVelocity=round(iVelocity, 3),
-                                     oVelocity=round(oVelocity, 3), pVelocity=round(pVelocity, 3),
-                                     chokedDrop=round(chokedP, 4),
-                                     Xt=xt_fl, warning=1, trimExVelocity=data['texVelocity'],
-                                     sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Liquid",
-                                     criticalPressure=criticalPressure_form, iPipeSize=inletPipeDia_form,
-                                     oPipeSize=outletPipeDia_form,
-                                     iPipeSizeSch=iSch, oPipeSizeSch=oSch,
-                                     item=item_selected)
-
-                db.session.add(new_case)
-                db.session.commit()
+                        db.session.add(new_case)
+                        db.session.commit()
+                    except ValueError:
+                        pass
 
                 # print(data)
                 # print(f"The calculated Cv is: {result}")
@@ -4427,414 +5076,48 @@ def valveSizing():
 
             elif state == 'Gas':
                 # logic to choose which formula to use - using units of flowrate and sg
-                fl_unit = fl_unit_form
-                if fl_unit in ['m3/hr', 'scfh', 'gpm']:
-                    fl_bin = 1
-                else:
-                    fl_bin = 2
 
-                sg_unit = sg_choice
-                if sg_unit == 'sg':
-                    sg_bin = 1
-                else:
-                    sg_bin = 2
+                len_cases_input = len(a['iPressure'])
+                for i in itemCases_1:
+                    db.session.delete(i)
+                    db.session.commit()
 
-                def chooses_gas_fun(flunit, sgunit):
-                    eq_dict = {(1, 1): 1, (1, 2): 2, (2, 1): 3, (2, 2): 4}
-                    return eq_dict[(flunit, sgunit)]
+                for k in range(len_cases_input):
+                    try:
+                        output = getOutputsGas(a['flowrate'][k], a['flowrate_unit'][0], a['iPressure'][k],
+                                               a['iPresUnit'][0],
+                                               a['oPressure'][k], a['oPresUnit'][0],
+                                               a['iTemp'][k], a['iTempUnit'][0], '1', 'pa',
+                                               a['sGravity'][k], '1',
+                                               a['xt'][k], a['cPressure'][0], a['cPresUnit'][0], a['iPipeSize'][0],
+                                               a['iPipeUnit'][0], a['iSch'][0],
+                                               a['oPipeSize'][0], a['oPipeUnit'][0], a['oSch'][0], a['densityP'][0],
+                                               a['sosPipe'][0], a['vSize'][0],
+                                               a['vSizeUnit'][0], a['seatDia'][0], a['seatDiaUnit'][0], a['ratedCV'][0],
+                                               rw_noise, item_selected, a['sg'][0], a['z'][k], a['sg_value'][k])
 
-                sg__ = chooses_gas_fun(fl_bin, sg_bin)
+                        new_case = itemCases(flowrate=output[0], iPressure=output[1],
+                                             oPressure=output[2],
+                                             iTemp=output[3], sGravity=output[4],
+                                             vPressure=output[5], viscosity=output[6], vaporMW=output[7],
+                                             vaporInlet=output[8], vaporOutlet=output[9],
+                                             CV=output[10], openPercent=output[11],
+                                             valveSPL=output[12], iVelocity=output[13],
+                                             oVelocity=output[14], pVelocity=output[15],
+                                             chokedDrop=output[16],
+                                             Xt=output[17], warning=output[18], trimExVelocity=output[19],
+                                             sigmaMR=output[20], reqStage=output[21], fluidName=output[22],
+                                             fluidState=output[23],
+                                             criticalPressure=output[24], iPipeSize=output[25],
+                                             oPipeSize=output[26],
+                                             iPipeSizeSch=output[27], oPipeSizeSch=output[28],
+                                             item=output[29])
 
-                inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                             1000))
-                i_pipearea_element = db.session.query(pipeArea).filter_by(nominalPipeSize=str(inletPipeDia_v),
-                                                                          schedule=iSch).first()
-                thickness_pipe = float(i_pipearea_element.thickness)
-                thickness_in = meta_convert_P_T_FR_L('L', thickness_pipe, 'mm', 'inch', 1000)
+                        db.session.add(new_case)
+                        db.session.commit()
+                    except ValueError:
+                        pass
 
-                if sg__ == 1:
-                    # to be converted to scfh, psi, R, in
-                    # 3. Pressure
-                    inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                          'psia',
-                                                          1000)
-                    outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                           'psia',
-                                                           1000)
-                    # 4. Length
-                    inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                         1000) - 2 * thickness_in
-                    outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
-                                                          'inch',
-                                                          1000) - 2 * thickness_in
-                    vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                  'inch', specificGravity * 1000)
-                    # 1. Flowrate
-                    flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'scfh',
-                                                     1000)
-                    # 2. Temperature
-                    inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'R',
-                                                      1000)
-                elif sg__ == 2:
-                    # to be converted to m3/hr, kPa, C, in
-                    # 3. Pressure - 2*thickness_in
-                    inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'kpa',
-                                                          1000)
-                    outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                           'kpa',
-                                                           1000)
-                    # 4. Length
-                    inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                         1000) - 2 * thickness_in
-                    outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
-                                                          'inch',
-                                                          1000) - 2 * thickness_in
-                    vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                  'inch', specificGravity * 1000)
-                    # 1. Flowrate
-                    flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
-                                                     1000)
-                    # 2. Temperature
-                    inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K',
-                                                      1000)
-                elif sg__ == 3:
-                    # to be converted to lbhr, psi, F, in
-                    # 3. Pressure
-                    inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                          'psia',
-                                                          1000)
-                    outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                           'psia',
-                                                           1000)
-                    # 4. Length
-                    inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                         1000) - 2 * thickness_in
-                    # print(iPipeUnit_form)
-                    outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
-                                                          'inch',
-                                                          1000) - 2 * thickness_in
-                    vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                  'inch', specificGravity * 1000)
-                    # 1. Flowrate
-                    flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'lb/hr',
-                                                     1000)
-                    # 2. Temperature
-                    inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'F',
-                                                      1000)
-                else:
-                    # to be converted to kg/hr, bar, K, in
-                    # 3. Pressure
-                    inletPressure = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
-                                                          1000)
-                    outletPressure = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                           'bar',
-                                                           1000)
-                    # 4. Length
-                    inletPipeDia = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                         1000) - 2 * thickness_in
-                    outletPipeDia = meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form,
-                                                          'inch',
-                                                          1000) - 2 * thickness_in
-                    vSize = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                  'inch', specificGravity * 1000)
-                    # 1. Flowrate
-                    flowrate = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'kg/hr',
-                                                     1000)
-                    # 2. Temperature
-                    inletTemp = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K',
-                                                      1000)
-
-                print(f"dia of pipe: {outletPipeDia}, {inletPipeDia}")
-
-                # python sizing function - gas
-
-                inputDict_4 = {"inletPressure": inletPressure, "outletPressure": outletPressure,
-                               "gamma": specificGravity,
-                               "C": ratedCV,
-                               "valveDia": vSize,
-                               "inletDia": inletPipeDia,
-                               "outletDia": outletPipeDia, "xT": float(xt_fl),
-                               "compressibilityFactor": z_factor,
-                               "flowRate": flowrate,
-                               "temp": inletTemp, "sg": float(sg_vale), "sg_": sg__}
-
-                print(inputDict_4)
-
-                inputDict = inputDict_4
-                N2_val = N2['inch']
-                CV__ = Cv_gas(inletPressure=inputDict['inletPressure'], outletPressure=inputDict['outletPressure'],
-                              gamma=inputDict['gamma'],
-                              C=inputDict['C'], valveDia=inputDict['valveDia'], inletDia=inputDict['inletDia'],
-                              outletDia=inputDict['outletDia'], xT=inputDict['xT'],
-                              compressibilityFactor=inputDict['compressibilityFactor'],
-                              flowRate=inputDict['flowRate'], temp=inputDict['temp'], sg=inputDict['sg'],
-                              sg_=inputDict['sg_'], N2_value=N2_val)
-                Cv__ = Cv_gas(inletPressure=inputDict['inletPressure'], outletPressure=inputDict['outletPressure'],
-                              gamma=inputDict['gamma'],
-                              C=CV__[0], valveDia=inputDict['valveDia'], inletDia=inputDict['inletDia'],
-                              outletDia=inputDict['outletDia'], xT=inputDict['xT'],
-                              compressibilityFactor=inputDict['compressibilityFactor'],
-                              flowRate=inputDict['flowRate'], temp=inputDict['temp'], sg=inputDict['sg'],
-                              sg_=inputDict['sg_'], N2_value=N2_val)
-                Cv1 = Cv__[0]
-
-                xChoked = xChoked_gas(gamma=inputDict['gamma'], C=inputDict['C'], valveDia=inputDict['valveDia'],
-                                      inletDia=inputDict['inletDia'], outletDia=inputDict['outletDia'],
-                                      xT=inputDict['xT'], N2_value=N2_val)
-
-                # noise and velocities
-                # Liquid Noise - need flowrate in kg/s, valves in m, density in kg/m3, pressure in pa
-                inletPressure_gnoise = float(meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                                   'pa',
-                                                                   1000))
-                outletPressure_gnoise = float(meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                                    'pa',
-                                                                    1000))
-                # vaporPressure_gnoise = meta_convert_P_T_FR_L('P', vaporPressure, vPresUnit_form, 'pa',
-                #                                              1000)
-                flowrate_gnoise = conver_FR_noise(flowrate_form, fl_unit)
-                inletPipeDia_gnoise = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'm',
-                                                            specificGravity * 1000)
-                outletPipeDia_gnoise = meta_convert_P_T_FR_L('L', outletPipeDia_form, iPipeUnit_form,
-                                                             'm',
-                                                             specificGravity * 1000)
-                size_gnoise = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                    'm', specificGravity * 1000)
-                seat_dia_gnoise = meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'm',
-                                                        1000)
-                # summation1 = summation(C=113.863, inletPressure=inletPressure_noise, outletPressure=outletPressure_noise, density=specificGravity*1000,
-                #                        vaporPressure=vaporPressure_noise,
-                #                        speedS=4000, massFlowRate=flowrate_noise, Fd=0.23, densityPipe=7800, speedSinPipe=5000,
-                #                        wallThicknessPipe=0.0002, internalPipeDia=inletPipeDia_noise, seatDia=0.1, valveDia=size_noise,
-                #                        densityAir=1.293,
-                #                        holeDia=0, rW=0.25)
-
-                # molecular weight needs to be made on case to case basis = here we're taking 19.8, but it needs to come from form or table
-                mw = float(sg_vale)
-                if sg_unit == 'sg':
-                    mw = 22.4 * float(sg_vale)
-                elif sg_unit == 'mw':
-                    mw = float(sg_vale)
-
-                temp_gnoise = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K', 1000)
-                flp = fLP(Cv1, valveSize_form, inletPipeDia_form)
-                fp = fP_gas(Cv1, valveSize_form, inletPipeDia_form, outletPipeDia_form, N2_val)
-                sigmeta = sigmaEta_gas(valveSize_form, inletPipeDia_form, outletPipeDia_form)
-                flowrate_gv = int(flowrate_form) / 3600
-                inlet_density = inletDensity(inletPressure_gnoise, mw, 8314, temp_gnoise)
-                # print('inlet density input:')
-                # print(inletPressure_gnoise, mw, 8314, temp_gnoise)
-                if sigmeta == 0:
-                    sigmeta = 0.86
-                sc_initial_1 = {'valveSize': size_gnoise, 'valveOutletDiameter': outletPipeDia_gnoise,
-                                'ratedCV': ratedCV,
-                                'reqCV': 175,
-                                'No': 6,
-                                'FLP': flp,
-                                'Iw': 0.181, 'valveSizeUnit': 'm', 'IwUnit': 'm', 'A': 0.00137,
-                                'xT': float(xt_fl),
-                                'iPipeSize': inletPipeDia_gnoise,
-                                'oPipeSize': outletPipeDia_gnoise,
-                                'tS': 0.008, 'Di': outletPipeDia_gnoise, 'SpeedOfSoundinPipe_Cs': sosPipe,
-                                'DensityPipe_Ps': densityPipe,
-                                'densityUnit': 'kg/m3',
-                                'SpeedOfSoundInAir_Co': 343, 'densityAir_Po': 1.293, 'atmPressure_pa': 101325,
-                                'atmPres': 'pa',
-                                'stdAtmPres_ps': 101325, 'stdAtmPres': 'pa', 'sigmaEta': sigmeta, 'etaI': 1.2, 'Fp': fp,
-                                'massFlowrate': flowrate_gnoise, 'massFlowrateUnit': 'kg/s',
-                                'iPres': inletPressure_gnoise, 'iPresUnit': 'pa',
-                                'oPres': outletPressure_gnoise, 'oPresUnit': 'pa', 'inletDensity': 5.3,
-                                'iAbsTemp': temp_gnoise,
-                                'iAbsTempUnit': 'K',
-                                'specificHeatRatio_gamma': specificGravity, 'molecularMass': mw, 'mMassUnit': 'kg/kmol',
-                                'internalPipeDia': inletPipeDia_gnoise,
-                                'aEta': -3.8, 'stp': 0.2, 'R': 8314, 'RUnit': "J/kmol x K", 'fs': 1}
-
-                sc_initial_2 = {'valveSize': size_gnoise, 'valveOutletDiameter': outletPipeDia_gnoise,
-                                'ratedCV': ratedCV,
-                                'reqCV': Cv1, 'No': 1,
-                                'FLP': flp,
-                                'Iw': 0.181, 'valveSizeUnit': 'm', 'IwUnit': 'm', 'A': 0.00137,
-                                'xT': float(xt_fl),
-                                'iPipeSize': inletPipeDia_gnoise,
-                                'oPipeSize': outletPipeDia_gnoise,
-                                'tS': 0.008, 'Di': inletPipeDia_gnoise, 'SpeedOfSoundinPipe_Cs': sosPipe,
-                                'DensityPipe_Ps': densityPipe,
-                                'densityUnit': 'kg/m3',
-                                'SpeedOfSoundInAir_Co': 343, 'densityAir_Po': 1.293, 'atmPressure_pa': 101325,
-                                'atmPres': 'pa',
-                                'stdAtmPres_ps': 101325, 'stdAtmPres': 'pa', 'sigmaEta': sigmeta, 'etaI': 1.2,
-                                'Fp': 0.98,
-                                'massFlowrate': flowrate_gv, 'massFlowrateUnit': 'kg/s', 'iPres': inletPressure_gnoise,
-                                'iPresUnit': 'pa',
-                                'oPres': outletPressure_gnoise, 'oPresUnit': 'pa', 'inletDensity': inlet_density,
-                                'iAbsTemp': temp_gnoise,
-                                'iAbsTempUnit': 'K',
-                                'specificHeatRatio_gamma': specificGravity, 'molecularMass': mw,
-                                'mMassUnit': 'kg/kmol',
-                                'internalPipeDia': inletPipeDia_gnoise,
-                                'aEta': -3.8, 'stp': 0.2, 'R': 8314, 'RUnit': "J/kmol x K", 'fs': 1}
-
-                sc_initial = sc_initial_2
-                # print(sc_initial)
-
-                summation1 = lpae_1m(sc_initial['specificHeatRatio_gamma'], sc_initial['iPres'], sc_initial['oPres'],
-                                     sc_initial['FLP'],
-                                     sc_initial['Fp'],
-                                     sc_initial['inletDensity'], sc_initial['massFlowrate'], sc_initial['aEta'],
-                                     sc_initial['R'],
-                                     sc_initial['iAbsTemp'],
-                                     sc_initial['molecularMass'], sc_initial['oPipeSize'],
-                                     sc_initial['internalPipeDia'], sc_initial['stp'],
-                                     sc_initial['No'],
-                                     sc_initial['A'], sc_initial['Iw'], sc_initial['reqCV'],
-                                     sc_initial['SpeedOfSoundinPipe_Cs'],
-                                     sc_initial['SpeedOfSoundInAir_Co'],
-                                     sc_initial['valveSize'], sc_initial['tS'], sc_initial['fs'],
-                                     sc_initial['atmPressure_pa'],
-                                     sc_initial['stdAtmPres_ps'], sc_initial['DensityPipe_Ps'], -3.002)
-
-                print(f"gas summation: {summation1}")
-                # summation1 = 97
-
-                # convert flowrate and dias for velocities
-                flowrate_v = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
-                                                   mw / 22.4)
-                inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
-                                                             1000))
-                outletPipeDia_v = round(meta_convert_P_T_FR_L('L', outletPipeDia_form, oPipeUnit_form, 'inch',
-                                                              1000))
-
-                size_v = round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                     'inch', specificGravity * 1000))
-
-                # get gas velocities
-                inletPressure_gv = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'pa',
-                                                         1000)
-                outletPressure_gv = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'pa',
-                                                          1000)
-                flowrate_gv = flowrate_form / 3600
-                print(f'flowrate_gv: {flowrate_gv}')
-                inletPipeDia_gnoise = meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'm',
-                                                            specificGravity * 1000)
-                outletPipeDia_gnoise = meta_convert_P_T_FR_L('L', outletPipeDia_form, iPipeUnit_form,
-                                                             'm',
-                                                             specificGravity * 1000)
-                size_gnoise = meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form,
-                                                    'm', specificGravity * 1000)
-                temp_gnoise = meta_convert_P_T_FR_L('T', inletTemp_form, iTempUnit_form, 'K', 1000)
-
-                gas_vels = getGasVelocities(sc_initial['specificHeatRatio_gamma'], inletPressure_gv, outletPressure_gv,
-                                            8314, temp_gnoise, mw, flowrate_gv,
-                                            size_gnoise, inletPipeDia_gnoise, outletPipeDia_gnoise)
-
-                # Power Level
-                # getting fr in lb/s
-                flowrate_p = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'kg/hr',
-                                                   specificGravity * 1000)
-                inletPressure_p = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'pa',
-                                                        1000)
-                outletPressure_p = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                         'pa',
-                                                         1000)
-                pLevel = power_level_gas(specificGravity, inletPressure_p, outletPressure_p, flowrate_p, gas_vels[9])
-
-                # print(sc_initial['specificHeatRatio_gamma'], inletPressure_gv, outletPressure_gv, 8314,
-                #       temp_gnoise, mw, flowrate_gv, size_gnoise,
-                #       inletPipeDia_gnoise, outletPipeDia_gnoise)
-
-                # convert pressure for tex, p in bar, l in in
-                inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
-                                                        1000)
-                outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
-                                                         1000)
-                # get tex pressure in psi
-                inletPressure_tex = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'psia',
-                                                          1000)
-                outletPressure_tex = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'psia',
-                                                           1000)
-
-                tEX = trimExitVelocityGas(inletPressure_tex, outletPressure_tex) / 3.281
-                print(
-                    f"tex: {tEX}, {inletPressure_tex}, {outletPressure_tex}, {inletPressure_tex - outletPressure_tex}")
-                # print(summation1)
-                iVelocity = gas_vels[6]
-                oVelocity = gas_vels[7]
-                pVelocity = gas_vels[8]
-
-                data = {'cv': round(Cv1, 3),
-                        'percent': 83,
-                        'spl': round(summation1, 3),
-                        'iVelocity': round(iVelocity, 3),
-                        'oVelocity': round(oVelocity, 3), 'pVelocity': round(pVelocity, 3), 'choked': round(xChoked, 4),
-                        'texVelocity': round(tEX, 3)}
-
-                units_string = f"{seatDia}+{seatDiaUnit}+{sosPipe}+{densityPipe}+{z_factor}+{fl_unit_form}+{iPresUnit_form}+{oPresUnit_form}+{oPresUnit_form}+{oPresUnit_form}+{iPipeUnit_form}+{oPipeUnit_form}+{vSizeUnit_form}+{iPipeSchUnit_form}+{oPipeSchUnit_form}+{iTempUnit_form}+{sg_choice}"
-                # update valve size in item
-                size_in_in = int(round(meta_convert_P_T_FR_L('L', valveSize_form, vSizeUnit_form, 'inch', 1000)))
-                size_id = db.session.query(valveSize).filter_by(size=size_in_in).first()
-                # print(size_id)
-                item_selected.size = size_id
-                # load case data with item ID
-                # get valvetype - kc requirements
-                v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
-                valve_type_ = v_det_element.ratedCV
-                trimtype = v_det_element.body_v
-                outletPressure_psia = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form,
-                                                            'psia', 1000)
-                inletPressure_psia = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form,
-                                                           'psia', 1000)
-                dp_kc = inletPressure_psia - outletPressure_psia
-                Kc = getKCValue(size_in_in, trimtype, dp_kc, valve_type_.lower(), xt_fl)
-
-                # get other req values - Ff, Kc, Fd, Flp, Reynolds Number
-                Ff_gas = 0.96
-                Fd_gas = 1
-                xtp = xTP_gas(inputDict['xT'], inputDict['C'], inputDict['valveDia'], inputDict['inletDia'],
-                              inputDict['outletDia'], N2_val)
-                N1_val = 0.865
-                N4_val = 76000
-                inletPressure_re = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
-                                                         1000)
-                outletPressure_re = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
-                                                          1000)
-                inletPipeDia_re = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'mm',
-                                                              1000))
-                flowrate_re = meta_convert_P_T_FR_L('FR', flowrate_form, fl_unit_form, 'm3/hr',
-                                                    mw / 22.4)
-                RE_number = reynoldsNumber(N4_val, Fd_gas, flowrate_re,
-                                           1, 0.9, N2_val,
-                                           inletPipeDia_re, N1_val, inletPressure_re,
-                                           outletPressure_re,
-                                           mw / 22400)
-                fpgas = fP(inputDict['C'], inputDict['valveDia'], inputDict['inletDia'], inputDict['outletDia'], N2_val)
-
-                mac_sonic_list = [gas_vels[0], gas_vels[1], gas_vels[2],
-                                  gas_vels[3], gas_vels[4], gas_vels[5], gas_vels[9]]
-
-                vp_ar = meta_convert_P_T_FR_L('P', vaporPressure, iPresUnit_form, iPresUnit_form, 1000)
-                application_ratio = (inletPressure_form - outletPressure_form) / (inletPressure_form - vp_ar)
-                # other_factors_string = f"{Ff_gas}+{Kc}+{Fd_gas}+{xtp}+{RE_number}+{fpgas}"
-                other_factors_string = f"{Cv__[1]}+{Cv__[2]}+{Cv__[3]}+{Cv__[4]}+{Cv__[5]}+{Cv__[6]}+{Cv__[7]}+{Fd_gas}+{RE_number}+{Kc}+{mac_sonic_list[0]}+{mac_sonic_list[1]}+{mac_sonic_list[2]}+{mac_sonic_list[3]}+{mac_sonic_list[4]}+{mac_sonic_list[5]}+{mac_sonic_list[6]}+{round(application_ratio, 3)}"
-                # print(other_factors_string)
-                new_case = itemCases(flowrate=flowrate_form, iPressure=inletPressure_form,
-                                     oPressure=outletPressure_form,
-                                     iTemp=inletTemp_form, sGravity=specificGravity,
-                                     vPressure=vaporPressure, viscosity=viscosity,
-                                     vaporMW=float(sg_vale), vaporInlet=valveSize_form,
-                                     vaporOutlet=other_factors_string,
-                                     CV=round(Cv1, 3), openPercent=data['percent'],
-                                     valveSPL=data['spl'], iVelocity=data['iVelocity'], oVelocity=data['oVelocity'],
-                                     pVelocity=data['pVelocity'],
-                                     chokedDrop=round(data['choked'] * inletPressure_form, 3),
-                                     Xt=float(xt_fl), warning=1, trimExVelocity=data['texVelocity'],
-                                     sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Gas",
-                                     criticalPressure=round(criticalPressure_form, 3), iPipeSize=inletPipeDia_form,
-                                     oPipeSize=outletPipeDia_form,
-                                     iPipeSizeSch=iSch, oPipeSizeSch=oSch,
-                                     item=item_selected)
-                db.session.add(new_case)
-                db.session.commit()
                 return redirect(url_for('valveSizing'))
 
             else:
@@ -4850,10 +5133,12 @@ def valveSizing():
             o_val_list.append(o_values)
 
         # print(o_val_list)
-
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_selected.projectID).all()
+        item_index = item_list.index(item_selected)
         return render_template("Valve Sizing 2.html", title='Valve Sizing', cases=itemCases_1, item_d=item_selected,
                                fluid=fluid_data, len_c=range(case_len), length_unit=getPref(item_selected),
-                               fState=f_state, o_val=o_val_list, len_s=case_len, ps=pipe_schedule)
+                               fState=f_state, o_val=o_val_list, len_s=case_len, ps=pipe_schedule, page='valveSizing',
+                               item_index=item_index)
 
 
 # @app.route('/actuator-sizing', methods=["GET", "POST"])
@@ -4996,8 +5281,10 @@ def actuatorSizing():
             v_details.serial_no = act_data_string
             db.session.commit()
             return redirect(url_for('actuator'))
-
-        return render_template("actuator1.html", title='Actuator Sizing', item_d=selected_item, shutoff=shutoffDelp)
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
+        return render_template("actuator1.html", title='Actuator Sizing', item_d=item_details, shutoff=shutoffDelp,
+                               page='actuatorSizing', item_index=item_index)
 
 
 @app.route('/actuator', methods=["GET", "POST"])
@@ -5007,9 +5294,16 @@ def actuator():
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
         cases = db.session.query(itemCases).filter_by(itemID=item_details.id).all()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
         last_case = cases[len(cases) - 1]
-
         v_details = db.session.query(valveDetails).filter_by(itemID=item_details.id).first()
+
+        # get min air supply into act data
+        act_data_prev = v_details.serial_no
+        act_data_prev_list = act_data_prev.split('#')
+        min_air = act_data_prev_list[5]
+
         trimType_act = trimtype_dict[int(v_details.trimType_v)]
         fl_direction = flowDirection.query.get(v_details.flowDirection_v).name
         valve_size = last_case.vaporInlet
@@ -5030,7 +5324,7 @@ def actuator():
         seatDia_act = round(meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'inch', 1000), 2)
         act_data_new = v_details.serial_no
         act_data_new_list = act_data_new.split('#')
-        shutoffDelP = float(act_data_new_list[7])
+        shutoffDelP = float(act_data_new_list[7]) * 14.5
         sLeak_act = leakage_dict[int(v_details.seatLeakageClass_v)]
         rating_id = v_details.rating
         valveSize_act = round(meta_convert_P_T_FR_L('L', valve_size, vSizeUnit, 'inch', 1000))
@@ -5060,6 +5354,13 @@ def actuator():
                   iPressure - oPressure]
         data = [iPressure, oPressure, seatDia_act, valveSize_act, rating_act, trimType_act, fl_direction, packing_act,
                 sLeak_act]
+        print(f"v_data_final: {v_data_final}")
+        print(f"act_valve_dat_final:{act_valve_data_list}")
+        print(f"act_data_list:{act_data_list}")
+        # get fail action
+        action_string = v_details.serial_no
+        fail_action_string = action_string.split('#')[1]
+        print(f"fail action: {fail_action_string}")
         if request.method == 'POST':
             if request.form.get('valve'):
                 plugDia = float(request.form.get('plugDia'))
@@ -5079,19 +5380,44 @@ def actuator():
                 v_shutoff, v_shutoff_plus, v_open, v_close = round(vf_shutoff[0]), round(valve_forces[0]), round(
                     vf_open[0]), round(vf_close[0])
 
+                packing_fric = valve_forces[2]
+                seatload_fact = valve_forces[3]
                 # store data in v_details
-                v_details.valve_size = f"{balance}#{stroke}#{round(seatDia, 2)}#{plugDia}#{stemDia}#{ua}#{v_shutoff}#{v_shutoff_plus}#{v_open}#{v_close}"
+                v_details.valve_size = f"{balance}#{stroke}#{round(seatDia, 3)}#{plugDia}#{stemDia}#{ua}#{v_shutoff}#{v_shutoff_plus}#{v_open}#{v_close}#{packing_fric}#{seatload_fact}"
                 db.session.commit()
                 v_data = [v_shutoff, v_shutoff_plus, v_open, v_close]
 
-                return render_template("actuator2.html", title='Actuator Sizing', item_d=selected_item, data=data__,
-                                       v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list)
+                # get data again
+                data__ = [trimType_act, fl_direction, valve_size, seatDia_act, iPressure, oPressure, shutoffDelP,
+                          iPressure - oPressure]
+                if v_details.rating_v is None:
+                    act_data_list = []
+                else:
+                    act_data_string = v_details.rating_v
+                    act_data_list = act_data_string.split('#')
+
+                if v_details.valve_size is None:
+                    act_valve_data_list = []
+                else:
+                    act_valve_string = v_details.valve_size
+                    act_valve_data_list = act_valve_string.split('#')
+
+                if len(act_valve_data_list) > 0:
+                    v_data_final = act_valve_data_list[6:]
+                else:
+                    v_data_final = []
+                return render_template("actuator2.html", title='Actuator Sizing', item_d=item_details, data=data__,
+                                       v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list,
+                                       air=min_air, af=fail_action_string, page='actuator', item_index=item_index)
             if request.form.get('actuator'):
-                setPressure = int(request.form.get('setPressure'))
-                shutoff_plus = float(request.form.get('shutoff+'))
+                setPressure = float(request.form.get('setPressure'))
+                shutoff_plus = float(request.form.get('vClosed'))
                 stem_dia = float(request.form.get('stemDia'))
                 valveTravel = float(request.form.get('stroke'))
-                actuator_data = db.session.query(actuatorData).filter_by(SFMax=stem_dia).all()
+                act_dat_prev = v_details.serial_no
+                fail_action_prev = act_dat_prev.split('#')[1]
+                actuator_data = db.session.query(actuatorData).filter_by(SFMax=stem_dia,
+                                                                         failAction=fail_action_prev).all()
                 print(f"actuator data lenght: {len(actuator_data)}")
                 return_actuator_data = []
                 for i in actuator_data:
@@ -5115,134 +5441,135 @@ def actuator():
                                           springForceMax,
                                           NATMax, NATMin, i.SFMax]
                                 return_actuator_data.append(i_list)
-                return render_template('select_actuator.html', data=return_actuator_data, item_d=selected_item,
-                                       setP=setPressure)
+                return render_template('select_actuator.html', data=return_actuator_data, item_d=item_details,
+                                       setP=setPressure, page='selectActuator', item_index=item_index)
 
-        return render_template("actuator2.html", title='Actuator Sizing', item_d=selected_item, data=data__,
-                               v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list)
+        return render_template("actuator2.html", title='Actuator Sizing', item_d=item_details, data=data__,
+                               v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list, air=min_air,
+                               af=fail_action_string, page='actuator', item_index=item_index)
 
 
-@app.route('/actuator-sizing2', methods=["GET", "POST"])
-def actuatorSizing2():
-    with app.app_context():
-        item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
-        cases = db.session.query(itemCases).filter_by(itemID=item_details.id).all()
-        last_case = cases[len(cases) - 1]
-        v_details = db.session.query(valveDetails).filter_by(itemID=item_details.id).first()
-        rating_id = v_details.rating
-        trimtype_id = v_details.trimType_v
-        flowdirection_id = v_details.flowDirection_v
-        packing_id = v_details.packing
-        seat_leakage_id = v_details.seatLeakageClass_v
-        valve_size = last_case.vaporInlet
-        aaaaa = last_case.reqStage
-        aaaaa_list = aaaaa.split('+')
-        # print(aaaaa_list, len(aaaaa_list))
-        seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, vSizeUnit, iPipeSchUnit, oPipeSchUnit, iTempUnit, sg_choice = \
-            float(aaaaa_list[0]), aaaaa_list[1], float(aaaaa_list[2]), float(aaaaa_list[3]), float(
-                aaaaa_list[4]), aaaaa_list[5], \
-            aaaaa_list[6], \
-            aaaaa_list[7], aaaaa_list[8], aaaaa_list[9], aaaaa_list[10], aaaaa_list[11], aaaaa_list[12], \
-            aaaaa_list[13], aaaaa_list[14], aaaaa_list[15], aaaaa_list[16]
-
-        leakage_dict = {1: 'two', 2: 'three', 3: 'four', 4: 'five', 5: 'six'}
-        trimtype_dict = {1: 'modified', 2: 'microspline', 3: 'contour', 4: 'cage', 5: 'MHC1'}
-
-        # inputs for actuator sizing:
-        iPressure = last_case.iPressure
-        oPressure = last_case.oPressure
-        iPressure = meta_convert_P_T_FR_L('P', iPressure, iPresUnit, 'psia', 1000)
-        oPressure = meta_convert_P_T_FR_L('P', oPressure, oPresUnit, 'psia', 1000)
-        seatDia_act = round(meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'inch', 1000), 2)
-        valveSize_act = round(meta_convert_P_T_FR_L('L', valve_size, vSizeUnit, 'inch', 1000))
-        rating_act = rating.query.get(rating_id).size
-        trimType_act = trimtype_dict[int(trimtype_id)]
-        fl_direction = flowDirection.query.get(flowdirection_id).name
-        packing_act = valveTypeMaterial.query.get(packing_id).name
-        sLeak_act = leakage_dict[int(seat_leakage_id)]
-        shutoffDelp = float(v_details.shutOffDelP)
-        data = [iPressure, oPressure, seatDia_act, valveSize_act, rating_act, trimType_act, fl_direction, packing_act,
-                sLeak_act]
-
-        # get actuator sized data from v_detials.rating_v, valve data from v_details.valve_size
-        # if data is available, render it in acSizing, else, blank
-        if v_details.rating_v is None:
-            act_data_list = []
-        else:
-            act_data_string = v_details.rating_v
-            act_data_list = act_data_string.split('#')
-
-        if v_details.valve_size is None:
-            act_valve_data_list = []
-        else:
-            act_valve_string = v_details.valve_size
-            act_valve_data_list = act_valve_string.split('#')
-
-        if len(act_valve_data_list) > 0:
-            v_data_final = act_valve_data_list[6:]
-        else:
-            v_data_final = []
-
-        if request.method == 'POST':
-            if request.form.get('valve'):
-                plugDia = float(request.form.get('plugDia'))
-                stemDia = float(request.form.get('stemDia'))
-                ua = float(request.form.get('ua'))
-                seatDia = float(request.form.get('seatDia'))
-                balance = request.form.get('balance')
-                stroke = request.form.get('stroke')
-                valve_forces = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
-                                           sLeak_act, trimType_act, balance, fl_direction, 'shutoff+', shutoffDelp)
-                vf_shutoff = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
-                                         sLeak_act, trimType_act, balance, fl_direction, 'shutoff', shutoffDelp)
-                vf_open = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
-                                      sLeak_act, trimType_act, balance, fl_direction, 'open', shutoffDelp)
-                vf_close = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
-                                       sLeak_act, trimType_act, balance, fl_direction, 'close', shutoffDelp)
-                v_shutoff, v_shutoff_plus, v_open, v_close = round(vf_shutoff[0]), round(valve_forces[0]), round(
-                    vf_open[0]), round(vf_close[0])
-
-                # store data in v_details
-                v_details.valve_size = f"{balance}#{stroke}#{round(seatDia, 2)}#{plugDia}#{stemDia}#{ua}#{v_shutoff}#{v_shutoff_plus}#{v_open}#{v_close}"
-                db.session.commit()
-                v_data = [v_shutoff, v_shutoff_plus, v_open, v_close]
-
-                return render_template("Actuator Sizing.html", title='Actuator Sizing', item_d=selected_item, data=data,
-                                       v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list)
-            if request.form.get('actuator'):
-                setPressure = int(request.form.get('setPressure'))
-                shutoff_plus = float(request.form.get('shutoff+'))
-                stem_dia = float(request.form.get('stemDia'))
-                valveTravel = float(request.form.get('stroke'))
-                actuator_data = db.session.query(actuatorData).filter_by(SFMax=stem_dia).all()
-                print(f"actuator data lenght: {len(actuator_data)}")
-                return_actuator_data = []
-                for i in actuator_data:
-                    if float(valveTravel) <= float(i.travel):
-                        springRate = int(((int(i.sMax) - int(i.sMin)) / float(i.travel)) * int(i.NATMin))
-                        springForceMin = int(i.sMin) * int(i.NATMin)
-                        springForceMax = int(i.sMax) * int(i.NATMin)
-                        NATMax = (int(i.NATMin) * setPressure) - springForceMin
-                        NATMin = (int(i.NATMin) * setPressure) - springForceMax
-                        if i.failAction == 'AFO':
-                            if NATMin > shutoff_plus:
-                                i_list = [i.id, i.acSize, i.travel, i.sMin, i.sMax, i.failAction, springRate,
-                                          springForceMin,
-                                          springForceMax,
-                                          NATMax, NATMin, i.SFMax]
-                                return_actuator_data.append(i_list)
-                        elif i.failAction == 'AFC':
-                            if springForceMin > shutoff_plus:
-                                i_list = [i.id, i.acSize, i.travel, i.sMin, i.sMax, i.failAction, springRate,
-                                          springForceMin,
-                                          springForceMax,
-                                          NATMax, NATMin, i.SFMax]
-                                return_actuator_data.append(i_list)
-                return render_template('select_actuator.html', data=return_actuator_data, item_d=selected_item,
-                                       setP=setPressure)
-
-        return render_template("Actuator Sizing.html", title='Actuator Sizing', item_d=selected_item, data=data,
-                               v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list)
+# @app.route('/actuator-sizing2', methods=["GET", "POST"])
+# def actuatorSizing2():
+#     with app.app_context():
+#         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+#         cases = db.session.query(itemCases).filter_by(itemID=item_details.id).all()
+#         last_case = cases[len(cases) - 1]
+#         v_details = db.session.query(valveDetails).filter_by(itemID=item_details.id).first()
+#         rating_id = v_details.rating
+#         trimtype_id = v_details.trimType_v
+#         flowdirection_id = v_details.flowDirection_v
+#         packing_id = v_details.packing
+#         seat_leakage_id = v_details.seatLeakageClass_v
+#         valve_size = last_case.vaporInlet
+#         aaaaa = last_case.reqStage
+#         aaaaa_list = aaaaa.split('+')
+#         # print(aaaaa_list, len(aaaaa_list))
+#         seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, vSizeUnit, iPipeSchUnit, oPipeSchUnit, iTempUnit, sg_choice = \
+#             float(aaaaa_list[0]), aaaaa_list[1], float(aaaaa_list[2]), float(aaaaa_list[3]), float(
+#                 aaaaa_list[4]), aaaaa_list[5], \
+#             aaaaa_list[6], \
+#             aaaaa_list[7], aaaaa_list[8], aaaaa_list[9], aaaaa_list[10], aaaaa_list[11], aaaaa_list[12], \
+#             aaaaa_list[13], aaaaa_list[14], aaaaa_list[15], aaaaa_list[16]
+#
+#         leakage_dict = {1: 'two', 2: 'three', 3: 'four', 4: 'five', 5: 'six'}
+#         trimtype_dict = {1: 'modified', 2: 'microspline', 3: 'contour', 4: 'cage', 5: 'MHC1'}
+#
+#         # inputs for actuator sizing:
+#         iPressure = last_case.iPressure
+#         oPressure = last_case.oPressure
+#         iPressure = meta_convert_P_T_FR_L('P', iPressure, iPresUnit, 'psia', 1000)
+#         oPressure = meta_convert_P_T_FR_L('P', oPressure, oPresUnit, 'psia', 1000)
+#         seatDia_act = round(meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'inch', 1000), 2)
+#         valveSize_act = round(meta_convert_P_T_FR_L('L', valve_size, vSizeUnit, 'inch', 1000))
+#         rating_act = rating.query.get(rating_id).size
+#         trimType_act = trimtype_dict[int(trimtype_id)]
+#         fl_direction = flowDirection.query.get(flowdirection_id).name
+#         packing_act = valveTypeMaterial.query.get(packing_id).name
+#         sLeak_act = leakage_dict[int(seat_leakage_id)]
+#         shutoffDelp = float(v_details.shutOffDelP)
+#         data = [iPressure, oPressure, seatDia_act, valveSize_act, rating_act, trimType_act, fl_direction, packing_act,
+#                 sLeak_act]
+#
+#         # get actuator sized data from v_detials.rating_v, valve data from v_details.valve_size
+#         # if data is available, render it in acSizing, else, blank
+#         if v_details.rating_v is None:
+#             act_data_list = []
+#         else:
+#             act_data_string = v_details.rating_v
+#             act_data_list = act_data_string.split('#')
+#
+#         if v_details.valve_size is None:
+#             act_valve_data_list = []
+#         else:
+#             act_valve_string = v_details.valve_size
+#             act_valve_data_list = act_valve_string.split('#')
+#
+#         if len(act_valve_data_list) > 0:
+#             v_data_final = act_valve_data_list[6:]
+#         else:
+#             v_data_final = []
+#
+#         if request.method == 'POST':
+#             if request.form.get('valve'):
+#                 plugDia = float(request.form.get('plugDia'))
+#                 stemDia = float(request.form.get('stemDia'))
+#                 ua = float(request.form.get('ua'))
+#                 seatDia = float(request.form.get('seatDia'))
+#                 balance = request.form.get('balance')
+#                 stroke = request.form.get('stroke')
+#                 valve_forces = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
+#                                            sLeak_act, trimType_act, balance, fl_direction, 'shutoff+', shutoffDelp)
+#                 vf_shutoff = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
+#                                          sLeak_act, trimType_act, balance, fl_direction, 'shutoff', shutoffDelp)
+#                 vf_open = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
+#                                       sLeak_act, trimType_act, balance, fl_direction, 'open', shutoffDelp)
+#                 vf_close = valveForces(iPressure, oPressure, seatDia, plugDia, stemDia, ua, rating_act, 'ptfe1',
+#                                        sLeak_act, trimType_act, balance, fl_direction, 'close', shutoffDelp)
+#                 v_shutoff, v_shutoff_plus, v_open, v_close = round(vf_shutoff[0]), round(valve_forces[0]), round(
+#                     vf_open[0]), round(vf_close[0])
+#
+#                 # store data in v_details
+#                 v_details.valve_size = f"{balance}#{stroke}#{round(seatDia, 2)}#{plugDia}#{stemDia}#{ua}#{v_shutoff}#{v_shutoff_plus}#{v_open}#{v_close}"
+#                 db.session.commit()
+#                 v_data = [v_shutoff, v_shutoff_plus, v_open, v_close]
+#
+#                 return render_template("Actuator Sizing.html", title='Actuator Sizing', item_d=selected_item, data=data,
+#                                        v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list)
+#             if request.form.get('actuator'):
+#                 setPressure = int(request.form.get('setPressure'))
+#                 shutoff_plus = float(request.form.get('shutoff+'))
+#                 stem_dia = float(request.form.get('stemDia'))
+#                 valveTravel = float(request.form.get('stroke'))
+#                 actuator_data = db.session.query(actuatorData).filter_by(SFMax=stem_dia).all()
+#                 print(f"actuator data lenght: {len(actuator_data)}")
+#                 return_actuator_data = []
+#                 for i in actuator_data:
+#                     if float(valveTravel) <= float(i.travel):
+#                         springRate = int(((int(i.sMax) - int(i.sMin)) / float(i.travel)) * int(i.NATMin))
+#                         springForceMin = int(i.sMin) * int(i.NATMin)
+#                         springForceMax = int(i.sMax) * int(i.NATMin)
+#                         NATMax = (int(i.NATMin) * setPressure) - springForceMin
+#                         NATMin = (int(i.NATMin) * setPressure) - springForceMax
+#                         if i.failAction == 'AFO':
+#                             if NATMin > shutoff_plus:
+#                                 i_list = [i.id, i.acSize, i.travel, i.sMin, i.sMax, i.failAction, springRate,
+#                                           springForceMin,
+#                                           springForceMax,
+#                                           NATMax, NATMin, i.SFMax]
+#                                 return_actuator_data.append(i_list)
+#                         elif i.failAction == 'AFC':
+#                             if springForceMin > shutoff_plus:
+#                                 i_list = [i.id, i.acSize, i.travel, i.sMin, i.sMax, i.failAction, springRate,
+#                                           springForceMin,
+#                                           springForceMax,
+#                                           NATMax, NATMin, i.SFMax]
+#                                 return_actuator_data.append(i_list)
+#                 return render_template('select_actuator.html', data=return_actuator_data, item_d=selected_item,
+#                                        setP=setPressure)
+#
+#         return render_template("Actuator Sizing.html", title='Actuator Sizing', item_d=selected_item, data=data,
+#                                v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list)
 
 
 @app.route('/select-actuator', methods=["GET", "POST"])
@@ -5286,14 +5613,15 @@ def selectActuator():
         fl_direction = flowDirection.query.get(flowdirection_id).name
         packing_act = valveTypeMaterial.query.get(packing_id).name
         sLeak_act = leakage_dict[int(seat_leakage_id)]
-        shutoffDelp = float(v_details.shutOffDelP)
-        if flowcharacter_id == 1:
+        shutoffDelp = float(v_details.shutOffDelP) * 14.5
+        print(f"flow character id: {flowcharacter_id}")
+        if int(flowcharacter_id) == 1:
             flowCha = 'equal'
         else:
             flowCha = 'linear'
         if request.method == 'POST':
             act_id = request.form.get('valve')
-            setP = int(request.form.get('setP'))
+            setP = float(request.form.get('setP'))
             act_data = actuatorData.query.get(int(act_id))
             acSize, smin, smax, travel, fail_action = int(act_data.NATMin), int(act_data.sMin), int(
                 act_data.sMax), float(act_data.travel), act_data.rate
@@ -5304,17 +5632,30 @@ def selectActuator():
                                            float(v_data_split[1]), flowCha)
 
             # other inputs for page
-            stemArea = math.pi * float(v_data_split[4]) * float(v_data_split[4]) / 4
+            stemArea = round((math.pi * float(v_data_split[4]) * float(v_data_split[4]) / 4), 3)
             actuatorSize_ = act_data.acSize
             springRate = act_fun_output[1]
-            springWindUp = act_fun_output[3] / springRate
+            springWindUp = round((act_fun_output[3] / springRate), 2)
             maxSpringLoad = act_fun_output[2]
-            frictionBand = act_fun_output[6]/acSize
+            frictionBand = round((act_fun_output[6] / acSize), 3)
             reqHW = 'none'
-            maxHW = 'none'
+            # v details serial no - act data
+            act_initial = v_details.serial_no
+            act_initial_list = act_initial.split('#')
+            fa = act_initial_list[1]
+            mount_ = act_initial_list[2]
+            hw_thrust = db.session.query(hwThrust).filter_by(failAction=fa, mount=mount_, ac_size=actuatorSize_).first()
+            sfMax, sfMin, natMax, natMin, comment1, comment2, comment3, packing_friction, seatload_force, kn, seatload_factor = \
+                act_fun_output[2], act_fun_output[3], act_fun_output[4], act_fun_output[5], act_fun_output[12], \
+                act_fun_output[13], act_fun_output[14], act_fun_output[6], act_fun_output[7], act_fun_output[15], \
+                act_fun_output[16]
+            if hw_thrust:
+                maxHW = hw_thrust.max_thrust
+            else:
+                maxHW = 'none'
 
-            v_details.rating_v = f"{acSize}#{travel}#{smin}#{smax}#{fail_action}#{setP}#{act_fun_output[2]}#{act_fun_output[3]}#{act_fun_output[4]}#{act_fun_output[5]}#{act_fun_output[-2]}#{act_fun_output[-3]}#{act_fun_output[-4]}#{act_fun_output[6]}#{round(act_fun_output[7], 2)}#{act_fun_output[-1]}" \
-                                 f"#{stemArea}#{actuatorSize_}#{springRate}#{springWindUp}#{maxSpringLoad}#{frictionBand}#{reqHW}#{maxHW}"
+            v_details.rating_v = f"{acSize}#{travel}#{smin}#{smax}#{fail_action}#{setP}#{sfMax}#{sfMin}#{natMax}#{natMin}#{comment1}#{comment2}#{comment3}#{packing_friction}#{round(seatload_force, 2)}#{kn}" \
+                                 f"#{stemArea}#{actuatorSize_}#{springRate}#{springWindUp}#{maxSpringLoad}#{frictionBand}#{reqHW}#{maxHW}#{seatload_factor}"
             print(
                 f"{acSize}#{travel}#{smin}#{smax}#{fail_action}#{setP}#{act_fun_output[2]}#{act_fun_output[3]}#{act_fun_output[4]}#{act_fun_output[5]}#{act_fun_output[-1]}#{act_fun_output[-2]}#{act_fun_output[-3]}")
             db.session.commit()
@@ -5325,26 +5666,38 @@ def selectActuator():
 
 @app.route('/accessories', methods=["GET", "POST"])
 def accessories():
-    return render_template("Accessories & Fittings.html", title='Accessories', item_d=selected_item)
+    item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+    item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+    item_index = item_list.index(item_details)
+    return render_template("Accessories & Fittings.html", title='Accessories', item_d=selected_item, page='accessories',
+                           item_index=item_index)
 
 
 @app.route('/item-notes', methods=["GET", "POST"])
 def itemNotes():
+    item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+    item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+    item_index = item_list.index(item_details)
     if request.method == 'POST':
         data = request.form.get('abc')
         return f"{data}"
-    return render_template("Item Notes.html", title='Item Notes', item_d=selected_item)
+    return render_template("Item Notes.html", title='Item Notes', item_d=selected_item, page='itemNotes',
+                           item_index=item_index)
 
 
 @app.route('/project-notes', methods=["GET", "POST"])
 def projectNotes():
+    item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+    item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+    item_index = item_list.index(item_details)
     # with app.app_context():
     #     Cv_value = db.session.query(globeTable).filter_by(trimTypeID=2, flow=0, charac=0,
     #                                                       size=6, coeffID=0)
     #     Fl_value = db.session.query(globeTable).filter_by(trimTypeID=2, flow=0, charac=0,
     #                                                       size=6, coeffID=1)
 
-    return render_template("Project Notes.html", title='Project Notes', item_d=selected_item)
+    return render_template("Project Notes.html", title='Project Notes', item_d=selected_item, page='projectNotes',
+                           item_index=item_index)
 
 
 @app.route('/delete-cases/<case_id>', methods=["GET", "POST"])
@@ -5417,13 +5770,13 @@ def addItem():
         return redirect(url_for('home'))
 
 
-@app.route('/nextItem/<control>', methods=['GET', 'POST'])
-def nextItem(control):
+@app.route('/nextItem/<control>/<page>', methods=['GET', 'POST'])
+def nextItem(control, page):
     global selected_item
     with app.app_context():
-        item_all = itemMaster.query.all()
-        len_items = len(item_all)
         item_1 = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_all = db.session.query(itemMaster).filter_by(projectID=item_1.projectID).all()
+        len_items = len(item_all)
         item_1_index = item_all.index(item_1)
         if control == 'next':
             if selected_item.id < len_items:
@@ -5442,7 +5795,7 @@ def nextItem(control):
 
         selected_item = item_1
 
-        return redirect(url_for('valveSizing'))
+        return redirect(url_for(page))
 
 
 # @app.route('/generate-csv', methods=['GET', 'POST'])
@@ -5530,7 +5883,7 @@ def generate_csv():
         vSize = last_case.vaporInlet
 
         # shutoffDelp, rating, endconnection, endfinish, bonnettype, nde1, nde2, gasketmaterial, trimtype, flowdirection, seat material, discMaterial, seatleakage class
-        shutoffDelp = float(v_details.shutOffDelP)
+        shutoffDelp = float(v_details.shutOffDelP) * 14.5
         rating_ = rating.query.get(v_details.rating).size
         end_connection = endConnection.query.get(v_details.endConnection_v).name
         end_finish = endFinish.query.get(v_details.endFinish_v).name
@@ -5602,6 +5955,8 @@ def preferences():
     units_pref = [length_unit_list, flowrate_unit_list, pressure_unit_list, temp_unit_list]
     with app.app_context():
         item_1 = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_1.projectID).all()
+        item_index = item_list.index(item_1)
         if request.method == "POST":
             pres = request.form.get('pres')
             fr = request.form.get('fr')
@@ -5638,7 +5993,8 @@ def preferences():
             db.session.commit()
             return redirect(url_for('valveSizing'))
 
-        return render_template('preferences.html', title='Preferences', length_unit=units_pref, item_d=item_1)
+        return render_template('preferences.html', title='Preferences', length_unit=units_pref, item_d=item_1,
+                               page='preferences', item_index=item_index)
 
 
 def interpolate(data, x_db, y_db, vtype):
@@ -5737,8 +6093,16 @@ def interpolate_percent(data, x_db, vtype):
 def selectValve():
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
         cases = db.session.query(itemCases).filter_by(itemID=item_details.id).all()
-        last_case = cases[len(cases) - 1]
+        cv_values = []
+        for i in cases:
+            cv_value = i.CV
+            cv_values.append(cv_value)
+        min_cv = min(cv_values)
+        max_cv = max(cv_values)
+        # last_case = cases[len(cases) - 1]
         if request.method == "POST":
             if request.form.get('getv'):
                 vType = request.form.get('valveType')
@@ -5746,6 +6110,15 @@ def selectValve():
                 flowChara = request.form.get('flowChar')
                 flowDirec = request.form.get('flowDir')
                 rating_v = request.form.get('rating')
+                # update trim type and flow direction and flow character
+                valve_det = db.session.query(valveDetails).filter_by(itemID=item_details.id).first()
+                if flowChara == 'equal':
+                    fc = 1
+                else:
+                    fc = 2
+                valve_det.body_v = trimType
+                valve_det.flowCharacter_v = fc
+                db.session.commit()
                 return_globe_data = []
                 if (vType == 'globe') and (rating_v in ['150', '300', '600']):
                     rating_v = '(150_300_600)'
@@ -5764,16 +6137,16 @@ def selectValve():
                               i.nine, i.ten, 0.89, travel, seat_bore, i.id, i.size]
                     return_globe_data.append(i_list)
                 print(return_globe_data)
-                cv_dummy = last_case.CV
+                # cv_dummy = last_case.CV
                 # print(cv_dummy)
                 index_to_remove = []
                 for i in return_globe_data:
-                    if i[0] < cv_dummy < i[9]:
+                    if i[0] < min_cv < i[9]:
                         a = 0
                         while True:
-                            if i[a] == cv_dummy:
+                            if i[a] == min_cv:
                                 break
-                            elif i[a] > cv_dummy:
+                            elif i[a] > min_cv:
                                 break
                             else:
                                 a += 1
@@ -5781,7 +6154,21 @@ def selectValve():
                         # print(a)
                         # print('CV in Range')
                         # print(i)
+                    if i[0] < max_cv < i[9]:
+                        b = 0
+                        while True:
+                            if i[b] == max_cv:
+                                break
+                            elif i[b] > max_cv:
+                                break
+                            else:
+                                b += 1
+                        i.append(b)
+                        # print(a)
+                        # print('CV in Range')
+                        # print(i)
                     else:
+                        i.append(10)
                         i.append(10)
                         index_to_remove.append(return_globe_data.index(i))
                         # print(f"Index to remove: {index_to_remove}")
@@ -5792,119 +6179,136 @@ def selectValve():
                     del return_globe_data[ele]
 
                 print(f'The final return globe is: {return_globe_data}')
-                return render_template('select_valve_size.html', item_d=item_details, data=return_globe_data)
+                return render_template('select_valve_size.html', item_d=item_details, data=return_globe_data,
+                                       page='selectValve', item_index=item_index)
             elif request.form.get('select'):
-                valve_d_id = request.form.get('valve')
-                aaaaa = last_case.reqStage
-                aaaaa_list = aaaaa.split('+')
-                # print(aaaaa_list, len(aaaaa_list))
-                seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, vSizeUnit, iPipeSchUnit, oPipeSchUnit, iTempUnit, sg_choice = \
-                    float(aaaaa_list[0]), aaaaa_list[1], float(aaaaa_list[2]), float(aaaaa_list[3]), float(
-                        aaaaa_list[4]), aaaaa_list[5], \
-                    aaaaa_list[6], \
-                    aaaaa_list[7], aaaaa_list[8], aaaaa_list[9], aaaaa_list[10], aaaaa_list[11], aaaaa_list[12], \
-                    aaaaa_list[13], aaaaa_list[14], aaaaa_list[15], aaaaa_list[16]
-                select_dict = db.session.query(globeTable).filter_by(id=int(valve_d_id)).first()
-                select_dict_fl = db.session.query(globeTable).filter_by(id=int(valve_d_id) + 1).first()
-                select_dict_xt = db.session.query(globeTable).filter_by(id=int(valve_d_id) + 2).first()
-                select_dict_fd = db.session.query(globeTable).filter_by(id=int(valve_d_id) + 3).first()
+                for last_case in cases:
+                    valve_d_id = request.form.get('valve')
+                    aaaaa = last_case.reqStage
+                    aaaaa_list = aaaaa.split('+')
+                    # print(aaaaa_list, len(aaaaa_list))
+                    seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, vSizeUnit, iPipeSchUnit, oPipeSchUnit, iTempUnit, sg_choice = \
+                        float(aaaaa_list[0]), aaaaa_list[1], float(aaaaa_list[2]), float(aaaaa_list[3]), float(
+                            aaaaa_list[4]), aaaaa_list[5], \
+                        aaaaa_list[6], \
+                        aaaaa_list[7], aaaaa_list[8], aaaaa_list[9], aaaaa_list[10], aaaaa_list[11], aaaaa_list[12], \
+                        aaaaa_list[13], aaaaa_list[14], aaaaa_list[15], aaaaa_list[16]
+                    select_dict = db.session.query(globeTable).filter_by(id=int(valve_d_id)).first()
+                    select_dict_fl = db.session.query(globeTable).filter_by(id=int(valve_d_id) + 1).first()
+                    select_dict_xt = db.session.query(globeTable).filter_by(id=int(valve_d_id) + 2).first()
+                    select_dict_fd = db.session.query(globeTable).filter_by(id=int(valve_d_id) + 3).first()
 
-                v_size = round(meta_convert_P_T_FR_L('L', select_dict.size, 'inch', 'inch', 1000))
-                # get cv for o_percent
-                # get valveType from valveDetails
-                v_det_element = db.session.query(valveDetails).filter_by(itemID=last_case.itemID).first()
-                valve_type_ = v_det_element.ratedCV
+                    v_size = round(meta_convert_P_T_FR_L('L', select_dict.size, 'inch', 'inch', 1000))
+                    # get cv for o_percent
+                    # get valveType from valveDetails
+                    v_det_element = db.session.query(valveDetails).filter_by(itemID=last_case.itemID).first()
+                    valve_type_ = v_det_element.ratedCV
 
-                fl = interpolate(last_case.CV, select_dict, select_dict_fl, valve_type_)
-                xt = interpolate(last_case.CV, select_dict, select_dict_xt, valve_type_)
-                fd = interpolate_fd(last_case.CV, select_dict, select_dict_fd, valve_type_)
-                if last_case.fluidState == 'Liquid':
-                    final_cv = getCVresult(fl_unit, last_case.sGravity, iPresUnit, last_case.iPressure,
-                                           last_case.flowrate,
-                                           last_case.oPressure,
-                                           oPresUnit, vPresUnit, last_case.vPressure, cPresUnit,
-                                           last_case.criticalPressure,
-                                           last_case.iPipeSize,
-                                           iPipeUnit, last_case.oPipeSize, oPipeUnit, v_size, 'inch', last_case.iTemp,
-                                           select_dict.ten, fl, fd,
-                                           last_case.viscosity, iTempUnit)
-                else:
-                    final_cv = getCVGas(fl_unit, last_case.sGravity, sg_choice, last_case.iPressure, iPresUnit,
-                                        last_case.oPressure, oPresUnit, v_size, 'inch',
-                                        last_case.flowrate, last_case.iTemp, iTempUnit, select_dict.ten,
-                                        last_case.iPipeSize, iPipeUnit, last_case.oPipeSize, oPipeUnit, xt,
-                                        rw_noise,
-                                        last_case.vaporMW)
-                # print(f"last_cv: {final_cv}")
-                fl = interpolate(final_cv, select_dict, select_dict_fl, valve_type_)
-                xt = interpolate(final_cv, select_dict, select_dict_xt, valve_type_)
-                fd = interpolate_fd(final_cv, select_dict, select_dict_fd, valve_type_)
+                    fl = interpolate(last_case.CV, select_dict, select_dict_fl, valve_type_)
+                    xt = interpolate(last_case.CV, select_dict, select_dict_xt, valve_type_)
+                    fd = interpolate_fd(last_case.CV, select_dict, select_dict_fd, valve_type_)
+                    rated_cv_tex = select_dict.ten
+                    if last_case.fluidState == 'Liquid':
+                        final_cv = getCVresult(fl_unit, last_case.sGravity, iPresUnit, last_case.iPressure,
+                                               last_case.flowrate,
+                                               last_case.oPressure,
+                                               oPresUnit, vPresUnit, last_case.vPressure, cPresUnit,
+                                               last_case.criticalPressure,
+                                               last_case.iPipeSize,
+                                               iPipeUnit, last_case.oPipeSize, oPipeUnit, v_size, 'inch',
+                                               last_case.iTemp,
+                                               select_dict.ten, fl, fd,
+                                               last_case.viscosity, iTempUnit)
+                    else:
+                        final_cv = getCVGas(fl_unit, last_case.sGravity, sg_choice, last_case.iPressure, iPresUnit,
+                                            last_case.oPressure, oPresUnit, v_size, 'inch',
+                                            last_case.flowrate, last_case.iTemp, iTempUnit, select_dict.ten,
+                                            last_case.iPipeSize, iPipeUnit, last_case.oPipeSize, oPipeUnit, xt,
+                                            rw_noise,
+                                            last_case.vaporMW)
+                    # print(f"last_cv: {final_cv}")
+                    fl = interpolate(final_cv, select_dict, select_dict_fl, valve_type_)
+                    xt = interpolate(final_cv, select_dict, select_dict_xt, valve_type_)
+                    fd = interpolate_fd(final_cv, select_dict, select_dict_fd, valve_type_)
 
-                if last_case.fluidState == 'Liquid':
-                    final_cv1 = getCVresult(fl_unit, last_case.sGravity, iPresUnit, last_case.iPressure,
-                                            last_case.flowrate,
-                                            last_case.oPressure,
-                                            oPresUnit, vPresUnit, last_case.vPressure, cPresUnit,
-                                            last_case.criticalPressure,
-                                            last_case.iPipeSize,
-                                            iPipeUnit, last_case.oPipeSize, oPipeUnit, v_size, 'inch', last_case.iTemp,
-                                            final_cv, fl, fd,
-                                            last_case.viscosity, iTempUnit)
-                else:
-                    final_cv1 = getCVGas(fl_unit, last_case.sGravity, sg_choice, last_case.iPressure, iPresUnit,
-                                         last_case.oPressure, oPresUnit, v_size, 'inch',
-                                         last_case.flowrate, last_case.iTemp, iTempUnit, final_cv,
-                                         last_case.iPipeSize, iPipeUnit, last_case.oPipeSize, oPipeUnit, xt,
-                                         rw_noise,
-                                         last_case.vaporMW)
+                    if last_case.fluidState == 'Liquid':
+                        final_cv1 = getCVresult(fl_unit, last_case.sGravity, iPresUnit, last_case.iPressure,
+                                                last_case.flowrate,
+                                                last_case.oPressure,
+                                                oPresUnit, vPresUnit, last_case.vPressure, cPresUnit,
+                                                last_case.criticalPressure,
+                                                last_case.iPipeSize,
+                                                iPipeUnit, last_case.oPipeSize, oPipeUnit, v_size, 'inch',
+                                                last_case.iTemp,
+                                                final_cv, fl, fd,
+                                                last_case.viscosity, iTempUnit)
+                    else:
+                        final_cv1 = getCVGas(fl_unit, last_case.sGravity, sg_choice, last_case.iPressure, iPresUnit,
+                                             last_case.oPressure, oPresUnit, v_size, 'inch',
+                                             last_case.flowrate, last_case.iTemp, iTempUnit, final_cv,
+                                             last_case.iPipeSize, iPipeUnit, last_case.oPipeSize, oPipeUnit, xt,
+                                             rw_noise,
+                                             last_case.vaporMW)
 
-                o_percent = interpolate_percent(final_cv1, select_dict, valve_type_)
-                fl = interpolate(final_cv1, select_dict, select_dict_fl, valve_type_)
-                xt = interpolate(final_cv1, select_dict, select_dict_xt, valve_type_)
-                fd = interpolate_fd(final_cv1, select_dict, select_dict_fd, valve_type_)
+                    o_percent = interpolate_percent(final_cv1, select_dict, valve_type_)
+                    fl = interpolate(final_cv1, select_dict, select_dict_fl, valve_type_)
+                    xt = interpolate(final_cv1, select_dict, select_dict_xt, valve_type_)
+                    fd = interpolate_fd(final_cv1, select_dict, select_dict_fd, valve_type_)
+                    print('final fl, xt, select dict')
+                    print(fl, xt, select_dict_xt.id)
 
-                # print(fl, xt, select_dict_xt.id)
+                    valve_data_ = db.session.query(globeTable).filter_by(id=valve_d_id).first()
+                    seat_bore = float(valve_data_.charac.split('#')[7])
+                    travel = valve_data_.charac.split('#')[6]
 
-                if last_case.fluidState == 'Liquid':
-                    liqSizing(last_case.flowrate, last_case.sGravity, last_case.iPressure, last_case.oPressure,
-                              last_case.vPressure, last_case.criticalPressure, last_case.oPipeSize, last_case.iPipeSize,
-                              v_size, last_case.iTemp, final_cv1, fl,
-                              last_case.viscosity, seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, item_details,
-                              fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, 'inch',
-                              last_case.iPipeSizeSch, iPipeSchUnit, last_case.oPipeSizeSch, oPipeSchUnit, iTempUnit,
-                              o_percent, fd)
-                    redirect(url_for('valveSizing'))
-                else:
-                    gasSizing(last_case.iPressure, last_case.oPressure, last_case.iPipeSize, last_case.oPipeSize,
-                              v_size,
-                              last_case.sGravity, last_case.flowrate, last_case.iTemp, final_cv1, rw_noise,
-                              last_case.vPressure,
-                              seatDia, seatDiaUnit,
-                              sosPipe, densityPipe, last_case.criticalPressure, last_case.viscosity, item_details,
-                              fl_unit,
-                              iPresUnit,
-                              oPresUnit, vPresUnit, iPipeUnit, oPipeUnit, 'inch',
-                              last_case.iPipeSizeSch,
-                              iPipeSchUnit, last_case.oPipeSizeSch, oPipeSchUnit, iTempUnit, xt, last_case.vaporMW,
-                              sg_choice, o_percent, fd)
-                    redirect(url_for('valveSizing'))
+                    if last_case.fluidState == 'Liquid':
+                        liqSizing(last_case.flowrate, last_case.sGravity, last_case.iPressure, last_case.oPressure,
+                                  last_case.vPressure, last_case.criticalPressure, last_case.oPipeSize,
+                                  last_case.iPipeSize,
+                                  v_size, last_case.iTemp, final_cv1, fl,
+                                  last_case.viscosity, seat_bore, 'inch', sosPipe, densityPipe, rw_noise,
+                                  item_details,
+                                  fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, 'inch',
+                                  last_case.iPipeSizeSch, iPipeSchUnit, last_case.oPipeSizeSch, oPipeSchUnit, iTempUnit,
+                                  o_percent, fd, travel, rated_cv_tex)
+                        db.session.delete(last_case)
+                        db.session.commit()
+                    else:
+                        gasSizing(last_case.iPressure, last_case.oPressure, last_case.iPipeSize, last_case.oPipeSize,
+                                  v_size,
+                                  last_case.sGravity, last_case.flowrate, last_case.iTemp, final_cv1, rw_noise,
+                                  last_case.vPressure,
+                                  seat_bore, 'inch',
+                                  sosPipe, densityPipe, last_case.criticalPressure, last_case.viscosity, item_details,
+                                  fl_unit,
+                                  iPresUnit,
+                                  oPresUnit, vPresUnit, iPipeUnit, oPipeUnit, 'inch',
+                                  last_case.iPipeSizeSch,
+                                  iPipeSchUnit, last_case.oPipeSizeSch, oPipeSchUnit, iTempUnit, xt, last_case.vaporMW,
+                                  sg_choice, o_percent, fd, travel, rated_cv_tex)
+
+                        db.session.delete(last_case)
+                        db.session.commit()
+
+                redirect(url_for('valveSizing'))
 
                 return redirect(url_for('valveSizing'))
 
-    return render_template('select_valve_size.html', item_d=item_details, data=[])
+    return render_template('select_valve_size.html', item_d=item_details, data=[], page='selectValve',
+                           item_index=item_index)
 
 
 @app.route('/view-data', methods=['GET', 'POST'])
 def viewData():
     data2 = table_data_render
-    return render_template('view_data.html', data=data2)
+    return render_template('view_data.html', data=data2, page='viewData')
 
 
 @app.route('/render-data/<topic>', methods=['GET'])
 def renderData(topic):
     table_ = table_data_render[int(topic) - 1]['db']
     table_data = table_.query.all()
-    return render_template("render_data.html", data=table_data, topic=topic)
+    return render_template("render_data.html", data=table_data, topic=topic, page='renderData')
 
 
 @app.route('/download-data/<topic>', methods=['GET'])
@@ -5953,7 +6357,7 @@ def uploadData(topic):
             db.session.add(new_el_data)
             db.session.commit()
         return redirect(url_for('renderData', topic=int(topic)))
-    return render_template('importproject.html', topic=topic, route='uploadData')
+    return render_template('importproject.html', topic=topic, route='uploadData', page='uploadData')
 
 
 @app.route('/del-proj/<proj_id>', methods=['GET'])
@@ -6065,7 +6469,7 @@ def importProject():
                     db.session.commit()
 
         return redirect(url_for('home'))
-    return render_template('importproject2.html')
+    return render_template('importproject2.html', page='importProject')
 
 
 @app.route('/export-proj/<proj_id>', methods=['GET'])

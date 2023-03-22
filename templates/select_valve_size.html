@@ -41,22 +41,30 @@
         <div class="col-4">
           <div class="row">
             <div class="col-12" style="text-align: center;">
-              <p style="border: groove; border-radius: 0px;">AQ {{item_d.tag_no}} 00{{item_d.id}} {{item_d.alt}}</p>
+              <p style="border: groove; border-radius: 0px;">AQ {{item_d.tag_no}} 00{{item_index+1}} {{item_d.alt}}</p>
             </div>
             <div class="col-3">
-              <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+              <a href="{{url_for('nextItem', control='first', page=page)}}">
+                <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+              </a>
               <label for="">First</label>
             </div>
             <div class="col-3">
-              <i class="fa-solid fa-backward-step fa-1x"></i><br>
+              <a href="{{url_for('nextItem', control='prev', page=page)}}">
+                <i class="fa-solid fa-backward-step fa-1x"></i><br>
+              </a>
               <label for="">Prev.</label>
             </div>
             <div class="col-3">
-              <i class="fa-solid fa-forward-step fa-1x"></i><br>
+              <a href="{{url_for('nextItem', control='next', page=page)}}">
+                <i class="fa-solid fa-forward-step fa-1x"></i><br>
+              </a>
               <label for="">Next</label>
             </div>
             <div class="col-3">
-              <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+              <a href="{{url_for('nextItem', control='last', page=page)}}">
+                <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+              </a>
               <label for="">Last</label>
             </div>
           </div>
@@ -147,15 +155,15 @@
         <div class="row">
           {% for i in data %}
             <div class="col-1" style="">
-              <input type="radio" id="valve" name="valve" value="{{i[-3]}}" style="text-align:center">
+              <input type="radio" id="valve" name="valve" value="{{i[13]}}" style="text-align:center">
             </div>
             <div class="col-1" style="border-style:  groove;">
-              <div class="row"><div class="col-12">{{i[-2]}}</div></div>
-              <div class="row"><div class="col-12">{{i[-4]}}</div></div>
-              <div class="row"><div class="col-12">{{i[-5]}}</div></div>
+              <div class="row"><div class="col-12">{{i[14]}}</div></div>
+              <div class="row"><div class="col-12">{{i[12]}}</div></div>
+              <div class="row"><div class="col-12">{{i[11]}}</div></div>
             </div>
             {% for a in range(14)%}
-              {% if a == (i[-1] -1) %}
+              {% if (i[15]-1) <= a <= i[16] %}
                 <div class="col-1" style="background-color: #CEEDC7;border-style:  groove;">{{i[a]}}</div><br>
               {% elif a < 10 %}
                 <div class="col-1" style="border-style:  groove;">{{i[a]}}</div><br>

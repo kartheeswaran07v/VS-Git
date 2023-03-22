@@ -50,28 +50,28 @@
         <div class="col-4">
           <div class="row">
             <div class="col-12" style="text-align: center;">
-              <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_d.id}} {{item_d.alt}}</p>
+              <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_index+1}} {{item_d.alt}}</p>
             </div>
             <div class="col-3">
-              <a href="{{url_for('nextItem', control='first')}}">
+              <a href="{{url_for('nextItem', control='first', page=page)}}">
                 <i class="fa-solid fa-backward-fast fa-1x"></i><br>
               </a>
               <label for="">First</label>
             </div>
             <div class="col-3">
-              <a href="{{url_for('nextItem', control='prev')}}">
+              <a href="{{url_for('nextItem', control='prev', page=page)}}">
                 <i class="fa-solid fa-backward-step fa-1x"></i><br>
               </a>
               <label for="">Prev.</label>
             </div>
             <div class="col-3">
-              <a href="{{url_for('nextItem', control='next')}}">
+              <a href="{{url_for('nextItem', control='next', page=page)}}">
                 <i class="fa-solid fa-forward-step fa-1x"></i><br>
               </a>
               <label for="">Next</label>
             </div>
             <div class="col-3">
-              <a href="{{url_for('nextItem', control='last')}}">
+              <a href="{{url_for('nextItem', control='last', page=page)}}">
                 <i class="fa-solid fa-forward-fast fa-1x"></i><br>
               </a>
               <label for="">Last</label>
@@ -136,20 +136,39 @@
                     <label style="width:50px;font-size:16px;" for="">Units</label>
 
                   </th>
-                  {% for i in len_c %}
-                  <th style="width:20%">
+                  {% if len_s > 0 %}
+                    {% for i in len_c %}
+                      <th style="width:20%">
 
-                    <button type="button" name="button" style="border: 1px solid white;"><a href="{{url_for('deleteCase', case_id=cases[i].id)}}">x</a></button>
-                    <label style="width:50px;font-size:16px;" for="">Case{{i+1}}</label>
+                        <button type="button" name="button" style="border: 1px solid white;"><a href="{{url_for('deleteCase', case_id=cases[i].id)}}">x</a></button>
+                        <label style="width:50px;font-size:16px;" for="">Case{{i+1}}</label>
 
-                  </th>
+                      </th>
+                    {% endfor %}
+                    <th style="width:20%">
 
-                  {% endfor %}
-                  <th style="width:20%">
+                      <label style="width:50px;font-size:16px;" for="">Case-i</label>
 
-                    <label style="width:50px;font-size:16px;" for="">Case-i</label>
+                    </th>
+                  {% else %}
+                    <th style="width:20%">
 
-                  </th>
+                      <label style="width:50px;font-size:16px;" for="">Case 1</label>
+
+                    </th>
+                    <th style="width:20%">
+
+                      <label style="width:50px;font-size:16px;" for="">Case 2</label>
+
+                    </th>
+                    <th style="width:20%">
+
+                      <label style="width:50px;font-size:16px;" for="">Case 3</label>
+
+                    </th>
+                  {% endif %}
+
+
                 </tr>
               </thead>
               {% if len_s > 0 %}
@@ -164,9 +183,9 @@
                     </select>
                   </td>
                   {% for i in cases %}
-                    <td class="">{{i.flowrate}}</td>
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="flowrate" style="width:90px;border: 1px solid white;" value="{{i.flowrate}}"></td>
                   {% endfor %}
-                  <td style="width:90px;border: 1px solid #F55050;"><input id="flowrate" name="flowrate" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].flowrate}}"></input></td>
+                  <td style="width:90px;border: 1px solid #F55050;"><input id="flowrate" name="flowrate" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].flowrate}}"></td>
 
 
 
@@ -181,7 +200,7 @@
                     </select>
                   </td>
                   {% for i in cases %}
-                    <td class="">{{i.iPressure}}</td>
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="iPressure" style="width:90px;border: 1px solid white;" value="{{i.iPressure}}"></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id='iPressure' name="iPressure" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].iPressure}}"></input></td>
 
@@ -197,7 +216,7 @@
                     </select>
                   </td>
                   {% for i in cases %}
-                    <td class="">{{i.oPressure}}</td>
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="oPressure" style="width:90px;border: 1px solid white;" value="{{i.oPressure}}"></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="oPressure" name="oPressure" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].oPressure}}"></input></td>
 
@@ -213,7 +232,7 @@
                     </select>
                   </td>
                   {% for i in cases %}
-                    <td class="">{{i.iTemp}}</td>
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="iTemp" style="width:90px;border: 1px solid white;" value="{{i.iTemp}}"></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id='iTemp' name="iTemp" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].iTemp}}"></input></td>
 
@@ -229,7 +248,7 @@
                     </select>
                   </td>
                   {% for i in cases %}
-                    <td class="">{{i.vPressure}}</td>
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="vPressure" style="width:90px;border: 1px solid white;" value="{{i.vPressure}}"></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="vPressure" name="vPressure" style="width:90px;border: 1px solid white;"  value="{{cases[len_s-1].vPressure}}"></input></td>
                 </tr>
@@ -240,7 +259,7 @@
                     <td><label style="margin-left:5px;" for="sGravity">Specific Gravity</label></td>
                     <td style="width:90px;"><input style="width:90px;border: 1px solid white;"></input></td>
                     {% for i in cases %}
-                      <td class="">{{i.sGravity}}</td>
+                      <td style="width:90px;border: 1px solid #F55050;"><input name="sGravity" style="width:90px;border: 1px solid white;" value="{{i.sGravity}}"></td>
                     {% endfor %}
                     <td style="width:90px;border: 1px solid #F55050;"><input id='sGravity' name="sGravity" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].sGravity}}"></input></td>
                   </tr>
@@ -249,7 +268,7 @@
                     <td><label style="margin-left:5px;" for="sGravity">Specific Heat Ratio</label></td>
                     <td style="width:90px;"><input style="width:90px;border: 1px solid white;"></input></td>
                     {% for i in cases %}
-                      <td class="">{{i.sGravity}}</td>
+                      <td style="width:90px;border: 1px solid #F55050;"><input name="sGravity" style="width:90px;border: 1px solid white;" value="{{i.sGravity}}"></td>
                     {% endfor %}
                     <td style="width:90px;border: 1px solid #F55050;"><input name="sGravity" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].sGravity}}"></input></td>
                   </tr>
@@ -259,7 +278,7 @@
                   <td><label style="margin-left:5px;" for="viscosity">Viscosity</label></td>
                   <td style="width:90px;">Centipoise</td>
                   {% for i in cases %}
-                    <td class="">{{i.viscosity}}</td>
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="viscosity" style="width:90px;border: 1px solid white;" value="{{i.viscosity}}"></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="viscosity" name='viscosity' style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].viscosity}}"></input></td>
                 </tr>
@@ -276,7 +295,7 @@
                       </select>
                     </td>
                     {% for i in cases %}
-                      <td class="">{{i.vaporMW}}</td>
+                      <td style="width:90px;border: 1px solid #F55050;"><input name="sg_value" style="width:90px;border: 1px solid white;" value="{{i.vaporMW}}"></td>
                     {% endfor %}
                     <td style="width:90px;border: 1px solid #F55050;"><input name="sg_value" style="width:90px;border: 1px solid white;" value="{{cases[len_s-1].vaporMW}}"></input></td>
                   </tr>
@@ -285,8 +304,8 @@
                       <td>
                         <p></p>
                       </td>
-                      {% for i in cases %}
-                        <td class=""></td>
+                      {% for i in len_c %}
+                        <td style="width:90px;border: 1px solid #F55050;"><input name="z" style="width:90px;border: 1px solid white;" value="{{o_val[i][18]}}"></td>
                       {% endfor %}
                       <td style="width:90px;border: 1px solid #F55050;"><input name="z" style="width:90px;border: 1px solid white;"></input></td>
                     </tr>
@@ -466,8 +485,8 @@
 
                   <td></td>
                   {% for i in cases %}
-                    <td class="">{{i.Xt}}</td>
-                  {% endfor %}
+                        <td style="width:90px;border: 1px solid #F55050;"><input name="xt" style="width:90px;border: 1px solid white;" value="{{i.Xt}}"></td>
+                      {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input name="xt" style="width:90px;border: 1px solid white;"  value="{{cases[len_s-1].Xt}}"></td>
                 </tr>
 <!--                flp/xtp-->
@@ -701,8 +720,8 @@
                       {% endfor %}
                     </select>
                   </td>
-                  {% for i in cases %}
-                    <td class="">{{i.flowrate}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="flowrate" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="flowrate" name="flowrate" style="width:90px;border: 1px solid white;"></input></td>
 
@@ -718,8 +737,8 @@
                       {% endfor %}
                     </select>
                   </td>
-                  {% for i in cases %}
-                    <td class="">{{i.iPressure}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="iPressure" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id='iPressure' name="iPressure" style="width:90px;border: 1px solid white;"></input></td>
 
@@ -734,8 +753,8 @@
                       {% endfor %}
                     </select>
                   </td>
-                  {% for i in cases %}
-                    <td class="">{{i.oPressure}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="oPressure" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="oPressure" name="oPressure" style="width:90px;border: 1px solid white;"></input></td>
 
@@ -750,8 +769,8 @@
                       {% endfor %}
                     </select>
                   </td>
-                  {% for i in cases %}
-                    <td class="">{{i.iTemp}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="iTemp" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id='iTemp' name="iTemp" style="width:90px;border: 1px solid white;"></input></td>
 
@@ -767,8 +786,8 @@
                       {% endfor %}
                     </select>
                   </td>
-                  {% for i in cases %}
-                    <td class="">{{i.vPressure}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="vPressure" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="vPressure" name="vPressure" style="width:90px;border: 1px solid white;" value=""></input></td>
                 </tr>
@@ -778,8 +797,8 @@
                   <tr>
                     <td><label style="margin-left:5px;" for="sGravity">Specific Gravity</label></td>
                     <td style="width:90px;"><input style="width:90px;border: 1px solid white;"></input></td>
-                    {% for i in cases %}
-                      <td class="">{{i.sGravity}}</td>
+                    {% for i in range(2) %}
+                      <td style="width:90px;border: 1px solid #F55050;"><input name="sGravity" style="width:90px;border: 1px solid white;" value=""></td>
                     {% endfor %}
                     <td style="width:90px;border: 1px solid #F55050;"><input id='sGravity' name="sGravity" style="width:90px;border: 1px solid white;"></input></td>
                   </tr>
@@ -787,8 +806,8 @@
                   <tr>
                     <td><label style="margin-left:5px;" for="sGravity">Specific Heat Ratio</label></td>
                     <td style="width:90px;"><input style="width:90px;border: 1px solid white;"></input></td>
-                    {% for i in cases %}
-                      <td class="">{{i.sGravity}}</td>
+                    {% for i in range(2) %}
+                      <td style="width:90px;border: 1px solid #F55050;"><input name="sGravity" style="width:90px;border: 1px solid white;" value=""></td>
                     {% endfor %}
                     <td style="width:90px;border: 1px solid #F55050;"><input name="sGravity" style="width:90px;border: 1px solid white;"></input></td>
                   </tr>
@@ -797,8 +816,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="viscosity">Viscosity</label></td>
                   <td style="width:90px;">Centipoise</td>
-                  {% for i in cases %}
-                    <td class="">{{i.viscosity}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="viscosity" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input id="viscosity" name='viscosity' style="width:90px;border: 1px solid white;"></input></td>
                 </tr>
@@ -814,8 +833,8 @@
                         <option value="sg">Specific Gravity</option>
                       </select>
                     </td>
-                    {% for i in cases %}
-                      <td class="">{{i.vaporMW}}</td>
+                    {% for i in range(2) %}
+                      <td style="width:90px;border: 1px solid #F55050;"><input name="sg_value" style="width:90px;border: 1px solid white;" value=""></td>
                     {% endfor %}
                     <td style="width:90px;border: 1px solid #F55050;"><input name="sg_value" style="width:90px;border: 1px solid white;"></input></td>
                   </tr>
@@ -824,8 +843,8 @@
                       <td>
                         <p></p>
                       </td>
-                      {% for i in cases %}
-                        <td class=""></td>
+                      {% for i in range(2) %}
+                        <td style="width:90px;border: 1px solid #F55050;"><input name="z" style="width:90px;border: 1px solid white;" value=""></td>
                       {% endfor %}
                       <td style="width:90px;border: 1px solid #F55050;"><input name="z" style="width:90px;border: 1px solid white;"></input></td>
                     </tr>
@@ -861,8 +880,8 @@
                <tr>
                   <td style="margin-left:5px;"><label style="margin-left:5px;" for="">Calculated CV</label></td>
                   <td style="width:90px;"></td>
-                  {% for i in cases %}
-                    <td class="">{{i.CV}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -870,8 +889,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Open Percent</label></td>
                   <td style="width:90px;">%</td>
-                  {% for i in cases %}
-                    <td class="">{{i.openPercent}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -880,16 +899,16 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">x (delP/P1)</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][0]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Fk</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][1]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -898,8 +917,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Choked Drop</label></td>
                   <td></td>
-                  {% for i in cases %}
-                    <td class="">{{i.chokedDrop}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -908,64 +927,64 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Y</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][3][0:4]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Xt</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][4]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Xtp</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][5]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Fp</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][6]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Fd</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][7]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">RE No.</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][8]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Kc</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][9]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Ar</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][18]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -977,8 +996,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Ff</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][0]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -986,8 +1005,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Fp</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][5]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -1003,8 +1022,8 @@
                   {% endif %}
 
                   <td></td>
-                  {% for i in cases %}
-                    <td class="">{{i.Xt}}</td>
+                  {% for i in range(2) %}
+                    <td style="width:90px;border: 1px solid #F55050;"><input name="xt" style="width:90px;border: 1px solid white;" value=""></td>
                   {% endfor %}
                   <td style="width:90px;border: 1px solid #F55050;"><input name="xt" style="width:90px;border: 1px solid white;"  value=""></td>
                 </tr>
@@ -1013,24 +1032,24 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">FLp</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][3]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Kc</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][1]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Ar</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][6]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -1038,8 +1057,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Fd</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][2]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -1047,8 +1066,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">RE No.</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][4]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -1059,8 +1078,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Valve SPL</label></td>
                   <td>dBA</td>
-                  {% for i in cases %}
-                    <td class="">{{i.valveSPL}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -1068,8 +1087,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Valve Dia</label></td>
                   <td style="width:90px;"></td>
-                  {% for i in cases %}
-                    <td class="">{{i.vaporInlet}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></input></td>
                 </tr>
@@ -1077,8 +1096,8 @@
                 <tr>
                   <td> <label style="margin-left:5px;" for="">Pipe In. Vel.</label></td>
                   <td>m/s</td>
-                  {% for i in cases %}
-                    <td class="">{{i.iVelocity}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -1086,8 +1105,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Pipe Out. Vel.</label></td>
                   <td>m/s</td>
-                  {% for i in cases %}
-                    <td class="">{{i.oVelocity}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -1095,8 +1114,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Valve Velocity</label></td>
                   <td>m/s</td>
-                  {% for i in cases %}
-                    <td class="">{{i.pVelocity}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -1104,56 +1123,56 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Mac No. Up</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][10]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Mac No. Down</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][11]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Mac No. Valve</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][12]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Sonic Vel. Up</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][13]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Sonic Vel. Down</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][14]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Sonic Vel. Valve</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][15]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Outlet Density</label></td>
                   <td></td>
-                  {% for i in len_c %}
-                    <td class="">{{o_val[i][16]}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" value="" readonly></td>
                 </tr>
@@ -1162,8 +1181,8 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Trim Exit Vel</label></td>
                   <td>m/s</td>
-                  {% for i in cases %}
-                    <td class="">{{i.trimExVelocity}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -1184,16 +1203,16 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Power Lvl.(kw)</label></td>
                   <td></td>
-                  {% for i in cases %}
-                    <td class="">{{i.sigmaMR}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
                 <tr>
                   <td><label style="margin-left:5px;" for="">Warning</label></td>
                   <td></td>
-                  {% for i in cases %}
-                    <td class="">{{i.warning}}</td>
+                  {% for i in range(2) %}
+                    <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
                 </tr>
@@ -1219,7 +1238,7 @@
                 <tr>
                   <td><label style="margin-left:5px;" for="">Required Stages</label></td>
                   <td></td>
-                  {% for i in cases %}
+                  {% for i in range(2) %}
                     <td class=""></td>
                   {% endfor %}
                   <td style="width:90px;"><input style="width:90px;border: 1px solid white;" readonly></td>
@@ -1508,9 +1527,17 @@
                   <label for="ratedCV">Rated CV</label>
                 </div>
 
-                <div class="col-3">
-                  <input type="text" name="ratedCV" id="ratedCV" value="" style="width: 70px;height: 25px;border: 1px solid #F55050;">
-                </div>
+
+                {% if fState == 'Liquid' %}
+                  <div class="col-3">
+                    <input type="text" name="ratedCV" id="ratedCV" value="{{o_val[0][7]}}" style="width: 70px;height: 25px;border: 1px solid #F55050;">
+                  </div>
+                {% else %}
+                  <div class="col-3">
+                    <input type="text" name="ratedCV" id="ratedCV" value="{{o_val[0][19]}}" style="width: 70px;height: 25px;border: 1px solid #F55050;">
+                  </div>
+                {% endif %}
+
 
                 <div class="col-5" style='text-align: right;'>
                   <label for="vType">Valve Type</label>

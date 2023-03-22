@@ -40,22 +40,30 @@
     <div class="col-4">
       <div class="row">
         <div class="col-12" style="text-align: center;">
-          <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_d.id}} {{item_d.alt}}</p>
+          <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_index+1}} {{item_d.alt}}</p>
         </div>
         <div class="col-3">
-          <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+          <a href="{{url_for('nextItem', control='first', page=page)}}">
+            <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+          </a>
           <label for="">First</label>
         </div>
         <div class="col-3">
-          <i class="fa-solid fa-backward-step fa-1x"></i><br>
+          <a href="{{url_for('nextItem', control='prev', page=page)}}">
+            <i class="fa-solid fa-backward-step fa-1x"></i><br>
+          </a>
           <label for="">Prev.</label>
         </div>
         <div class="col-3">
-          <i class="fa-solid fa-forward-step fa-1x"></i><br>
+          <a href="{{url_for('nextItem', control='next', page=page)}}">
+            <i class="fa-solid fa-forward-step fa-1x"></i><br>
+          </a>
           <label for="">Next</label>
         </div>
         <div class="col-3">
-          <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+          <a href="{{url_for('nextItem', control='last', page=page)}}">
+            <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+          </a>
           <label for="">Last</label>
         </div>
       </div>

@@ -41,24 +41,32 @@
     <div class="col-4">
       <div class="row">
         <div class="col-12" style="text-align: center;">
-          <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_d.id}} {{item_d.alt}}</p>
+          <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_index+1}} {{item_d.alt}}</p>
         </div>
         <div class="col-3">
-          <i class="fa-solid fa-backward-fast fa-1x"></i><br>
-          <label for="">First</label>
-        </div>
-        <div class="col-3">
-          <i class="fa-solid fa-backward-step fa-1x"></i><br>
-          <label for="">Prev.</label>
-        </div>
-        <div class="col-3">
-          <i class="fa-solid fa-forward-step fa-1x"></i><br>
-          <label for="">Next</label>
-        </div>
-        <div class="col-3">
-          <i class="fa-solid fa-forward-fast fa-1x"></i><br>
-          <label for="">Last</label>
-        </div>
+              <a href="{{url_for('nextItem', control='first', page=page)}}">
+                <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+              </a>
+              <label for="">First</label>
+            </div>
+            <div class="col-3">
+              <a href="{{url_for('nextItem', control='prev', page=page)}}">
+                <i class="fa-solid fa-backward-step fa-1x"></i><br>
+              </a>
+              <label for="">Prev.</label>
+            </div>
+            <div class="col-3">
+              <a href="{{url_for('nextItem', control='next', page=page)}}">
+                <i class="fa-solid fa-forward-step fa-1x"></i><br>
+              </a>
+              <label for="">Next</label>
+            </div>
+            <div class="col-3">
+              <a href="{{url_for('nextItem', control='last', page=page)}}">
+                <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+              </a>
+              <label for="">Last</label>
+            </div>
       </div>
     </div>
 
@@ -203,30 +211,30 @@
         </tr>
 
         <tbody>
-          {% for i in data2 %}
+          {% for i in range(len_items) %}
           <tr>
 <!--            {% if i.id == item_d.id %}-->
 <!--            <td><input type="radio" id="item{{i.id}}" name="item" value="{{i.id}}" checked></td>-->
 <!--            {% else %}-->
 <!--            <td><input type="radio" id="item" name="item" value="{{i.id}}"></td>-->
 <!--            {% endif %}-->
-            {% if i.id == item_d.id %}
-            <td><a href="{{url_for('getItems', item_id=i.id)}}" style="color:#3A98B9">⦿</a></td>
+            {% if data2[i].id == item_d.id %}
+            <td><a href="{{url_for('getItems', item_id=data2[i].id)}}" style="color:#3A98B9">⦿</a></td>
             {% else %}
-            <td><a href="{{url_for('getItems', item_id=i.id)}}" >⦾</a></td>
+            <td><a href="{{url_for('getItems', item_id=data2[i].id)}}" >⦾</a></td>
             {% endif %}
-            <td>{{i.id}}</td>
-            <td>{{i.alt}}</td>
-            <td>{{i.tag_no}}</td>
-            <td>{{i.serialID}}</td>
-            <td>{{i.sizeID}} in.</td>
-            <td>{{i.modelID}}</td>
-            <td>{{i.typeID}}</td>
-            <td>{{i.ratingID}}</td>
-            <td>{{i.materialID}}</td>
-            <td>{{i.unit_price}}</td>
-            <td>{{i.qty}}</td>
-            <td>{{i.projectID}}</td>
+            <td>{{i+1}}</td>
+            <td>{{data2[i].alt}}</td>
+            <td>{{data2[i].tag_no}}</td>
+            <td>{{data2[i].serialID}}</td>
+            <td>{{data2[i].sizeID}} in.</td>
+            <td>{{data2[i].modelID}}</td>
+            <td>{{data2[i].typeID}}</td>
+            <td>{{data2[i].ratingID}}</td>
+            <td>{{data2[i].materialID}}</td>
+            <td>{{data2[i].unit_price}}</td>
+            <td>{{data2[i].qty}}</td>
+            <td>{{data2[i].projectID}}</td>
           </tr>
 
           {% endfor %}

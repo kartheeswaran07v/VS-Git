@@ -40,24 +40,32 @@
       <div class="col-4">
         <div class="row">
           <div class="col-12" style="text-align: center;">
-            <p style="border: groove; border-radius: 0px;">AQ 00051 002 A</p>
+            <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_index+1}} {{item_d.alt}}</p>
           </div>
           <div class="col-3">
-            <i class="fa-solid fa-backward-fast fa-1x"></i><br>
-            <label for="">First</label>
-          </div>
-          <div class="col-3">
-            <i class="fa-solid fa-backward-step fa-1x"></i><br>
-            <label for="">Prev.</label>
-          </div>
-          <div class="col-3">
-            <i class="fa-solid fa-forward-step fa-1x"></i><br>
-            <label for="">Next</label>
-          </div>
-          <div class="col-3">
-            <i class="fa-solid fa-forward-fast fa-1x"></i><br>
-            <label for="">Last</label>
-          </div>
+              <a href="{{url_for('nextItem', control='first', page=page)}}">
+                <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+              </a>
+              <label for="">First</label>
+            </div>
+            <div class="col-3">
+              <a href="{{url_for('nextItem', control='prev', page=page)}}">
+                <i class="fa-solid fa-backward-step fa-1x"></i><br>
+              </a>
+              <label for="">Prev.</label>
+            </div>
+            <div class="col-3">
+              <a href="{{url_for('nextItem', control='next', page=page)}}">
+                <i class="fa-solid fa-forward-step fa-1x"></i><br>
+              </a>
+              <label for="">Next</label>
+            </div>
+            <div class="col-3">
+              <a href="{{url_for('nextItem', control='last', page=page)}}">
+                <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+              </a>
+              <label for="">Last</label>
+            </div>
         </div>
       </div>
 
@@ -107,10 +115,15 @@
             <label>Balancing</label>
           </div>
           <div class="col-2">
-            <select name="balance" style="border-left: 1px groove;">
-              <option value="unbalanced">Unbalanced</option>
-              <option value="balanced">Balanced</option>
-            </select>
+            <input list="browsers" name="balance" id="browser" value="{{v_list[0]}}" style="width: 75px;">
+            <datalist id="browsers" >
+                <option value="unbalanced">
+                <option value="balanced">
+            </datalist>
+<!--            <select name="balance" style="border-left: 1px groove;">-->
+<!--              <option value="unbalanced">Unbalanced</option>-->
+<!--              <option value="balanced">Balanced</option>-->
+<!--            </select>-->
           </div>
           <div class="col-2" style="text-align: right">
             <label>Flow Direction</label>
@@ -185,7 +198,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-11]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{v_list[10]}}"></td>
                 </tr>
                 <tr>
                   <td>Seat Load Force</td>
@@ -193,7 +206,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-10]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{v_list[11]}}"></td>
                 </tr>
                 <tr>
                   <td>P1</td>
@@ -239,7 +252,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="kn" style="width:130px;border: 1px solid white;" value="{{act_list[-9]}}"></td>
+                  <td style="width:130px;"><input type="text" name="kn" style="width:130px;border: 1px solid white;" value="{{act_list[15]}}"></td>
                 </tr>
 
 
@@ -285,7 +298,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="vClosed" style="width:130px;border: 1px solid white;" value="{{v_data[3]}}"></td>
+                  <td style="width:130px;"><input type="text" name="vClosed" style="width:130px;border: 1px solid white;" value="{{v_data[1]}}"></td>
                 </tr>
 
                 <tr>
@@ -295,7 +308,7 @@
 
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="vOpen" style="width:130px;border: 1px solid white;" value="{{v_data[2]}}"></td>
+                  <td style="width:130px;"><input type="text" name="vOpen" style="width:130px;border: 1px solid white;" value="{{act_list[13]}}"></td>
                 </tr>
 
 
@@ -305,7 +318,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="shutoff+" style="width:130px;border: 1px solid white;" value="{{v_data[1]}}"></td>
+                  <td style="width:130px;"><input type="text" name="shutoff+" style="width:130px;border: 1px solid white;" value="{{act_list[14]}}"></td>
                 </tr>
 
                   <td>Stem Area</td>
@@ -313,7 +326,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-8]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[16]}}"></td>
                 </tr>
 
                 <tr>
@@ -322,7 +335,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="actSize" style="width:130px;border: 1px solid white;" value="{{act_list[-7]}}"></td>
+                  <td style="width:130px;"><input type="text" name="actSize" style="width:130px;border: 1px solid white;" value="{{act_list[17]}}"></td>
                 </tr>
                 <tr>
                   <td> Actuator Travel</td>
@@ -363,7 +376,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-6]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[18]}}"></td>
                 </tr>
 
 
@@ -373,7 +386,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-5]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[19]}}"></td>
                 </tr>
 
 
@@ -383,7 +396,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-4]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[20]}}"></td>
                 </tr>
 
 
@@ -394,7 +407,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{air}}"></td>
                 </tr>
                 <tr>
                   <td>Set pressure</td>
@@ -410,8 +423,8 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  {% if act_list[4] == 'AFO' %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[8]}}"></td>
+                  {% if af == 'AFO' %}
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
                   {% else %}
                     <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
                   {% endif %}
@@ -423,10 +436,10 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  {% if act_list[4] == 'AFO' %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
+                  {% if af == 'AFO' %}
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
                   {% else %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[6]}}"></td>
+                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
                   {% endif %}
                 </tr>
 
@@ -436,7 +449,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-3]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[21]}}"></td>
                 </tr>
 
                  <tr>
@@ -445,7 +458,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-2]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[22]}}"></td>
                 </tr>
 
                 <tr>
@@ -454,7 +467,7 @@
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[-1]}}"></td>
+                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[23]}}"></td>
                 </tr>
 
 
