@@ -11,6 +11,10 @@ def createSpecSheet(case_data, units, other):
 
     workbook = xlsxwriter.Workbook(f'C:\\Users\\FCC\\Desktop\\{a_}.xlsx')
     worksheet = workbook.add_worksheet()
+    worksheet.set_paper(9)
+    worksheet.fit_to_pages(2, 1)
+    worksheet.print_area('A1:L73')
+    worksheet.set_margins(0.68, 0.44, 0.32, 0.16)
 
     bold = workbook.add_format(
         {'bold': True, 'bottom': 1, 'top': 1, 'right': 1, 'left': 1, 'border_color': '#B2B2B2', 'bg_color': '#EFF5F5'})

@@ -1,0 +1,27 @@
+{% block content %}
+{% include "header.html" %}
+
+
+
+    <div class="col-10" style="margin-top: 270px;">
+      <div class="row head">
+
+        <form action="{{url_for(route, page=page, item_id=item_id)}}" method="post">
+          <p>{{data}}</p>
+          <input type="submit" name="confirm" value="Confirm Delete">
+          <input type="submit" name="cancel" value="Cancel">
+        </form>
+      </div>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+{% include "footer.html" %}
+{% endblock %}

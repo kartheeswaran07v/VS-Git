@@ -17,22 +17,34 @@
           <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
             <h5 style="text-align: center;">Project</h5>
             <div class="col-2">
-              <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
+              <a href="{{url_for('projectDetails')}}">
+                <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
+              <a href="{{url_for('deleteProject', item_id=item_d.id, page=page)}}">
+                <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
+              <a href="{{url_for('copyProject', page=page, proj_id=item_d.projectID)}}">
+                <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
+              <a href="{{url_for('importProject', page=page)}}">
+                <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
+              <a href="{{url_for('exportProject', page=page)}}">
+                <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
+              <a href="{{url_for('preferences', page=page)}}">
+                <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -72,24 +84,34 @@
 
         <div class="col-3" >
           <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
-          <h5 style="text-align: center;">Item</h5>
+            <h5 style="text-align: center;">Item</h5>
             <div class="col-2">
-              <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
+              <a href="{{url_for('addItem', page=page, alt='A')}}">
+                <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
+              <a href="{{url_for('deleteItem', page=page)}}">
+                <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
+              <a href="{{url_for('copyItem', page=page)}}">
+                <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
+              </a>
             </div>
             <div class="col-2">
-              <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Copy From"></i>
+              <a href="{{url_for('exportItem', page=page)}}">
+                <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Export Item"></i>
+              </a>
             </div>
             <div class="col-2">
               <i class="fa-solid fa-file-import fa-1x" data-toggle="tooltip" title="Copy To"></i>
             </div>
             <div class="col-2">
-              <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
+              <a href="{{url_for('addItem', page=page, alt='B')}}">
+                <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -97,7 +119,9 @@
         <div class="col-1">
           <div class="row" style="margin-top:30px;">
             <div class="col-12">
-              <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
+              <a href="{{url_for('generate_csv')}}">
+                <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
+              </a>
             </div>
           </div>
         </div>

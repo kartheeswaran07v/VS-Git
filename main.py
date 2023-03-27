@@ -885,7 +885,7 @@ itemsList = [item3]
 #         db.session.commit()
 #
 # add pipe data
-# filename = "actuator_data3.csv"
+# filename = "actuator_data2.csv"
 # fields_p = []
 # rows = []
 #
@@ -909,12 +909,12 @@ itemsList = [item3]
 #         db.session.add(new_entry_globe)
 #         db.session.commit()
 
-with app.app_context():
-    act_data = actuatorData.query.all()
-    for i in act_data:
-        if i.id < 216:
-            i.SFMin = 'sd'
-            db.session.commit()
+# with app.app_context():
+#     act_data = actuatorData.query.all()
+#     for i in act_data:
+#         if i.id < 216:
+#             i.SFMin = 'sd'
+#             db.session.commit()
 # filename = "valvearea.csv"
 # fields_p = []
 # rows = []
@@ -938,6 +938,29 @@ with app.app_context():
 #         db.session.add(new_entry_globe)
 #         db.session.commit()
 
+# seat load update:
+# filename = "seat_force2.csv"
+# fields_p = []
+# rows = []
+#
+# # reading csv file
+# with open(filename, 'r') as csvfile:
+#     # creating a csv reader object
+#     csvreader = csv.reader(csvfile)
+#
+#     # extracting field names through first row
+#     fields_p = next(csvreader)
+#
+#     # extracting each data row one by one
+#     for row in csvreader:
+#         rows.append(row)
+#
+# for row in rows:
+#     new_entry_globe = seatLoad(trimtype=row[0], seatBore=row[1], two=row[2], three=row[3],
+#                                four=row[4], five=row[5], six=row[6])
+#     with app.app_context():
+#         db.session.add(new_entry_globe)
+#         db.session.commit()
 
 # handwheel thrust
 
@@ -1546,7 +1569,8 @@ def eta2(valveDia, pipeDia):
 
 def sigmaEta(valveDia, inletDia, outletDia):
     a_ = eta1(valveDia, inletDia) + eta2(valveDia, outletDia) + etaB(valveDia, inletDia) - etaB(valveDia, outletDia)
-    print(f"sigma eta inputs: {eta1(valveDia, inletDia)}, {eta2(valveDia, outletDia)}, {etaB(valveDia, inletDia)}, {valveDia}, {outletDia}")
+    print(
+        f"sigma eta inputs: {eta1(valveDia, inletDia)}, {eta2(valveDia, outletDia)}, {etaB(valveDia, inletDia)}, {valveDia}, {outletDia}")
     return a_
 
 
@@ -1637,17 +1661,18 @@ def getFR(N4_value, Fd, flowrate, viscosity, Fl, N2_value, pipeDia, N1_value, in
 def CV(flowrate, C, valveDia, inletDia, outletDia, N2_value, inletPressure, outletPressure, sGravity, N1_value, Fd,
        vaporPressure, Fl, criticalPressure, N4_value, viscosity, thickness):
     if valveDia != inletDia:
-        FLP = flP(C, valveDia, inletDia, N2_value, Fl)
-        FP = fP(C, valveDia, inletDia, outletDia, N2_value)
+        FLP = flP(C, valveDia, inletDia + 2 * thickness, N2_value, Fl)
+        FP = fP(C, valveDia, inletDia + 2 * thickness, outletDia + 2 * thickness, N2_value)
         # print(f"FP: {FP}")
         FL = FLP / FP
     else:
         FL = Fl
     delP = selectDelP(FL, criticalPressure, inletPressure, vaporPressure, outletPressure)
-    Fr = getFR(N4_value, Fd, flowrate, viscosity, FL, N2_value, inletDia, N1_value, inletPressure, outletPressure,
+    Fr = getFR(N4_value, Fd, flowrate, viscosity, FL, N2_value, inletDia + 2 * thickness, N1_value, inletPressure,
+               outletPressure,
                sGravity)
     # print(Fr)
-    fp_val = fP(C, valveDia, inletDia, outletDia, N2_value)
+    fp_val = fP(C, valveDia, inletDia + 2 * thickness, outletDia + 2 * thickness, N2_value)
     a_ = N1_value * fp_val * Fr * math.sqrt(delP / sGravity)
     b_ = flowrate / a_
     print(f"FR: {Fr}")
@@ -1846,7 +1871,7 @@ def tex_new(calculatedCV, ratedCV, port_area, flowrate, iPres, oPres, MW, R, iTe
     if fluid_state == 'Liquid':
         return round(tex_vel, 3)
     else:
-        return round(ke*0.001422, 3)
+        return round(ke * 0.001422, 3)
 
 
 # TODO - Trim exit velocities and other velocities
@@ -2700,64 +2725,124 @@ def projectDetails():
 #     return render_template("Valve Selection.html", title='Valve Selection', data=template_list, item_d=selected_item)
 
 
+def getValveDetailsData(valve_element):
+    with app.app_context():
+        #
+        tag_no = valve_element.tag
+        quantity = valve_element.quantity
+        application = valve_element.application
+        rating_id = int(valve_element.rating)
+        bMaterial_id = int(valve_element.body_material)
+        delP_shutoff = valve_element.shutOffDelP
+        maxPressure = valve_element.maxPressure
+        maxTemp = valve_element.maxTemp
+        minTemp = valve_element.minTemp
+        #
+        valve_series = int(valve_element.valve_series)
+        end_connection = int(valve_element.endConnection_v)
+        end_finish = int(valve_element.endFinish_v)
+        bonnet_type = int(valve_element.bonnetType_v)
+        bonnet_ext_dimension = valve_element.bonnetExtDimension
+        trim_type = int(valve_element.trimType_v)
+        flow_character = int(valve_element.flowCharacter_v)
+        flow_direction = int(valve_element.flowDirection_v)
+        leakage_class = int(valve_element.seatLeakageClass_v)
+        #
+        bonnet = int(valve_element.bonnet_v)
+        nde1 = int(valve_element.nde1)
+        nde2 = int(valve_element.nde2)
+        plug_trim_disc = int(valve_element.plug)
+        seat_soft_seat = int(valve_element.seatLeakageClass_v)
+        stem_shaft = int(valve_element.stem)
+        packing = int(valve_element.packing)
+        balance_seal = valve_element.balanceScale
+        stud_nut = int(valve_element.stud_nut)
+        gasket = int(valve_element.gasket)
+
+        v_det_dict = {'tag_no': tag_no, 'quantity': quantity, 'application': application, 'rating_id': rating_id,
+                      'body_material': bMaterial_id, 'shutoffDelP': delP_shutoff, 'maxPressure': maxPressure,
+                      'maxTemp': maxTemp,
+                      'minTemp': minTemp, 'valve_series': valve_series, 'end_connection': end_connection,
+                      'end_finish': end_finish,
+                      'bonnet_type': bonnet_type, 'bonnet_ext_dimension': bonnet_ext_dimension, 'trim_type': trim_type,
+                      'flow_character': flow_character,
+                      'flow_direction': flow_direction, 'leakage_class': leakage_class, 'bonnet': bonnet, 'nde1': nde1,
+                      'nde2': nde2,
+                      'plug': plug_trim_disc, 'seat': seat_soft_seat, 'stem': stem_shaft, 'packing': packing,
+                      'balance_seal': balance_seal, 'stud_nut': stud_nut, 'gasket': gasket}
+
+        return v_det_dict
+
+
+def getValveDetailsAll():
+    rating_list = rating.query.all()
+    material_list = materialMaster.query.all()
+    series_list = valveSeries.query.all()
+    size_list = valveSize.query.all()  # size
+    end_connection = endConnection.query.all()  # name
+    end_finish = endFinish.query.all()  # name
+    bonnet_type = bonnetType.query.all()  # name
+    packing_type = packingType.query.all()
+    trim_type = trimType.query.all()
+    nde = bodyBonnet.query.all()
+    flow_charac = [{"id": 1, "name": "Equal %"}, {"id": 2, "name": "Linear"}]
+    flow_direction = flowDirection.query.all()
+    seat_leakage = seatLeakageClass.query.all()
+    applications_data = applicationMaster.query.all()
+    # series = valveSeries.query.all()
+    itemdetails = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+    valve_element_db = db.session.query(valveDetails).filter_by(itemID=itemdetails.id).first()
+    case_element_db_all = itemMaster.query.all()
+    item_1_index = case_element_db_all.index(itemdetails)
+    case_element_db = case_element_db_all[item_1_index]
+    vType_db = valve_element_db.ratedCV
+    fState_db = valve_element_db.packingType_v
+
+    # get default Values from valveDetails
+    if valve_element_db:
+        v_dict = getValveDetailsData(valve_element_db)
+    else:
+        v_dict = {}
+    print(v_dict)
+    # get valve type material details
+    b_stem_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='shaft').all()
+    b_disc_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='disc').all()
+    b_seat_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='seat').all()
+    b_packing_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='packing').all()
+    g_trim_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='trim').all()
+    g_seat_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='seat').all()
+    g_packing_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='packing').all()
+    g_stem_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='stem').all()
+    stud = db.session.query(valveTypeMaterial).filter_by(data='stud').all()
+    gasket = db.session.query(valveTypeMaterial).filter_by(data='gasket').all()
+    v_materials = [b_stem_mat, b_disc_mat, b_seat_mat, b_packing_mat, g_trim_mat, g_seat_mat, g_packing_mat,
+                   g_stem_mat, stud, gasket]
+    if vType_db == 'globe':
+        type_list = ['Globe', 'Butterfly']
+    else:
+        type_list = ['Butterfly', 'Globe']
+
+    if fState_db == 'Gas':
+        state_list = ['Gas', 'Liquid', 'Two Phase']
+    elif fState_db == 'Liquid':
+        state_list = ['Liquid', 'Gas', 'Two Phase']
+    else:
+        state_list = ['Two Phase', 'Gas', 'Liquid']
+
+    # print(state_list, type_list, vType_db, fState_db)
+
+    template_list = [rating_list, material_list, series_list, size_list, end_finish, end_connection, bonnet_type,
+                     packing_type, trim_type, flow_charac, flow_direction, seat_leakage, applications_data,
+                     type_list, state_list, nde]
+    return template_list, v_materials, vType_db, v_dict
+
+
 @app.route('/valve-selection', methods=["GET", "POST"])
 def valveSelection():
     # get data from db to give in template
     with app.app_context():
-        rating_list = rating.query.all()
-        material_list = materialMaster.query.all()
-        series_list = valveSeries.query.all()
-        size_list = valveSize.query.all()  # size
-        end_connection = endConnection.query.all()  # name
-        end_finish = endFinish.query.all()  # name
-        bonnet_type = bonnetType.query.all()  # name
-        packing_type = packingType.query.all()
-        trim_type = trimType.query.all()
-        nde = bodyBonnet.query.all()
-        flow_charac = [{"id": 1, "name": "Equal %"}, {"id": 2, "name": "Linear"}]
-        flow_direction = flowDirection.query.all()
-        seat_leakage = seatLeakageClass.query.all()
-        applications_data = applicationMaster.query.all()
-        # series = valveSeries.query.all()
+        template_list, v_materials, vType_db, v_dict = getValveDetailsAll()
         itemdetails = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
-        valve_element_db = db.session.query(valveDetails).filter_by(itemID=itemdetails.id).first()
-        case_element_db_all = itemMaster.query.all()
-        item_1_index = case_element_db_all.index(itemdetails)
-        case_element_db = case_element_db_all[item_1_index]
-        vType_db = valve_element_db.ratedCV
-        fState_db = valve_element_db.packingType_v
-
-        # get valve type material details
-        b_stem_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='shaft').all()
-        b_disc_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='disc').all()
-        b_seat_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='seat').all()
-        b_packing_mat = db.session.query(valveTypeMaterial).filter_by(valveType='butterfly', data='packing').all()
-        g_trim_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='trim').all()
-        g_seat_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='seat').all()
-        g_packing_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='packing').all()
-        g_stem_mat = db.session.query(valveTypeMaterial).filter_by(valveType='globe', data='stem').all()
-        stud = db.session.query(valveTypeMaterial).filter_by(data='stud').all()
-        gasket = db.session.query(valveTypeMaterial).filter_by(data='gasket').all()
-        v_materials = [b_stem_mat, b_disc_mat, b_seat_mat, b_packing_mat, g_trim_mat, g_seat_mat, g_packing_mat,
-                       g_stem_mat, stud, gasket]
-        if vType_db == 'globe':
-            type_list = ['Globe', 'Butterfly']
-        else:
-            type_list = ['Butterfly', 'Globe']
-
-        if fState_db == 'Gas':
-            state_list = ['Gas', 'Liquid', 'Two Phase']
-        elif fState_db == 'Liquid':
-            state_list = ['Liquid', 'Gas', 'Two Phase']
-        else:
-            state_list = ['Two Phase', 'Gas', 'Liquid']
-
-        # print(state_list, type_list, vType_db, fState_db)
-
-        template_list = [rating_list, material_list, series_list, size_list, end_finish, end_connection, bonnet_type,
-                         packing_type, trim_type, flow_charac, flow_direction, seat_leakage, applications_data,
-                         type_list, state_list, nde]
-
         if request.method == 'POST':
             vstyle = request.form.get('vStyle')
             if vstyle == 'Globe':
@@ -2770,11 +2855,12 @@ def valveSelection():
             if request.form.get('update'):
                 valvesDetails = db.session.query(valveDetails).filter_by(itemID=itemdetails.id).all()
                 valve_element = db.session.query(valveDetails).filter_by(itemID=itemdetails.id).first()
+                template_list, v_materials, vType_db, v_dict = getValveDetailsAll()
                 if len(valvesDetails) > 0:
                     valve_element.tag = request.form.get('tag')
                     valve_element.quantity = request.form.get('qty')
                     valve_element.application = request.form.get('application')
-                    valve_element.serial_no = request.form.get('sNo')
+                    # valve_element.serial_no = request.form.get('sNo')
                     valve_element.rating = request.form.get('ratingP')
                     valve_element.body_material = request.form.get('bMaterial')
                     valve_element.shutOffDelP = request.form.get('shutOffP')
@@ -2782,8 +2868,8 @@ def valveSelection():
                     valve_element.maxTemp = request.form.get('maxT')
                     valve_element.minTemp = request.form.get('minT')
                     valve_element.valve_series = request.form.get('vSeries')
-                    valve_element.valve_size = request.form.get('vSize')
-                    valve_element.rating_v = request.form.get('ratingV')
+                    # valve_element.valve_size = request.form.get('vSize')
+                    # valve_element.rating_v = request.form.get('ratingV')
                     valve_element.ratedCV = request.form.get('vStyle')
                     valve_element.endConnection_v = request.form.get('endConnection')
                     valve_element.endFinish_v = request.form.get('endFinish')
@@ -2808,8 +2894,6 @@ def valveSelection():
                     valve_element.gasket = request.form.get('gasket')
                     valve_element.item = itemdetails
                     db.session.commit()
-                    # do update operation
-                    pass
                 else:
                     new_valve_details = valveDetails(tag=request.form.get('tag'), quantity=request.form.get('qty'),
                                                      application=request.form.get('application'),
@@ -2845,7 +2929,8 @@ def valveSelection():
                     db.session.add(new_valve_details)
                     db.session.commit()
 
-                pass
+                return redirect(url_for('valveSelection'))
+
 
             elif request.form.get('new'):
                 valveType = request.form.get('vStyle')
@@ -2912,11 +2997,13 @@ def valveSelection():
                                                  item=new_item)
                 db.session.add(new_valve_details)
                 db.session.commit()
+                return redirect(url_for('valveSelection'))
 
         item_list = db.session.query(itemMaster).filter_by(projectID=itemdetails.projectID).all()
         item_index = item_list.index(itemdetails)
         return render_template("Valve Selection.html", title='Valve Selection', data=template_list,
-                               item_d=selected_item, v_mat=v_materials, page='valveSelection', item_index=item_index)
+                               item_d=selected_item, v_mat=v_materials, page='valveSelection',
+                               item_index=item_index, style=vType_db, v_dict=v_dict)
 
 
 def sort_list_latest(list_1, selected):
@@ -3067,7 +3154,8 @@ def getCVresult(fl_unit_form, specificGravity, iPresUnit_form, inletPressure_for
                              'oPipeDia': outletPipeDia_liq,
                              'valveDia': vSize_liq, 'iPipeDiaUnit': iPipe_unit,
                              'oPipeDiaUnit': oPipe_unit, 'valveDiaUnit': vSize_unit,
-                             'C': 0.075*vSize_liq*vSize_liq, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl, 'Ff': 0.90,
+                             'C': 0.075 * vSize_liq * vSize_liq, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl,
+                             'Ff': 0.90,
                              'cPres': criticalPressure_liq,
                              'FD': fd, 'viscosity': viscosity}
 
@@ -3469,7 +3557,8 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
                              'oPipeDia': outletPipeDia_liq,
                              'valveDia': vSize_liq, 'iPipeDiaUnit': iPipe_unit,
                              'oPipeDiaUnit': oPipe_unit, 'valveDiaUnit': vSize_unit,
-                             'C': 0.075*vSize_liq*vSize_liq, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl, 'Ff': 0.90,
+                             'C': 0.075 * vSize_liq * vSize_liq, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl,
+                             'Ff': 0.90,
                              'cPres': criticalPressure_liq,
                              'FD': fd, 'viscosity': viscosity}
 
@@ -3508,7 +3597,6 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
     #     FL = service_conditions_1['Fl']
     chokedP = delPMax(service_conditions_1['Fl'], ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'])
     print("liq sizing function, delpMax")
-
 
     # noise and velocities
     # Liquid Noise - need flowrate in kg/s, valves in m, density in kg/m3, pressure in pa
@@ -3623,7 +3711,8 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
     print(f"port area table inputs: {vSize_v}, {seatDia}, {trimtype}, {flow_character}, {travel}")
     if port_area_:
         port_area = float(port_area_.area)
-        tex_ = tex_new(result, int(rated_cv_tex), port_area, flowrate_v / 3600, inletPressure_form, inletPressure_form, 1, 8314,
+        tex_ = tex_new(result, int(rated_cv_tex), port_area, flowrate_v / 3600, inletPressure_form, inletPressure_form,
+                       1, 8314,
                        inletTemp_form, 'Liquid')
     else:
         port_area = 1
@@ -3707,7 +3796,8 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
         FL_ = service_conditions_1['Fl']
         print(f'fl is just fl: {FL_}')
     chokedP = delPMax(FL_, ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'])
-    print(FL_, ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'], valveSize_form, inletPipeDia_form, FLP_liq, fp_liq)
+    print(FL_, ff_liq, service_conditions_1['iPres'], service_conditions_1['vPres'], valveSize_form, inletPipeDia_form,
+          FLP_liq, fp_liq)
     if chokedP == (service_conditions_1['iPres'] - service_conditions_1['oPres']):
         ff = 0.96
     else:
@@ -4336,7 +4426,8 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
                              'oPipeDia': outletPipeDia_liq,
                              'valveDia': vSize_liq, 'iPipeDiaUnit': iPipe_unit,
                              'oPipeDiaUnit': oPipe_unit, 'valveDiaUnit': vSize_unit,
-                             'C': 0.075*vSize_liq*vSize_liq, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl, 'Ff': 0.90,
+                             'C': 0.075 * vSize_liq * vSize_liq, 'FR': 1, 'vPres': vaporPressure, 'Fl': xt_fl,
+                             'Ff': 0.90,
                              'cPres': criticalPressure_liq,
                              'FD': 1, 'viscosity': viscosity}
     print(service_conditions_sf)
@@ -5158,7 +5249,8 @@ def valveSizing():
         item_index = item_list.index(item_selected)
 
         # fl xt default value
-        flxt_dict = {('globe', 'Liquid'): 0.9, ('globe', 'Gas'): 0.65, ('butterfly', 'Liquid'): 0.55, ('butterfly', 'Gas'): 0.200}
+        flxt_dict = {('globe', 'Liquid'): 0.9, ('globe', 'Gas'): 0.65, ('butterfly', 'Liquid'): 0.55,
+                     ('butterfly', 'Gas'): 0.200}
         flxt_def = flxt_dict[(v_style.lower(), f_state)]
         return render_template("Valve Sizing 2.html", title='Valve Sizing', cases=itemCases_1, item_d=item_selected,
                                fluid=fluid_data, len_c=range(case_len), length_unit=getPref(item_selected),
@@ -5443,7 +5535,8 @@ def actuator():
                 fail_action_prev = act_dat_prev.split('#')[1]
                 act_type = act_dat_prev.split('#')[0]
                 actuator_data = db.session.query(actuatorData).filter_by(SFMax=stem_dia,
-                                                                         failAction=fail_action_prev, SFMin=act_type).all()
+                                                                         failAction=fail_action_prev,
+                                                                         SFMin=act_type).all()
                 print(f"actuator data lenght: {len(actuator_data)}")
                 return_actuator_data = []
                 for i in actuator_data:
@@ -5735,8 +5828,8 @@ def deleteCase(case_id):
     return redirect(url_for("valveSizing"))
 
 
-@app.route('/add-item', methods=['GET', 'POST'])
-def addItem():
+@app.route('/add-item/<page>/<alt>', methods=['GET', 'POST'])
+def addItem(page, alt):
     with app.app_context():
         item_selected = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
         project_element = db.session.query(projectMaster).filter_by(id=item_selected.projectID).first()
@@ -5747,7 +5840,7 @@ def addItem():
         material_element = db.session.query(materialMaster).filter_by(id=1).first()
         type_element = db.session.query(valveStyle).filter_by(id=1).first()
 
-        item4 = {"alt": 'A', "tagNo": 101, "serial": serial_element, "size": size_element,
+        item4 = {"alt": alt, "tagNo": 101, "serial": serial_element, "size": size_element,
                  "model": model_element, "type": type_element, "rating": rating_element,
                  "material": material_element, "unitPrice": 1, "Quantity": 11111, "Project": project_element}
 
@@ -5793,7 +5886,7 @@ def addItem():
         db.session.add(new_valve_details)
         db.session.commit()
 
-        return redirect(url_for('home'))
+        return redirect(url_for(page))
 
 
 @app.route('/nextItem/<control>/<page>', methods=['GET', 'POST'])
@@ -5824,50 +5917,52 @@ def nextItem(control, page):
         return redirect(url_for(page))
 
 
-# @app.route('/generate-csv', methods=['GET', 'POST'])
-# def generate_csv():
-#     with app.app_context():
-#         item_selected = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
-#         itemCases_1 = db.session.query(itemCases).filter_by(itemID=item_selected.id).all()
-#         date = datetime.date.today().strftime("%d-%m-%Y -- %H-%M-%S")
-#         size__ = db.session.query(valveSize).filter_by(id=item_selected.sizeID).first().size
-#         rating__ = db.session.query(rating).filter_by(id=item_selected.ratingID).first().size
-#         project__ = db.session.query(projectMaster).filter_by(id=item_selected.projectID).first()
-#         customer__ = db.session.query(customerMaster).filter_by(id=project__.customerID).first().name
-#
-#         fields___ = ['Flow Rate', 'Inlet Pressure', 'Outlet Pressure', 'Inlet Temperature', 'Specific Gravity',
-#                      'Viscosity', 'Vapor Pressure', 'Xt', 'Calculated Cv', 'Open %', 'Valve SPL', 'Inlet Velocity',
-#                      'Outlet Velocity', 'Trim Exit Velocity', 'Tag Number', 'Item Number', 'Fluid State',
-#                      'Critical Pressure',
-#                      'Inlet Pipe Size', 'Outlet Pipe Size', 'Valve Size', 'Rating', 'Quote No.', 'Work Order No.',
-#                      'Customer']
-#
-#         # other_fields_row = [item_selected.tag_no, item_selected.id, itemCases_1[0].fState,
-#         #                     itemCases_1[0].criticalPressure,
-#         #                     itemCases_1.iPipeSize, itemCases_1.oPipeSize, size__, rating__, project__.quote,
-#         #                     project__.work_order,
-#         #                     customer__]
-#
-#         # data rows of csv file
-#         rows___ = []
-#         for i in itemCases_1[:3]:
-#             case_list = [i.flowrate, i.iPressure, i.oPressure, i.iTemp, i.sGravity, i.viscosity, i.vPressure, i.Xt,
-#                          i.CV, i.openPercent, i.valveSPL,
-#                          i.iVelocity, i.oVelocity, i.trimExVelocity, item_selected.tag_no, item_selected.id,
-#                          itemCases_1[0].fluidState, itemCases_1[0].criticalPressure,
-#                          itemCases_1[0].iPipeSize, itemCases_1[0].oPipeSize, size__, rating__, project__.quote,
-#                          project__.work_order,
-#                          customer__]
-#             rows___.append(case_list)
-#         #
-#         # pd = pandas.DataFrame(rows___, columns=fields___)
-#         # pd.to_csv(f"C:/Users/FCC/Desktop/case_data_{item_selected.id}-{len(itemCases_1)}-{date}.csv")
-#
-#     return redirect(url_for('valveSizing'))
+@app.route('/export-case/<page>', methods=['GET', 'POST'])
+def exportItem(page):
+    with app.app_context():
+        item_selected = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        itemCases_1 = db.session.query(itemCases).filter_by(itemID=item_selected.id).all()
+        date = datetime.date.today().strftime("%d-%m-%Y -- %H-%M-%S")
+        size__ = db.session.query(valveSize).filter_by(id=item_selected.sizeID).first().size
+        rating__ = db.session.query(rating).filter_by(id=item_selected.ratingID).first().size
+        project__ = db.session.query(projectMaster).filter_by(id=item_selected.projectID).first()
+        customer__ = db.session.query(customerMaster).filter_by(id=project__.customerID).first().name
+
+        fields___ = ['Flow Rate', 'Inlet Pressure', 'Outlet Pressure', 'Inlet Temperature', 'Specific Gravity',
+                     'Viscosity', 'Vapor Pressure', 'Xt', 'Calculated Cv', 'Open %', 'Valve SPL', 'Inlet Velocity',
+                     'Outlet Velocity', 'Trim Exit Velocity', 'Tag Number', 'Item Number', 'Fluid State',
+                     'Critical Pressure',
+                     'Inlet Pipe Size', 'Outlet Pipe Size', 'Valve Size', 'Rating', 'Quote No.', 'Work Order No.',
+                     'Customer']
+
+        # other_fields_row = [item_selected.tag_no, item_selected.id, itemCases_1[0].fState,
+        #                     itemCases_1[0].criticalPressure,
+        #                     itemCases_1.iPipeSize, itemCases_1.oPipeSize, size__, rating__, project__.quote,
+        #                     project__.work_order,
+        #                     customer__]
+
+        # data rows of csv file
+        rows___ = []
+        for i in itemCases_1[:3]:
+            case_list = [i.flowrate, i.iPressure, i.oPressure, i.iTemp, i.sGravity, i.viscosity, i.vPressure, i.Xt,
+                         i.CV, i.openPercent, i.valveSPL,
+                         i.iVelocity, i.oVelocity, i.trimExVelocity, item_selected.tag_no, item_selected.id,
+                         itemCases_1[0].fluidState, itemCases_1[0].criticalPressure,
+                         itemCases_1[0].iPipeSize, itemCases_1[0].oPipeSize, size__, rating__, project__.quote,
+                         project__.work_order,
+                         customer__]
+            rows___.append(case_list)
+        #
+        # pd = pandas.DataFrame(rows___, columns=fields___)
+        # pd.to_csv(f"C:/Users/FCC/Desktop/case_data_{item_selected.id}-{len(itemCases_1)}-{date}.csv")
+
+        return redirect(url_for(page))
+
+
 #
 
-@app.route('/generate-csv', methods=['GET', 'POST'])
-def generate_csv():
+@app.route('/generate-csv/<page>', methods=['GET', 'POST'])
+def generate_csv(page):
     with app.app_context():
         item_selected = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
         v_details = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
@@ -5951,11 +6046,11 @@ def generate_csv():
         # print(rows___)
         createSpecSheet(rows___, unit_list, other_val_list)
 
-    return redirect(url_for('valveSizing'))
+        return redirect(url_for(page))
 
 
-@app.route('/preferences', methods=['GET', 'POST'])
-def preferences():
+@app.route('/preferences/<page>', methods=['GET', 'POST'])
+def preferences(page):
     length_unit_list = [{'id': 'inch', 'name': 'inch'}, {'id': 'm', 'name': 'm'}, {'id': 'mm', 'name': 'mm'},
                         {'id': 'cm', 'name': 'cm'}]
 
@@ -6017,7 +6112,7 @@ def preferences():
             item_1.qty = qty_int
             # print(item_1.qty)
             db.session.commit()
-            return redirect(url_for('valveSizing'))
+            return redirect(url_for(page))
 
         return render_template('preferences.html', title='Preferences', length_unit=units_pref, item_d=item_1,
                                page='preferences', item_index=item_index)
@@ -6386,35 +6481,83 @@ def uploadData(topic):
     return render_template('importproject.html', topic=topic, route='uploadData', page='uploadData')
 
 
-@app.route('/del-proj/<proj_id>', methods=['GET'])
-def deleteProject(proj_id):
+@app.route('/del-proj/<item_id>/<page>', methods=['GET', 'POST'])
+def deleteProject(item_id, page):
     with app.app_context():
+        item_element = db.session.query(itemMaster).filter_by(id=item_id).first()
+        proj_id = item_element.projectID
         proj_to_del = projectMaster.query.get(proj_id)
         items_proj = db.session.query(itemMaster).filter_by(projectID=proj_id).all()
+        len_items = len(items_proj)
+        len_cases = 0
         for items in items_proj:
             cases = db.session.query(itemCases).filter_by(itemID=items.id).all()
-            for case in cases:
-                # Del Item Cases
-                entry_to_delete_case = itemCases.query.get(case.id)
-                db.session.delete(entry_to_delete_case)
+            len_cas = len(cases)
+            len_cases = len_cases + len_cas
+        if request.method == 'POST':
+            if request.form.get('confirm'):
+                for items in items_proj:
+                    valve_details = db.session.query(valveDetails).filter_by(itemID=items.id).first()
+                    cases = db.session.query(itemCases).filter_by(itemID=items.id).all()
+                    for case in cases:
+                        # Del Item Cases
+                        entry_to_delete_case = itemCases.query.get(case.id)
+                        db.session.delete(entry_to_delete_case)
+                        db.session.commit()
+                    # Del Items
+                    entry_to_delete_item = itemMaster.query.get(items.id)
+                    if valve_details:
+                        db.session.delete(valve_details)
+                    db.session.delete(entry_to_delete_item)
+                    db.session.commit()
+                # Del Project
+                db.session.delete(proj_to_del)
                 db.session.commit()
-            # Del Items
-            entry_to_delete_item = itemMaster.query.get(items.id)
-            db.session.delete(entry_to_delete_item)
-            db.session.commit()
-        # Del Project
-        db.session.delete(proj_to_del)
-        db.session.commit()
-    return redirect(url_for("home"))
+            if request.form.get('cancel'):
+                pass
+            return redirect(url_for(page))
+        data = f"You are about to delete 1 project, {len_items} Item(s) and {len_cases} Case(s)"
+        return render_template('del_confirmation.html', route='deleteProject', data=data, page=page, item_id=item_id)
 
 
-@app.route('/copy-proj/<proj_id>', methods=['GET'])
-def copyProject(proj_id):
-    pass
+@app.route('/del-item/<item_id>/<page>', methods=['GET', 'POST'])
+def deleteItem(item_id, page):
+    with app.app_context():
+        item_to_del = itemMaster.query.get(int(item_id))
+        cases = db.session.query(itemCases).filter_by(itemID=item_to_del.id).all()
+        len_cases = len(cases)
+        valve_details = db.session.query(valveDetails).filter_by(itemID=item_to_del.id).first()
+        if request.method == 'POST':
+            if request.form.get('confirm'):
+                for case in cases:
+                    # Del Item Cases
+                    entry_to_delete_case = itemCases.query.get(case.id)
+                    db.session.delete(entry_to_delete_case)
+                    db.session.commit()
+                # Del Item
+                if valve_details:
+                    db.session.delete(valve_details)
+                db.session.delete(item_to_del)
+                db.session.commit()
+            if request.form.get('cancel'):
+                pass
+            return redirect(url_for(page))
+        data = f"You are about to delete 1 Item and {len_cases} Case(s)"
+        return render_template('del_confirmation.html', route='deleteItem', data=data, page=page, item_id=item_id)
 
 
-@app.route('/import-proj', methods=['GET', 'POST'])
-def importProject():
+@app.route('/copy-proj/<proj_id>/<page>', methods=['GET'])
+def copyProject(proj_id, page):
+    return redirect(url_for(page))
+
+
+@app.route('/copy-item/<item_id>/<page>', methods=['GET'])
+def copyItem(item_id, page):
+    return redirect(url_for(page))
+
+
+@app.route('/import-proj/<page>', methods=['GET', 'POST'])
+def importProject(page):
     if request.method == "POST":
         filename_c = request.form.get('directory_csv')
         # print(filename_c)
@@ -6494,12 +6637,12 @@ def importProject():
                     db.session.add(new_case)
                     db.session.commit()
 
-        return redirect(url_for('home'))
+        return redirect(url_for(page))
     return render_template('importproject2.html', page='importProject')
 
 
-@app.route('/export-proj/<proj_id>', methods=['GET'])
-def exportProject(proj_id):
+@app.route('/export-proj/<proj_id>/<page>', methods=['GET'])
+def exportProject(proj_id, page):
     with app.app_context():
         proj_to_del = projectMaster.query.get(proj_id)
         proj_row = ["Id", "Quote", "Received Date", "Work Order No.", "Due Date", "Industry", "Region", "Status",
@@ -6552,7 +6695,7 @@ def exportProject(proj_id):
         date = a.strftime("%a, %d %b %Y %H-%M-%S")
         # pd.to_csv(f"C:/Users/FCC/Desktop/Project Data {proj_id}-{date}.csv")
 
-    return redirect(url_for('valveSizing'))
+        return redirect(url_for(page))
 
 
 # getKCValue(8, 'ported', 130, 'globe', 0.9)

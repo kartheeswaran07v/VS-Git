@@ -123,7 +123,7 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
                   service_conditions_1['sGravity'], N1_val, service_conditions_1['FD'],
                   service_conditions_1['vPres'],
                   service_conditions_1['Fl'], service_conditions_1['cPres'], N4_val,
-                  service_conditions_1['viscosity'])
+                  service_conditions_1['viscosity'], thickness_pipe)
 
     result = CV(service_conditions_1['flowrate'], result_1,
                 service_conditions_1['valveDia'],
@@ -133,7 +133,7 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
                 service_conditions_1['sGravity'], N1_val, service_conditions_1['FD'],
                 service_conditions_1['vPres'],
                 service_conditions_1['Fl'], service_conditions_1['cPres'], N4_val,
-                service_conditions_1['viscosity'])
+                service_conditions_1['viscosity'], thickness_pipe)
     ff_liq = FF(service_conditions_1['vPres'], service_conditions_1['cPres'])
     chokedP = delPMax(service_conditions_1['Fl'], ff_liq, service_conditions_1['iPres'],
                       service_conditions_1['vPres'])
