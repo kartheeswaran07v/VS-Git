@@ -53,7 +53,7 @@
         <div class="col-4">
           <div class="row">
             <div class="col-12" style="text-align: center;">
-              <p style="border: groove; border-radius: 0px;">AQ {{item_d.tag_no}} 00{{item_index+1}} {{item_d.alt}}</p>
+              <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_index+1}} {{item_d.alt}}</p>
             </div>
             <div class="col-3">
               <a href="{{url_for('nextItem', control='first', page=page)}}">
@@ -85,7 +85,7 @@
 
         <div class="col-3" >
           <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
-            <h5 style="text-align: center;">Item</h5>
+          <h5 style="text-align: center;">Item</h5>
             <div class="col-2">
               <a href="{{url_for('addItem', page=page, alt='A')}}">
                 <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
@@ -127,92 +127,92 @@
           </div>
         </div>
       </div>
-      <form action="{{url_for('selectValve')}}" method="post">
-        <div class="row">
-          <select name="valveType" id="" style="width: 90px;height: 30px;">
-            <option value="globe">Globe</option>
-            <option value="butterfly">Butterfly</option>
-          </select>
-          <select name="trimType" id="" style="width: 90px;height: 30px;">
-            <option value="contour">Contoured</option>
-            <option value="ported">Ported</option>
-            <option value="ac_trim">Anti-Cav</option>
-            <option value="an_trim">Anti-Noise</option>
-            <option value="microspline">Microspline</option>
-            <option value="do">Double Offset</option>
-          </select>
-          <select name="flowChar" id="" style="width: 90px;height: 30px;">
-            <option value="equal">Equal %</option>
-            <option value="linear">Linear</option>
-            <option value="mod_equal">Mod. Eq %</option>
-          </select>
-          <select name="flowDir" id="" style="width: 90px;height: 30px;">
-            <option value="under">Flow Under</option>
-            <option value="over">Flow Over</option>
-            <option value="down">Seat Downstream</option>
-          </select>
-          <select name="rating" id="" style="width: 90px;height: 30px;">
-            <option value="150">150</option>
-            <option value="300">300</option>
-            <option value="600">600</option>
-            <option value="900">900</option>
-            <option value="1500">1500</option>
-            <option value="2500">2500</option>
-          </select>
-<!--            <div class="col-2"><input type="text" name="rating" value="300" style="width: 90px;"></div>-->
-            <div class="col-2"><input type="submit" value="Get Valves" name="getv" style="width: 90px;"></div>
-        </div>
-      </form>
 
-      <br><br><br>
-
-      <form action="{{url_for('selectValve')}}" method="post">
-        <div class="row">
-            <div class="col-1">
-              <p></p>
+      <div class="row" style="margin-left: 3px;margin-top: 20px;">
+        <div class="col-4 tools" style="width:400;background-color: #EAEAEA;" >
+          <div class="row" >
+            <div class="col-12">
+              <h5 class="" style="text-align: left;margin-top: 20px;" ;>Stroke Speed Data</h5>
             </div>
-            <div class="col-1"><b>Valve Size/Seat Bore/Travel</b></div>
-            <div class="col-1"><b>10%</b></div>
-            <div class="col-1"><b>20%</b></div>
-            <div class="col-1"><b>30%</b></div>
-            <div class="col-1"><b>40%</b></div>
-            <div class="col-1"><b>50%</b></div>
-            <div class="col-1"><b>60%</b></div>
-            <div class="col-1"><b>70%</b></div>
-            <div class="col-1"><b>80%</b></div>
-            <div class="col-1"><b>90%</b></div>
-            <div class="col-1"><b>100%</b></div>
-        </div>
-        <div class="row">
-          {% for i in data %}
-            <div class="col-1" style="">
-              <input type="radio" id="valve" name="valve" value="{{i[13]}}" style="text-align:center">
+
+            <div class="row" style="margin-top: 0px;" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="vm">VM:</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="vm" name="vm" value="{{data[1]}}">
+              </div>
             </div>
-            <div class="col-1" style="border-style:  groove;">
-              <div class="row"><div class="col-12">{{i[14]}}</div></div>
-              <div class="row"><div class="col-12">{{i[12]}}</div></div>
-              <div class="row"><div class="col-12">{{i[11]}}</div></div>
+
+            <div class="row" style="margin-top: 0px;" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="vo">VO:</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="vo" name="vo" value="{{data[0]}}">
+              </div>
             </div>
-            {% for a in range(14)%}
-              {% if (i[15]-1) <= a <= i[16] %}
-                <div class="col-1" style="background-color: #CEEDC7;border-style:  groove;">{{i[a]}}</div><br>
-              {% elif a < 10 %}
-                <div class="col-1" style="border-style:  groove;">{{i[a]}}</div><br>
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
-          <input type="submit" value="Select Valve" name="select" style="width: 90px; height: 30px; margin-right: 5px;">
+
+
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="vs">VS:</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="vs" name="vs" value="{{data[2]}}">
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-6" style='text-align: left;'>
+                <label for="pi_fill">Pi Fill</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="pi_fill" name="pi_fill" value="{{data[3]}}">
+              </div>
+            </div>
+
+            <div class="row"  >
+              <div class="col-6" style='text-align: left;'>
+                <label for="pf_fill">Pf Fill</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="pf_fill" name="pf_fill" value="{{data[4]}}">
+              </div>
+            </div>
+
+
+
+            <div class="row"  >
+              <div class="col-6" style='text-align: left;'>
+                <label for="pi_exhaust">Pi Exhaust</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="pi_exhaust" name="pi_exhaust" value="{{data[5]}}">
+              </div>
+            </div>
+
+            <div class="row"  >
+              <div class="col-6" style='text-align: left;'>
+                <label for="pf_exhaust">Pf Exhaust</label>
+              </div>
+              <div class="col-3" style='text-align: left;'>
+                <input type="text" style="width: 100px;" id="pf_exhaust" name="pf_exhaust" value="{{data[6]}}">
+              </div>
+            </div>
+
+            <div class="row"  >
+              <button>
+                <a href="{{url_for('actuator')}}"><-Back</a>
+              </button>
+            </div>
+
+
+          </div>
         </div>
-
-      </form>
-
-
-
-
-
-
-
-
+      </div>
 
     </div>
   </div>

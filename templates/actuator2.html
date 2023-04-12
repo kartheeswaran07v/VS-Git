@@ -37,7 +37,7 @@
               </a>
             </div>
             <div class="col-2">
-              <a href="{{url_for('exportProject', page=page, proj_id=item_id.projectID)}}">
+              <a href="{{url_for('exportProject', page=page, proj_id=item_d.projectID)}}">
                 <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
               </a>
             </div>
@@ -295,6 +295,7 @@
               <div class="col-12">
                 <input type="submit" name="valve" value="Calculate">
                 <input type="submit" name="actuator" value="Select Actuator">
+                  <a href="{{url_for('stroke_speed', page=page)}}">Stroke Speed</a>
 <!--                <button class=" btn:hover btn" style="width: 100px;margin-left: 0px;margin-top: 20px;text-align: center;" type="submit" name="valve">Calculate</button>-->
 <!--                <button class=" btn:hover btn" style="margin-left: 0px;margin-top: 20px;text-align: center;" type="submit" name="actuator">Select Actuator</button>-->
 
