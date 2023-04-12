@@ -9,7 +9,7 @@ def createSpecSheet(case_data, units, other):
     a__ = datetime.now()
     a_ = a__.strftime("%a, %d %b %Y %H-%M-%S")
 
-    workbook = xlsxwriter.Workbook(f'C:\\Users\\FCC\\Desktop\\{a_}.xlsx')
+    workbook = xlsxwriter.Workbook('specsheet.xlsx')
     worksheet = workbook.add_worksheet()
     worksheet.set_paper(9)
     worksheet.fit_to_pages(2, 1)

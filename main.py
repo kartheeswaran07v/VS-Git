@@ -6199,7 +6199,10 @@ def generate_csv(page):
         nde2 = bodyBonnet.query.get(v_details.nde2).name
         gasket_mat = valveTypeMaterial.query.get(v_details.gasket).name
         trim_type = trimType.query.get(v_details.trimType_v).name
-        flow_dir = flowDirection.query.get(v_details.flowDirection_v).name
+        try:
+            flow_dir = flowDirection.query.get(v_details.flowDirection_v).name
+        except:
+            flow_dir = 'over'
         seat_mat = valveTypeMaterial.query.get(v_details.seat).name
         disc_mat = valveTypeMaterial.query.get(v_details.plug).name
         seat_leak = seatLeakageClass.query.get(v_details.seatLeakageClass_v).name
@@ -6231,8 +6234,8 @@ def generate_csv(page):
 
         # print(rows___)
         createSpecSheet(rows___, unit_list, other_val_list)
-
-        return redirect(url_for(page))
+        path = "specsheet.xlsx"
+        return send_file(path, as_attachment=True)
 
 
 @app.route('/preferences/<page>', methods=['GET', 'POST'])
