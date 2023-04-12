@@ -6235,7 +6235,16 @@ def generate_csv(page):
         # print(rows___)
         createSpecSheet(rows___, unit_list, other_val_list)
         path = "specsheet.xlsx"
-        return send_file(path, as_attachment=True)
+        project_number = project__.id
+        item_number = item_selected.id
+        current_datetime = datetime.datetime.today().date().timetuple()
+
+        str_current_datetime = str(current_datetime)
+        a__ = datetime.datetime.now()
+        a_ = a__.strftime("%a, %d %b %Y %H-%M-%S")
+        spec_sheet_name = f'Specsheet_P{project_number}_I{item_number}_{a_}.xlsx'
+
+        return send_file(path, as_attachment=True, download_name=spec_sheet_name)
 
 
 @app.route('/preferences/<page>', methods=['GET', 'POST'])
