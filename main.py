@@ -6887,7 +6887,7 @@ def exportProject(proj_id, page):
 @app.route('/download')
 def downloadFile():
     # For windows you need to use drive name [ex: F:/Example.pdf]
-    path = "/11_Series_Cv.csv"
+    path = "./11_Series_Cv.csv"
     return send_file(path, as_attachment=True)
 
 
