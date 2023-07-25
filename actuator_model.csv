@@ -1,0 +1,317 @@
+﻿S.No.,Series,Model No.,Description
+1,30,S38-1-00,Actuator Size- Fail Open-None
+2,30,S38-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+3,30,S38-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+4,30,S38-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+5,30,S38-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+6,30,S38-2-00,Actuator Size- Fail Close-None
+7,30,S38-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+8,30,S38-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+9,30,S38-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+10,30,S38-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+11,30,S75-1-00,Actuator Size- Fail Open-None
+12,30,S75-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+13,30,S75-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+14,30,S75-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+15,30,S75-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+16,30,S75-2-00,Actuator Size- Fail Close-None
+17,30,S75-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+18,30,S75-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+19,30,S75-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+20,30,S75-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+21,30,S150-1-00,Actuator Size- Fail Open-None
+22,30,S150-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+23,30,S150-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+24,30,S150-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+25,30,S150-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+26,30,S150-2-00,Actuator Size- Fail Close-None
+27,30,S150-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+28,30,S150-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+29,30,S150-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+30,30,S150-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+31,30,S300-1-00,Actuator Size- Fail Open-None
+32,30,S300-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+33,30,S300-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+34,30,S300-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+35,30,S300-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+36,30,S300-2-00,Actuator Size- Fail Close-None
+37,30,S300-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+38,30,S300-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+39,30,S300-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+40,30,S300-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+41,31,M60-1-00,Actuator Size- Fail Open-None
+42,31,M60-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+43,31,M60-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+44,31,M60-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+45,31,M60-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+46,31,M60-2-00,Actuator Size- Fail Close-None
+47,31,M60-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+48,31,M60-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+49,31,M60-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+50,31,M60-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+51,31,M100-1-00,Actuator Size- Fail Open-None
+52,31,M100-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+53,31,M100-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+54,31,M100-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+55,31,M100-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+56,31,M100-2-00,Actuator Size- Fail Close-None
+57,31,M100-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+58,31,M100-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+59,31,M100-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+60,31,M100-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+61,31,M160-1-00,Actuator Size- Fail Open-None
+62,31,M160-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+63,31,M160-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+64,31,M160-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+65,31,M160-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+66,31,M160-2-00,Actuator Size- Fail Close-None
+67,31,M160-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+68,31,M160-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+69,31,M160-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+70,31,M160-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+71,31,230-1-00,Actuator Size- Fail Open-None
+72,31,230-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+73,31,230-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+74,31,230-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+75,31,230-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+76,31,230-2-00,Actuator Size- Fail Close-None
+77,31,230-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+78,31,230-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+79,31,230-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+80,31,230-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+81,32,P30S-1-00,Actuator Size- Fail Open-None
+82,32,P30S-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+83,32,P30S-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+84,32,P30S-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+85,32,P30S-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+86,32,P30S-2-00,Actuator Size- Fail Close-None
+87,32,P30S-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+88,32,P30S-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+89,32,P30S-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+90,32,P30S-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+91,32,P30S-3-00,Actuator Size- Fail Action None- None
+92,32,P30S-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+93,32,P30S-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+94,32,P30S-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+95,32,P30S-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+96,32,P50S-1-00,Actuator Size- Fail Open-None
+97,32,P50S-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+98,32,P50S-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+99,32,P50S-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+100,32,P50S-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+101,32,P50S-2-00,Actuator Size- Fail Close-None
+102,32,P50S-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+103,32,P50S-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+104,32,P50S-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+105,32,P50S-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+106,32,P50S-3-00,Actuator Size- Fail Action None- None
+107,32,P50S-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+108,32,P50S-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+109,32,P50S-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+110,32,P50S-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+111,32,P110S-1-00,Actuator Size- Fail Open-None
+112,32,P110S-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+113,32,P110S-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+114,32,P110S-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+115,32,P110S-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+116,32,P110S-2-00,Actuator Size- Fail Close-None
+117,32,P110S-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+118,32,P110S-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+119,32,P110S-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+120,32,P110S-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+121,32,P110S-3-00,Actuator Size- Fail Action None- None
+122,32,P110S-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+123,32,P110S-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+124,32,P110S-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+125,32,P110S-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+126,32,P220S-1-00,Actuator Size- Fail Open-None
+127,32,P220S-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+128,32,P220S-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+129,32,P220S-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+130,32,P220S-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+131,32,P220S-2-00,Actuator Size- Fail Close-None
+132,32,P220S-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+133,32,P220S-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+134,32,P220S-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+135,32,P220S-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+136,32,P220S-3-00,Actuator Size- Fail Action None- None
+137,32,P220S-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+138,32,P220S-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+139,32,P220S-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+140,32,P220S-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+141,32,P110L/6-1-00,Actuator Size- Fail Open-None
+142,32,P110L/6-1-10,Actuator Size- Fail Open- Top Mounted Handwheel
+143,32,P110L/6-1-20,Actuator Size- Fail Open- Side Mounted Handwheel
+144,32,P110L/6-1-30,"Actuator Size- Fail Open- Travel Stop, Up stop"
+145,32,P110L/6-1-40,"Actuator Size- Fail Open-Travel Stop, down stop"
+146,32,P110L/6-2-00,Actuator Size- Fail Close-None
+147,32,P110L/6-2-10,Actuator Size- Fail Close - Top Mounted Handwheel
+148,32,P110L/6-2-20,Actuator Size- Fail Close- Side Mounted Handwheel
+149,32,P110L/6-2-30,"Actuator Size- Fail Close- Travel Stop, Up stop"
+150,32,P110L/6-2-40,"Actuator Size- Fail Close-Travel Stop, down stop"
+151,32,P110L/6-3-00,Actuator Size- Fail Action None- None
+152,32,P110L/6-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+153,32,P110L/6-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+154,32,P110L/6-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+155,32,P110L/6-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+156,32,P110D/3-3-00,Actuator Size- Fail Action None-None
+157,32,P110D/3-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+158,32,P110D/3-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+159,32,P110D/3-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+160,32,P110D/3-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+161,32,P110D/6-3-00,Actuator Size- Fail Action None-None
+162,32,P110D/6-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+163,32,P110D/6-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+164,32,P110D/6-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+165,32,P110D/6-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+166,32,P110D/12-3-00,Actuator Size- Fail Action None-None
+167,32,P110D12-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+168,32,P110D/12-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+169,32,P110D/12-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+170,32,P110D/12-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+171,32,P220D/6-3-00,Actuator Size- Fail Action None-None
+172,32,P220D/6-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+173,32,P220D/6-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+174,32,P220D/6-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+175,32,P220D6-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+176,32,P220D/12-3-00,Actuator Size- Fail Action None-None
+177,32,P220D/12-3-10,Actuator Size-Fail Action None - Top Mounted Handwheel
+178,32,P220D/12-3-20,Actuator Size- Fail Action None - Side Mounted Handwheel
+179,32,P220D/12-3-30,"Actuator Size- Fail Action None - Travel Stop, Up stop "
+180,32,P220D/12-3-40,"Actuator Size- Fail Action None - Travel Stop, down stop"
+181,33,SYC40-1-1-0-6,Act. Size-fail open- Al material- Handwheel None-Spring Set
+182,33,SYC40-1-1-0-8,Act. Size-fail open- Al material- Handwheel None-Spring Set
+183,33,SYC40-1-1-1-6,Act. Size-fail open- Al material- Handwheel -Spring Set
+184,33,SYC40-1-1-1-8,Act. Size-fail open- Al material- Handwheel -Spring Set
+185,33,SYC40-1-2-0-6,Act. Size-fail open- CS material- Handwheel None-Spring Set
+186,33,SYC40-1-2-0-8,Act. Size-fail open- CS material- Handwheel None-Spring Set
+187,33,SYC40-1-2-1-6,Act. Size-fail open- CS material- Handwheel -Spring Set
+188,33,SYC40-1-2-1-8,Act. Size-fail open- CS material- Handwheel-Spring Set
+189,33,SYC070-1-1-0-6,Act. Size-fail open- Al material- Handwheel None-Spring Set
+190,33,SYC070-1-1-0-8,Act. Size-fail open- Al material- Handwheel None-Spring Set
+191,33,SYC070-1-1-0-10,Act. Size-fail open- Al material- Handwheel None-Spring Set
+192,33,SYC070-1-1-1-6,Act. Size-fail open- Al material- Handwheel-Spring Set
+193,33,SYC070-1-1-1-8,Act. Size-fail open- Al material- Handwheel-Spring Set
+194,33,SYC070-1-1-1-10,Act. Size-fail open- Al material- Handwheel-Spring Set
+195,33,SYC070-1-2-0-6,Act. Size-fail open- CS material- Handwheel None-Spring Set
+196,33,SYC070-1-2-0-8,Act. Size-fail open- CS material- Handwheel None-Spring Set
+197,33,SYC070-1-2-0-10,Act. Size-fail open- CS material- Handwheel None-Spring Set
+198,33,SYC070-1-2-1-6,Act. Size-fail open- CS material- Handwheel-Spring Set
+199,33,SYC070-1-2-1-8,Act. Size-fail open- CS material- Handwheel-Spring Set
+200,33,SYC070-1-2-1-10,Act. Size-fail open- CS material- Handwheel-Spring Set
+201,33,SYC100-1-1-0-6,Act. Size-fail open- Al material- Handwheel None-Spring Set
+202,33,SYC100-1-1-0-8,Act. Size-fail open- Al material- Handwheel None-Spring Set
+203,33,SYC100-1-1-0-10,Act. Size-fail open- Al material- Handwheel None-Spring Set
+204,33,SYC100-1-1-1-6,Act. Size-fail open- Al material- Handwheel-Spring Set
+205,33,SYC100-1-1-1-8,Act. Size-fail open- Al material- Handwheel-Spring Set
+206,33,SYC100-1-1-1-10,Act. Size-fail open- Al material- Handwheel-Spring Set
+207,33,SYC100-1-2-0-6,Act. Size-fail open- CS material- Handwheel None-Spring Set
+208,33,SYC100-1-2-0-8,Act. Size-fail open- CS material- Handwheel None-Spring Set
+209,33,SYC100-1-2-0-10,Act. Size-fail open- CS material- Handwheel None-Spring Set
+210,33,SYC100-1-2-1-6,Act. Size-fail open- CS material- Handwheel-Spring Set
+211,33,SYC100-1-2-1-8,Act. Size-fail open- CS material- Handwheel-Spring Set
+212,33,SYC100-1-2-1-10,Act. Size-fail open- CS material- Handwheel-Spring Set
+213,33,SYC130-1-1-0-6,Act. Size-fail open- Al material- Handwheel None-Spring Set
+214,33,SYC130-1-1-0-8,Act. Size-fail open- Al material- Handwheel None-Spring Set
+215,33,SYC130-1-1-0-10,Act. Size-fail open- Al material- Handwheel None-Spring Set
+216,33,SYC130-1-1-1-6,Act. Size-fail open- Al material- Handwheel-Spring Set
+217,33,SYC130-1-1-1-8,Act. Size-fail open- Al material- Handwheel-Spring Set
+218,33,SYC130-1-1-1-10,Act. Size-fail open- Al material- Handwheel-Spring Set
+219,33,SYC130-1-2-0-6,Act. Size-fail open- CS material- Handwheel None-Spring Set
+220,33,SYC130-1-2-0-8,Act. Size-fail open- CS material- Handwheel None-Spring Set
+221,33,SYC130-1-2-0-10,Act. Size-fail open- CS material- Handwheel None-Spring Set
+222,33,SYC130-1-2-1-6,Act. Size-fail open- CS material- Handwheel-Spring Set
+223,33,SYC130-1-2-1-8,Act. Size-fail open- CS material- Handwheel-Spring Set
+224,33,SYC130-1-2-1-10,Act. Size-fail open- CS material- Handwheel-Spring Set
+225,33,SYC160-1-1-0-6,Act. Size-fail open- Al material- Handwheel None-Spring Set
+226,33,SYC160-1-1-0-8,Act. Size-fail open- Al material- Handwheel None-Spring Set
+227,33,SYC160-1-1-0-10,Act. Size-fail open- Al material- Handwheel None-Spring Set
+228,33,SYC160-1-1-1-6,Act. Size-fail open- Al material- Handwheel-Spring Set
+229,33,SYC160-1-1-1-8,Act. Size-fail open- Al material- Handwheel-Spring Set
+230,33,SYC160-1-1-1-10,Act. Size-fail open- Al material- Handwheel-Spring Set
+231,33,SYC160-1-2-0-6,Act. Size-fail open- CS material- Handwheel None-Spring Set
+232,33,SYC160-1-2-0-8,Act. Size-fail open- CS material- Handwheel None-Spring Set
+233,33,SYC160-1-2-0-10,Act. Size-fail open- CS material- Handwheel None-Spring Set
+234,33,SYC160-1-2-1-6,Act. Size-fail open- CS material- Handwheel-Spring Set
+235,33,SYC160-1-2-1-8,Act. Size-fail open- CS material- Handwheel-Spring Set
+236,33,SYC160-1-2-1-10,Act. Size-fail open- CS material- Handwheel-Spring Set
+237,33,SYC190-1-1-0-6,Act. Size-fail open- Al material- Handwheel None-Spring Set
+238,33,SYC190-1-1-0-8,Act. Size-fail open- Al material- Handwheel None-Spring Set
+239,33,SYC190-1-1-0-10,Act. Size-fail open- Al material- Handwheel None-Spring Set
+240,33,SYC190-1-1-1-6,Act. Size-fail open- Al material- Handwheel-Spring Set
+241,33,SYC190-1-1-1-8,Act. Size-fail open- Al material- Handwheel-Spring Set
+242,33,SYC190-1-1-1-10,Act. Size-fail open- Al material- Handwheel-Spring Set
+243,33,SYC190-1-2-0-6,Act. Size-fail open- CS material- Handwheel None-Spring Set
+244,33,SYC190-1-2-0-8,Act. Size-fail open- CS material- Handwheel None-Spring Set
+245,33,SYC190-1-2-0-10,Act. Size-fail open- CS material- Handwheel None-Spring Set
+246,33,SYC190-1-2-1-6,Act. Size-fail open- CS material- Handwheel-Spring Set
+247,33,SYC190-1-2-1-8,Act. Size-fail open- CS material- Handwheel-Spring Set
+248,33,SYC190-1-2-1-10,Act. Size-fail open- CS material- Handwheel-Spring Set
+249,33,SYC40-2-1-0-8,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+250,33,SYC40-2-1-0-10,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+251,33,SYC40-2-1-1-8,Act. Size-fail Close- Al material- Handwheel-Spring Set
+252,33,SYC40-2-1-1-10,Act. Size-fail Close- Al material- Handwheel-Spring Set
+253,33,SYC040-2-2-0-8,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+254,33,SYC040-2-2-0-10,Act. Size-fail Close- CSl material- Handwheel None-Spring Set
+255,33,SYC040-2-2-1-8,Act. Size-fail Close- CS material- Handwheel-Spring Set
+256,33,SYC040-2-2-1-10,Act. Size-fail Close- CS material- Handwheel-Spring Set
+257,33,SYC070-2-1-0-8,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+258,33,SYC070-2-1-0-10,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+259,33,SYC070-2-1-0-12,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+260,33,SYC070-2-1-1-8,Act. Size-fail Close- Al material- Handwheel-Spring Set
+261,33,SYC070-2-1-1-10,Act. Size-fail Close- Al material- Handwheel-Spring Set
+262,33,SYC070-2-1-1-12,Act. Size-fail Close- Al material- Handwheel-Spring Set
+263,33,SYC070-2-2-0-8,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+264,33,SYC070-2-2-0-10,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+265,33,SYC070-2-2-0-12,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+266,33,SYC070-2-2-1-8,Act. Size-fail Close- CS material- Handwheel-Spring Set
+267,33,SYC070-2-2-1-10,Act. Size-fail Close- CS material- Handwheel-Spring Set
+268,33,SYC070-2-2-1-12,Act. Size-fail Close- CS material- Handwheel-Spring Set
+269,33,SYC100-2-1-0-8,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+270,33,SYC100-2-1-0-10,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+271,33,SYC100-2-1-0-12,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+272,33,SYC100-2-1-1-8,Act. Size-fail Close- Al material- Handwheel-Spring Set
+273,33,SYC100-2-1-1-10,Act. Size-fail Close- Al material- Handwheel-Spring Set
+274,33,SYC100-2-1-1-12,Act. Size-fail Close- Al material- Handwheel-Spring Set
+275,33,SYC100-2-2-0-8,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+276,33,SYC100-2-2-0-10,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+277,33,SYC100-2-2-0-12,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+278,33,SYC100-2-2-1-8,Act. Size-fail Close- CS material- Handwheel-Spring Set
+279,33,SYC100-2-2-1-10,Act. Size-fail Close- CS material- Handwheel-Spring Set
+280,33,SYC100-2-2-1-12,Act. Size-fail Close- CS material- Handwheel-Spring Set
+281,33,SYC130-2-1-0-8,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+282,33,SYC130-2-1-0-10,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+283,33,SYC130-2-1-0-12,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+284,33,SYC130-2-1-1-8,Act. Size-fail Close- Al material- Handwheel-Spring Set
+285,33,SYC130-2-1-1-10,Act. Size-fail Close- Al material- Handwheel-Spring Set
+286,33,SYC130-2-1-1-12,Act. Size-fail Close- Al material- Handwheel-Spring Set
+287,33,SYC130-2-2-0-8,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+288,33,SYC130-2-2-0-10,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+289,33,SYC130-2-2-0-12,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+290,33,SYC130-2-2-1-8,Act. Size-fail Close- CS material- Handwheel-Spring Set
+291,33,SYC130-2-2-1-10,Act. Size-fail Close- CS material- Handwheel-Spring Set
+292,33,SYC130-2-2-1-12,Act. Size-fail Close- CS material- Handwheel-Spring Set
+293,33,SYC160-2-1-0-8,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+294,33,SYC160-2-1-0-10,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+295,33,SYC160-2-1-0-12,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+296,33,SYC160-2-1-1-8,Act. Size-fail Close- Al material- Handwheel-Spring Set
+297,33,SYC160-2-1-1-10,Act. Size-fail Close- Al material- Handwheel-Spring Set
+298,33,SYC160-2-1-1-12,Act. Size-fail Close- Al material- Handwheel-Spring Set
+299,33,SYC160-2-2-0-8,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+300,33,SYC160-2-2-0-10,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+301,33,SYC160-2-2-0-12,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+302,33,SYC160-2-2-1-8,Act. Size-fail Close- CS material- Handwheel-Spring Set
+303,33,SYC160-2-2-1-10,Act. Size-fail Close- CS material- Handwheel-Spring Set
+304,33,SYC160-2-2-1-12,Act. Size-fail Close- CS material- Handwheel-Spring Set
+305,33,SYC190-2-1-0-8,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+306,33,SYC190-2-1-0-10,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+307,33,SYC190-2-1-0-12,Act. Size-fail Close- Al material- Handwheel None-Spring Set
+308,33,SYC190-2-1-1-8,Act. Size-fail Close- Al material- Handwheel-Spring Set
+309,33,SYC190-2-1-1-10,Act. Size-fail Close- Al material- Handwheel-Spring Set
+310,33,SYC190-2-1-1-12,Act. Size-fail Close- Al material- Handwheel-Spring Set
+311,33,SYC190-2-2-0-8,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+312,33,SYC190-2-2-0-10,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+313,33,SYC190-2-2-0-12,Act. Size-fail Close- CS material- Handwheel None-Spring Set
+314,33,SYC190-2-2-1-8,Act. Size-fail Close- CS material- Handwheel-Spring Set
+315,33,SYC190-2-2-1-10,Act. Size-fail Close- CS material- Handwheel-Spring Set
+316,33,SYC190-2-2-1-12,Act. Size-fail Close- CS material- Handwheel-Spring Set
