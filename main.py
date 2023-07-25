@@ -1009,8 +1009,8 @@ class yieldStrength(db.Model):
     yield_strength = Column(String(200))
 
 
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 # TODO ------------------------------------------ DATA INPUT TO THE DATABASE --------------------------------------- #
 
