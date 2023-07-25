@@ -150,7 +150,7 @@
             <div class="col-3 tools" style='text-align: left; '>
               <label for="vStyle">Valve Style</label>
               <select name="vStyle" id="vStyle" style="height: 25px; width: 80px;">
-                <option value="none" selected disabled hidden>-none-</option>
+<!--                <option value="none" selected disabled hidden>-none-</option>-->
                 {% for i in data[13] %}
                   {% if i == style %}
                     <option value="{{i}}" selected>{{i}}</option>
@@ -181,7 +181,8 @@
                   <label for="qty">Quantity</label>
                 </div>
                 <div class="col-6" style='text-align: left;'>
-                  <input type="text" name="qty" id="qty" value="{{v_dict['quantity']}}" style="width: 100px;" >
+                  <input type="text" name="qty" id="qty" value="1" style="width: 100px;" >
+<!--                  <input type="text" name="qty" id="qty" value="{{v_dict['quantity']}}" style="width: 100px;" >-->
                 </div>
                 <div class="col-6" style='text-align: right;'>
                   <label for="application">Application</label>
@@ -198,7 +199,7 @@
                   <label for="sNo">Serial No</label>
                 </div>
                 <div class="col-6" style='text-align: left;'>
-                  <input type="text" name="sNo" id="sNo" value="1" style="width: 100px;">
+                  <input type="text" name="sNo" id="sNo" value="{{sNo}}" style="width: 100px;">
                 </div>
               </div>
 
@@ -377,9 +378,9 @@
 
                       {% for i in data[2] %}
                         {% if i.id == v_dict['valve_series'] %}
-                          <option value="{{i.id}}" selected>{{i.name}}</option>
+                          <option value="{{i.id}}" selected>{{i.name[:2]}}</option>
                         {% else %}
-                          <option value="{{i.id}}">{{i.name}}</option>
+                          <option value="{{i.id}}">{{i.name[:2]}}</option>
                         {% endif %}
                       {% endfor %}
                     </select>
@@ -536,31 +537,40 @@
                     <label for="flowDirection">Flow Direction</label>
                   </div>
                   <div class="col-5">
-                    <select name="flowDirection" id="flowDirection" style="width: 100px;height:25px;">
-                        <option value="5" id="None" class="">---</option>
-                        {% if data[10][0].id == v_dict['flow_direction'] %}
-                          <option value="{{data[10][0].id}}" id="showBut1" class="myDiv2" selected>{{data[10][0].name}}</option>
-                        {% else %}
-                          <option value="{{data[10][0].id}}" id="showBut1" class="myDiv2">{{data[10][0].name}}</option>
-                        {% endif %}
+<!--                    <select name="flowDirection" id="flowDirection" style="width: 100px;height:25px;">-->
+<!--                        <option value="5" id="None" class="">-&#45;&#45;</option>-->
+<!--                        {% if data[10][0].id == v_dict['flow_direction'] %}-->
+<!--                          <option value="{{data[10][0].id}}" id="showBut1" class="myDiv2" selected>{{data[10][0].name}}</option>-->
+<!--                        {% else %}-->
+<!--                          <option value="{{data[10][0].id}}" id="showBut1" class="myDiv2">{{data[10][0].name}}</option>-->
+<!--                        {% endif %}-->
 
-                        {% if data[10][0].id == v_dict['flow_direction'] %}
-                          <option value="{{data[10][1].id}}" id="showBut2" class="myDiv2" selected>{{data[10][1].name}}</option>
-                        {% else %}
-                          <option value="{{data[10][1].id}}" id="showBut2" class="myDiv2">{{data[10][1].name}}</option>
-                        {% endif %}
+<!--                        {% if data[10][0].id == v_dict['flow_direction'] %}-->
+<!--                          <option value="{{data[10][1].id}}" id="showBut2" class="myDiv2" selected>{{data[10][1].name}}</option>-->
+<!--                        {% else %}-->
+<!--                          <option value="{{data[10][1].id}}" id="showBut2" class="myDiv2">{{data[10][1].name}}</option>-->
+<!--                        {% endif %}-->
 
-                        {% if data[10][0].id == v_dict['flow_direction'] %}
-                          <option value="{{data[10][2].id}}" id="showGl1" class="myDiv2" selected>{{data[10][2].name}}</option>
-                        {% else %}
-                          <option value="{{data[10][2].id}}" id="showGl1" class="myDiv2">{{data[10][2].name}}</option>
-                        {% endif %}
+<!--                        {% if data[10][0].id == v_dict['flow_direction'] %}-->
+<!--                          <option value="{{data[10][2].id}}" id="showGl1" class="myDiv2" selected>{{data[10][2].name}}</option>-->
+<!--                        {% else %}-->
+<!--                          <option value="{{data[10][2].id}}" id="showGl1" class="myDiv2">{{data[10][2].name}}</option>-->
+<!--                        {% endif %}-->
 
-                        {% if data[10][0].id == v_dict['flow_direction'] %}
-                          <option value="{{data[10][3].id}}" id="showGl2" class="myDiv2" selected>{{data[10][3].name}}</option>
+<!--                        {% if data[10][0].id == v_dict['flow_direction'] %}-->
+<!--                          <option value="{{data[10][3].id}}" id="showGl2" class="myDiv2" selected>{{data[10][3].name}}</option>-->
+<!--                        {% else %}-->
+<!--                          <option value="{{data[10][3].id}}" id="showGl2" class="myDiv2">{{data[10][3].name}}</option>-->
+<!--                        {% endif %}-->
+<!--                    </select>-->
+                    <select name="flowDirection" style="width: 100px;height:25px;">
+                      {% for i in data[10]%}
+                        {% if i.id == v_dict['flow_direction'] %}
+                          <option value="{{i.id}}" selected>{{i.name}}</option>
                         {% else %}
-                          <option value="{{data[10][3].id}}" id="showGl2" class="myDiv2">{{data[10][3].name}}</option>
+                          <option value="{{i.id}}">{{i.name}}</option>
                         {% endif %}
+                      {% endfor %}
                     </select>
                   </div>
 
@@ -668,75 +678,8 @@
                   </div>
                 </div>
               </div>
-              <div id="showTwo" class="myDiv2">
-
-                  <div class="row">
-                    <div class="col-5">
-                      <label for="">Shaft</label>
-                    </div>
-                    <div class="col-5" style="width: 152px;">
-                      <select name="shaft_b" id="shaft_b" style="width: 100px;height:25px;">
-                        {% for i in v_mat[0] %}
-                          {% if i.id == v_dict['stem'] %}
-                            <option value="{{i.id}}" selected>{{i.name}}</option>
-                          {% else %}
-                            <option value="{{i.id}}">{{i.name}}</option>
-                          {% endif %}
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5">
-                      <label for="">Disc</label>
-                    </div>
-                    <div class="col-5" style="width: 152px;">
-                      <select name="disc_b" id="disc_b" style="width: 100px;height:25px;">
-                        {% for i in v_mat[1] %}
-                          {% if i.id == v_dict['plug'] %}
-                            <option value="{{i.id}}" selected>{{i.name}}</option>
-                          {% else %}
-                            <option value="{{i.id}}">{{i.name}}</option>
-                          {% endif %}
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5">
-                      <label for="">Seat</label>
-                    </div>
-                    <div class="col-5" style="width: 152px;">
-                      <select name="seat_b" id="seat_b" style="width: 100px;height:25px;">
-                        {% for i in v_mat[2] %}
-                          {% if i.id == v_dict['seat'] %}
-                            <option value="{{i.id}}" selected>{{i.name}}</option>
-                          {% else %}
-                            <option value="{{i.id}}">{{i.name}}</option>
-                          {% endif %}
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5">
-                      <label for="">Packing</label>
-                    </div>
-                    <div class="col-5" style="width: 152px;">
-                      <select name="packing_b" id="packing_b" style="width: 100px;height:25px;">
-                        {% for i in v_mat[3] %}
-                          {% if i.id == v_dict['packing'] %}
-                            <option value="{{i.id}}" selected>{{i.name}}</option>
-                          {% else %}
-                            <option value="{{i.id}}">{{i.name}}</option>
-                          {% endif %}
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-
-              </div>
-              <div id="showOne" class="myDiv2">
+              {% if style == 'Globe' %}
+                <div id="showOne" class="myDiv2">
                   <div class="row">
                     <div class="col-5">
                       <label for="">Trim</label>
@@ -771,7 +714,7 @@
                   </div>
                   <div class="row">
                     <div class="col-5">
-                      <label for="">Seat</label>
+                      <label for="">Stem</label>
                     </div>
                     <div class="col-5" style="width: 152px;">
                       <select name="stem_g" id="stem_g" style="width: 100px;height:25px;">
@@ -802,6 +745,76 @@
                     </div>
                   </div>
               </div>
+              {% else %}
+                <div id="showTwo" class="myDiv2">
+
+                  <div class="row">
+                    <div class="col-5">
+                      <label for="">Shaft</label>
+                    </div>
+                    <div class="col-5" style="width: 152px;">
+                      <select name="stem_g" id="stem_g" style="width: 100px;height:25px;">
+                        {% for i in v_mat[0] %}
+                          {% if i.id == v_dict['stem'] %}
+                            <option value="{{i.id}}" selected>{{i.name}}</option>
+                          {% else %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-5">
+                      <label for="">Disc</label>
+                    </div>
+                    <div class="col-5" style="width: 152px;">
+                      <select name="trim_g" id="trim_g" style="width: 100px;height:25px;">
+                        {% for i in v_mat[1] %}
+                          {% if i.id == v_dict['plug'] %}
+                            <option value="{{i.id}}" selected>{{i.name}}</option>
+                          {% else %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-5">
+                      <label for="">Seat</label>
+                    </div>
+                    <div class="col-5" style="width: 152px;">
+                      <select name="seat_g" id="seat_g" style="width: 100px;height:25px;">
+                        {% for i in v_mat[2] %}
+                          {% if i.id == v_dict['seat'] %}
+                            <option value="{{i.id}}" selected>{{i.name}}</option>
+                          {% else %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-5">
+                      <label for="">Packing</label>
+                    </div>
+                    <div class="col-5" style="width: 152px;">
+                      <select name="packing_g" id="packing_g" style="width: 100px;height:25px;">
+                        {% for i in v_mat[3] %}
+                          {% if i.id == v_dict['packing'] %}
+                            <option value="{{i.id}}" selected>{{i.name}}</option>
+                          {% else %}
+                            <option value="{{i.id}}">{{i.name}}</option>
+                          {% endif %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+
+              </div>
+              {% endif%}
 
 
 
@@ -828,6 +841,12 @@
                       <option value="graphite" selected>Graphite</option>
                     {% else %}
                       <option value="graphite">Graphite</option>
+                    {% endif %}
+
+                    {% if v_dict['balance_seal'] == 'metal' %}
+                      <option value="metal" selected>Metal</option>
+                    {% else %}
+                      <option value="metal">Metal</option>
                     {% endif %}
                   </select>
 
@@ -955,28 +974,20 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
-<script>
-$(document).ready(function(){
-    $('#vStyle').on('change', function(){
-    	var demovalue = $(this).val();
-    	if (demovalue == 'Globe') {
-    		$("#showOne").show();
-    		$("#showGl1").show();
-    		$("#showGl2").show();
-    		$("#showTwo").hide();
-    		$("#showBut1").hide();
-    		$("#showBut2").hide();
-    	} else {
-    		$("#showOne").hide();
-    		$("#showGl1").hide();
-    		$("#showGl2").hide();
-    		$("#showTwo").show();
-    		$("#showBut1").show();
-    		$("#showBut2").show();
-    	}
-    });
-});
-</script>
+<!--<script>-->
+<!--$(document).ready(function(){-->
+<!--    $('#vStyle').on('change', function(){-->
+<!--    	var demovalue = $(this).val();-->
+<!--    	if (demovalue == 'Globe') {-->
+<!--    		$("#showOne").show();-->
+<!--    		$("#showTwo").hide();-->
+<!--    	} else {-->
+<!--    		$("#showOne").hide();-->
+<!--    		$("#showTwo").show();-->
+<!--    	}-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
 
   <script>
     // When the user clicks on div, open the popup

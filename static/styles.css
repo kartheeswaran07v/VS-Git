@@ -321,5 +321,15 @@ th,td {
 }
 
 .myDiv2 {
-    display: none;
 }
+
+/* valve sizing page table */
+#wrapper {
+ overflow-x: scroll;
+}
+
+table#fixed {
+    width: 700px;
+    /*margin: 10px 0 0;*/
+}
+

@@ -127,82 +127,48 @@
           </div>
         </div>
       </div>
-      <form action="{{url_for('selectValve')}}" method="post">
-        <div class="row">
-          <select name="valveType" id="" style="width: 90px;height: 30px;">
-            <option value="globe">Globe</option>
-            <option value="butterfly">Butterfly</option>
-          </select>
-          <select name="trimType" id="" style="width: 90px;height: 30px;">
-            <option value="contour">Contoured</option>
-            <option value="ported">Ported</option>
-            <option value="ac_trim">Anti-Cav</option>
-            <option value="an_trim">Anti-Noise</option>
-            <option value="microspline">Microspline</option>
-            <option value="do">Double Offset</option>
-          </select>
-          <select name="flowChar" id="" style="width: 90px;height: 30px;">
-            <option value="equal">Equal %</option>
-            <option value="linear">Linear</option>
-            <option value="mod_equal">Mod. Eq %</option>
-          </select>
-          <select name="flowDir" id="" style="width: 90px;height: 30px;">
-            <option value="1">Flow Over</option>
-            <option value="2">Flow Under</option>
-            <option value="3">Seat Downstream</option>
-            <option value="4">Seat Upstream</option>
-          </select>
-          <select name="rating" id="" style="width: 90px;height: 30px;">
-            <option value="150">150</option>
-            <option value="300">300</option>
-            <option value="600">600</option>
-            <option value="900">900</option>
-            <option value="1500">1500</option>
-            <option value="2500">2500</option>
-          </select>
-<!--            <div class="col-2"><input type="text" name="rating" value="300" style="width: 90px;"></div>-->
-            <div class="col-2"><input type="submit" value="Get Valves" name="getv" style="width: 90px;"></div>
-        </div>
-      </form>
+
 
       <br><br><br>
 
-      <form action="{{url_for('selectValve')}}" method="post">
+      <form action="{{url_for('selectAFR')}}" method="post">
         <div class="row">
             <div class="col-1">
               <p></p>
             </div>
-            <div class="col-1"><b>Valve Size/Seat Bore/Travel</b></div>
-            <div class="col-1"><b>10%</b></div>
-            <div class="col-1"><b>20%</b></div>
-            <div class="col-1"><b>30%</b></div>
-            <div class="col-1"><b>40%</b></div>
-            <div class="col-1"><b>50%</b></div>
-            <div class="col-1"><b>60%</b></div>
-            <div class="col-1"><b>70%</b></div>
-            <div class="col-1"><b>80%</b></div>
-            <div class="col-1"><b>90%</b></div>
-            <div class="col-1"><b>100%</b></div>
+            <div class="col-1"><b>Manufacturer</b></div>
+            <div class="col-1"><b>Series</b></div>
+            <div class="col-1"><b>MOC</b></div>
+            <div class="col-1"><b>Size</b></div>
+            <div class="col-1"><b>Drain</b></div>
+            <div class="col-1"><b>Filter Size (Element)</b></div>
+            <div class="col-1"><b>Relieving</b></div>
+            <div class="col-1"><b>Pressure Range</b></div>
+            <div class="col-1"><b>Fluid</b></div>
+            <div class="col-1"><b>Model No</b></div>
+            <div class="col-1"><b></b></div>
         </div>
         <div class="row">
           {% for i in data %}
             <div class="col-1" style="">
-              <input type="radio" id="valve" name="valve" value="{{i[13]}}" style="text-align:center">
+              <input type="radio" id="afr" name="afr" value="{{i.id}}" style="text-align:center">
             </div>
             <div class="col-1" style="border-style:  groove;">
-              <div class="row"><div class="col-12">{{i[14]}}</div></div>
-              <div class="row"><div class="col-12">{{i[12]}}</div></div>
-              <div class="row"><div class="col-12">{{i[11]}}</div></div>
+              <div class="row"><div class="col-12">{{i.manufacturer}}</div></div>
             </div>
-            {% for a in range(14)%}
-              {% if (i[15]-1) <= a <= i[16] %}
-                <div class="col-1" style="background-color: #CEEDC7;border-style:  groove;">{{i[a]}}</div><br>
-              {% elif a < 10 %}
-                <div class="col-1" style="border-style:  groove;">{{i[a]}}</div><br>
-              {% endif %}
-            {% endfor %}
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.series}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.moc}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.size}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.drain}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.filter_size}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.relive}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.pressure_range}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.fluid}}</div><br>
+            <div class="col-1" style="background-color: ;border-style:  groove;">{{i.model}}</div><br>
+            <div class="col-1"><b></b></div>
+
           {% endfor %}
-          <input type="submit" value="Select Valve" name="select" style="width: 90px; height: 30px; margin-right: 5px;">
+          <input type="submit" value="Select AFR" name="select" style="width: 120px; height: 30px; margin-right: 5px;">
         </div>
 
       </form>

@@ -36,9 +36,9 @@
     </div>
 
     <div class="col-10">
-      <div class="row head">
+        <div class="row head">
 
-        <div class="col-1">
+            <div class="col-1">
           <div class="row" style="margin-top:30px;">
             <div class="col-12">
               <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="User"></i>
@@ -46,449 +46,571 @@
           </div>
         </div>
 
-        <div class="col-3" >
-          <div class="row" style="margin-top:15px;border-left: 1px groove;border-left:  1px groove;">
-            <h5 style="text-align: center;">Project</h5>
-            <div class="col-2">
-              <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-4">
-          <div class="row">
-            <div class="col-12" style="text-align: center;">
-              <p style="border: groove; border-radius: 0px;">AQ 00051 002 A</p>
-            </div>
             <div class="col-3">
-              <i class="fa-solid fa-backward-fast fa-1x"></i><br>
-              <label for="">First</label>
+              <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
+                <h5 style="text-align: center;">Project</h5>
+                <div class="col-2">
+                      <a href="{{url_for('projectDetails')}}">
+                        <i class="fa-solid fa-folder-plus fa-1x" data-toggle="tooltip" title="Create Project"></i>
+                      </a>
+                    </div>
+                <div class="col-2">
+                  <a href="{{url_for('deleteProject', item_id=item_d.id, page=page)}}">
+                    <i class="fa-solid fa-folder-minus fa-1x" data-toggle="tooltip" title="Delete Project"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('copyProject', page=page, proj_id=item_d.projectID)}}">
+                    <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Copy Project"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('importProject', page=page)}}">
+                    <i class="fa-solid fa-download fa-1x" data-toggle="tooltip" title="Import Project"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('exportProject', page=page, proj_id=item_d.projectID)}}">
+                    <i class="fa-solid fa-upload fa-1x" data-toggle="tooltip" title="Export Project"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('preferences', page=page)}}">
+                    <i class="fa-solid fa-sliders fa-1x" data-toggle="tooltip" title="Preference"></i>
+                  </a>
+                </div>
+              </div>
             </div>
+
+            <div class="col-4">
+              <div class="row">
+                <div class="col-12" style="text-align: center;">
+                  <p style="border: groove; border-radius: 0px;">FQ 00{{item_d.projectID}} 00{{item_index+1}} {{item_d.alt}}</p>
+                </div>
+                <div class="col-3">
+                  <a href="{{url_for('nextItem', control='first', page=page)}}">
+                    <i class="fa-solid fa-backward-fast fa-1x"></i><br>
+                  </a>
+                  <label for="">First</label>
+                </div>
+                <div class="col-3">
+                  <a href="{{url_for('nextItem', control='prev', page=page)}}">
+                    <i class="fa-solid fa-backward-step fa-1x"></i><br>
+                  </a>
+                  <label for="">Prev.</label>
+                </div>
+                <div class="col-3">
+                  <a href="{{url_for('nextItem', control='next', page=page)}}">
+                    <i class="fa-solid fa-forward-step fa-1x"></i><br>
+                  </a>
+                  <label for="">Next</label>
+                </div>
+                <div class="col-3">
+                  <a href="{{url_for('nextItem', control='last', page=page)}}">
+                    <i class="fa-solid fa-forward-fast fa-1x"></i><br>
+                  </a>
+                  <label for="">Last</label>
+                </div>
+              </div>
+            </div>
+
+
             <div class="col-3">
-              <i class="fa-solid fa-backward-step fa-1x"></i><br>
-              <label for="">Prev.</label>
+              <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove; ">
+                <h5 style="text-align: center;">Item</h5>
+                <div class="col-2">
+                      <a href="{{url_for('addItem', page=page, alt='A')}}">
+                        <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
+                      </a>
+                    </div>
+                <div class="col-2">
+                  <a href="{{url_for('deleteItem', page=page, item_id=item_d.id)}}">
+                    <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('copyItem', page=page, item_id=item_d.id)}}">
+                    <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('exportItem', page=page)}}">
+                    <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Export Item"></i>
+                  </a>
+                </div>
+                <div class="col-2">
+                  <i class="fa-solid fa-file-import fa-1x" data-toggle="tooltip" title="Copy To"></i>
+                </div>
+                <div class="col-2">
+                  <a href="{{url_for('addItem', page=page, alt='B')}}">
+                    <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="col-3">
-              <i class="fa-solid fa-forward-step fa-1x"></i><br>
-              <label for="">Next</label>
+
+            <div class="col-1">
+              <div class="row" style="margin-top:25px;">
+                <div class="col-12">
+                  <a href="{{url_for('generate_csv', page=page)}}">
+                    <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="col-3">
-              <i class="fa-solid fa-forward-fast fa-1x"></i><br>
-              <label for="">Last</label>
-            </div>
-          </div>
         </div>
+      <form action="{{ url_for('accessories') }}" method="post">
+        <div class="row" style="margin-left: 3px;margin-top: 20px;">
 
 
-        <div class="col-3">
-          <div class="row" style="margin-top:15px;border-left: 1px groove;border-left:  1px groove;">
-            <h5 style="text-align: center;">Item</h5>
-            <div class="col-2">
-              <i class="fa-solid fa-file-circle-plus fa-1x" data-toggle="tooltip" title="Create Item"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-file-circle-minus fa-1x" data-toggle="tooltip" title="Delete Item"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-regular fa-copy fa-1x" data-toggle="tooltip" title="Item Copy"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-file-export fa-1x" data-toggle="tooltip" title="Copy From"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-solid fa-file-import fa-1x" data-toggle="tooltip" title="Copy To"></i>
-            </div>
-            <div class="col-2">
-              <i class="fa-regular fa-object-ungroup fa-1x" data-toggle="tooltip" title="Alternate"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-1">
-          <div class="row" style="margin-top:30px;">
-            <div class="col-12">
-              <i class="fa-solid fa-print fa-2x" data-toggle="tooltip" title="Print"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row" style="margin-left: 3px;margin-top: 20px;">
-
-        <div class="col-4 tools" style="width:400;background-color: #EAEAEA;" >
-          <div class="row" >
-            <div class="col-12">
-              <h5 class="" style="text-align: left;margin-top: 20px;" ;>Accessories</h5>
-            </div>
-
-            <div class="row" style="margin-top: 0px;" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Positioner Mfg</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" style="margin-top: 0px;" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Positioner Model</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            
-
+          <div class="col-4 tools" style="width:400;background-color: #EAEAEA;" >
             <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Signal Action</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-
-            <div class="row">
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">AFR Make/Model</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row"  >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Position Transmitter</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-          
-
-            <div class="row"  >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Limit Switch</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row"  >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Proximity Switch</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-
-            <div class="row"  >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Boosters</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <!-- <div class="row" style="margin-top: 10px;">
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">AFR Mfg/Model No</label>
-              </div>
-              <div class="col-6" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div> -->
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Pilot Valves</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Air Lock Relay</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-             </div>
-            </div>
-
-
-
-        <div class="col-4 tools" style="width:400;background-color: #EAEAEA;" >
-          <div class="row" >
-
-            <div class="row"  style='margin-top: 40px;'>
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">I/P Converter Make</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">I/P Converter Model</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Solenoid Valve Make</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Solenoid Valve Model</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Solenoid Action</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Volume Tank</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">IP Converter</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Air Receiver</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Tubing</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row" >
-              <div class="col-6" style='text-align: left;'>
-                <label for="fname">Fittings</label>
-              </div>
-              <div class="col-3" style='text-align: left;'>
-                <input type="text" style="width: 100px;">
-              </div>
-            </div>
-
-            <div class="row">
               <div class="col-12">
-                <h1></h1>
+                <h5 class="" style="text-align: left;margin-top: 20px;">Accessories</h5>
+              </div>
+
+              <div class="row" style="margin-top: 0px;" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="manufacturer">Positioner Mfg</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select name="manufacturer" id="manufacturer" style="width: 100px;height:25px;">
+                    {% for i in data[0] %}
+                      {% if i == pos_data[0] %}
+                        <option value="{{i}}" selected>{{i}}</option>
+                      {% else %}
+                        <option value="{{i}}">{{i}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 0px;" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="model">Positioner Model</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select name="model" id="model" style="width: 100px;height:25px;">
+                    {% for i in data[1] %}
+                      {% if i == pos_data[1] %}
+                        <option value="{{i}}" selected>{{i}}</option>
+                      {% else %}
+                        <option value="{{i}}">{{i}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="action">Signal Action</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select name="action" id="action" style="width: 100px;height:25px;">
+                    {% for i in data[2] %}
+                      {% if i == pos_data[2] %}
+                        <option value="{{i}}" selected>{{i}}</option>
+                      {% else %}
+                        <option value="{{i}}">{{i}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">AFR Make/Model</label>
+                </div>
+                <div class="col-3" style='text-align: left;' >
+                  <select name="afr" style="width: 100px;height:25px;">
+                    {% for i in data[3] %}
+                      {% if i.id == acc_data[0] %}
+                        <option value="{{i.id}}" selected>{{i.manufacturer}}/{{i.model}}</option>
+                      {% else %}
+                        <option value="{{i.id}}">{{i.manufacturer}}/{{i.model}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="row"  >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Position Transmitter</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="transmitter" style="width: 100px;" value="{{acc_el.transmitter}}">
+                </div>
+              </div>
+
+
+
+              <div class="row"  >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Limit Switch</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                   <select name="limit" style="width: 100px;height:25px;">
+                    {% for i in data[4] %}
+                      {% if i.id == acc_data[1] %}
+                        <option value="{{i.id}}" selected>{{i.model}}</option>
+                      {% else %}
+                        <option value="{{i.id}}">{{i.model}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="row"  >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Proximity Switch</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="proximity" style="width: 100px;" value="{{acc_el.proximity}}">
+                </div>
+              </div>
+
+
+              <div class="row"  >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Boosters</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select id="mySelect" name="booster" style="width: 100px;height:25px;">
+                     {% if acc_el.booster == 'W20359' %}
+                      <option value="W20359" data-description="STD | Vol: Fairchild | MOC: AI | Size: 1/4" selected>W20359</option>
+                      <option value="I-BP1A" data-description="STD | Vol: RK | MOC: AI | Size: 1/4">I-BP1A</option>
+                     {% else %}
+                      <option value="W20359" data-description="STD | Vol: Fairchild | MOC: AI | Size: 1/4">W20359</option>
+                      <option value="I-BP1A" data-description="STD | Vol: RK | MOC: AI | Size: 1/4" selected>I-BP1A</option>
+                     {% endif %}
+
+                  </select>
+                </div>
+              </div>
+
+              <div class="row"  >
+<!--                <div class="col-1" style='text-align: left;'>-->
+<!--                  <label for=""></label>-->
+<!--                </div>-->
+                <div class="col-9" style='text-align: right; padding-right: 0px; margin-left: 25px;'>
+                  <span id="description" style="color: grey; font-size: 12px;text-align: right"></span>
+                </div>
+              </div>
+
+              <!-- <div class="row" style="margin-top: 10px;">
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">AFR Mfg/Model No</label>
+                </div>
+                <div class="col-6" style='text-align: left;'>
+                  <input type="text" style="width: 100px;">
+                </div>
+              </div> -->
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Pilot Valves</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="pilot_valve" style="width: 100px;" value="{{acc_el.pilot_valve}}">
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Air Lock Relay</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="air_lock" style="width: 100px;" value="{{acc_el.air_lock}}">
+                </div>
+              </div>
+               </div>
+              </div>
+
+
+
+          <div class="col-4 tools" style="width:400;background-color: #EAEAEA;" >
+            <div class="row" >
+
+              <div class="row"  style='margin-top: 40px;'>
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">I/P Converter Make</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="ip_make" style="width: 100px;"value="{{acc_el.ip_make}}">
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">I/P Converter Model</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="ip_model" style="width: 100px;"value="{{acc_el.ip_model}}">
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Solenoid Valve Make</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select style="width: 100px;height:25px;" name="solenoid_make">
+                    {% if acc_data[3] == 'asco' %}
+                      <option value="rotex">Rotex</option>
+                      <option value="asco" selected>ASCO</option>
+                    {% else %}
+                      <option value="rotex" selected>Rotex</option>
+                      <option value="asco">ASCO</option>
+                    {% endif %}
+
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Solenoid Valve Model</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select style="width: 100px;height:25px;" name="solenoid_model">
+                    {% for i in data[5] %}
+                      {% if i.id == acc_data[2] %}
+                        <option value="{{i.id}}" selected>{{i.model}}</option>
+                      {% else %}
+                        <option value="{{i.id}}">{{i.model}}</option>
+                      {% endif %}
+                    {% endfor %}
+
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-6" style='text-align: left;'>
+                  <label for="">Solenoid Action</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <select style="width: 100px;height:25px;" name="solenoid_action">
+                    <option value="1">3/2 way</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">Volume Tank</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="volume_tank" style="width: 100px;" value="{{acc_el.volume_tank}}">
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">IP Converter</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="ip_converter" style="width: 100px;" value="{{acc_el.ip_converter}}">
+                </div>
+              </div>
+
+
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">Air Receiver</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="air_receiver" style="width: 100px;" value="{{acc_el.air_receiver}}">
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">Tubing</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="tubing" style="width: 100px;" value="{{acc_el.tubing}}">
+                </div>
+              </div>
+
+              <div class="row" >
+                <div class="col-6" style='text-align: left;'>
+                  <label for="fname">Fittings</label>
+                </div>
+                <div class="col-3" style='text-align: left;'>
+                  <input type="text" name="fittings" style="width: 100px;" value="{{acc_el.fittings}}">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <h1></h1>
+                </div>
               </div>
             </div>
           </div>
+
+
+          <div class="col-4" style="margin-top: 10px;">
+            <h5>Special Processing</h5>
+
+            <div class="row" style="margin-top: 10px;">
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Cleaning</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="cleaning" style="width: 100px;" value="{{acc_el.cleaning}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Certification</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="certification" style="width: 100px;" value="{{acc_el.certification}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Paint Finish</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="paint_finish" style="width: 100px;" value="{{acc_el.paint_finish}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Paint Certs</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="paint_cert" style="width: 100px;" value="{{acc_el.paint_cert}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Special SP1</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="sp1" style="width: 100px;" value="{{acc_el.sp1}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Special SP2</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="sp2" style="width: 100px;" value="{{acc_el.sp2}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Special SP3</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="sp3" style="width: 100px;" value="{{acc_el.sp3}}">
+              </div>
+            </div>
+
+
+            <h5 style="margin-top: 20px;">Inspection & Testing</h5>
+
+            <div class="row"style="margin-top: 10px;" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">RM Inspection</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="rm" style="width: 100px;" value="{{acc_el.rm}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Hydro Test</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="hydro" style="width: 100px;" value="{{acc_el.hydro}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Final Inspection</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="final" style="width: 100px;" value="{{acc_el.final}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Painting Inspection</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="paint_inspect" style="width: 100px;" value="{{acc_el.paint_inspect}}">
+              </div>
+            </div>
+
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Packing Inspection</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="packing_inspect" style="width: 100px;" value="{{acc_el.packing_inspect}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Validation Test VT1</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="vt1" style="width: 100px;" value="{{acc_el.vt1}}">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-6" style='text-align: left;'>
+                <label for="fname">Validation Test VT2</label>
+              </div>
+              <div class="col-6" style='text-align: left;'>
+                <input type="text" name="vt2" style="width: 100px;" value="{{acc_el.vt2}}">
+              </div>
+            </div>
+            <div class="row" style="justify-content: center;padding-top: 20px; ">
+              <input type="submit" value="Save Data" style="border: 1px solid black; width: 100px;height: 30px;">
+            </div>
+
+
+          </div>
+          <div class="col-8" style="text-align: center; background-color: #D8D8D8;">
+            <a href="{{url_for('positionerRender')}}" style="padding-left: 20px; padding-right: 20px;">Positioner</a>
+            <a href="{{url_for('afrRender')}}" style="padding-left: 20px; padding-right: 20px;">AFR</a>
+            <a href="{{url_for('limitRender')}}" style="padding-left: 20px; padding-right: 20px;">Limit Switch</a>
+            <a href="{{url_for('solenoidRender')}}" style="padding-left: 20px; padding-right: 20px;">Solenoid</a>
+          </div>
+
+
+
+
         </div>
-
-
-        <div class="col-4" style="margin-top: 10px;">
-          <h5>Special Processing</h5>
-
-          <div class="row" style="margin-top: 10px;">
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Cleaning</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Certification</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Paint Finish</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Paint Certs</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Special SP1</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Special SP2</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Special SP3</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-
-          <h5 style="margin-top: 20px;">Inspection & Testing</h5>
-
-          <div class="row"style="margin-top: 10px;" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">RM Inspection</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Hydro Test</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Final Inspection</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Painting Inspection</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Packing Inspection</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Validation Test VT1</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-          <div class="row" >
-            <div class="col-6" style='text-align: left;'>
-              <label for="fname">Validation Test VT2</label>
-            </div>
-            <div class="col-6" style='text-align: left;'>
-              <input type="text" style="width: 100px;">
-            </div>
-          </div>
-
-
-        </div>
-
-        
-        
-      </div>
+      </form>
 
 
 
@@ -499,5 +621,15 @@
     </div>
   </div>
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  $('#mySelect').change(function(){
+    var $selected = $(this).find(':selected');
+
+    $('#description').html($selected.data('description'));
+  }).trigger('change');
+</script>
 
 </html>

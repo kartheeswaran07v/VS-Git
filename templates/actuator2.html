@@ -171,23 +171,29 @@
                   <td >Valve Size</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">inch</option>
+                        <option value="mercedes">mm</option>
                     </select>
                   </td>
-                   <td style="width:130px;"><input type="text" name="vSize" style="width:130px;border: 1px solid white;" value="{{data[2]}}"></td>
+                   <td style="width:130px;"><input type="text" name="vSize" style="width:130px;border: 1px solid white;" value="{{dummy[0]}}"></td>
                 </tr>
 
                 <tr>
                   <td >Seat Dia</td>
                   <td style="width:90px;">
                     <select name=""  style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">inch</option>
+                        <option value="mercedes">mm</option>
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="seatDia" style="width:130px;border: 1px solid white;" value="{{v_list[2]}}"></td>
+                  <td style="width:130px;"><input type="text" name="seatDia" style="width:130px;border: 1px solid white;" value="{{dummy[1]}}"></td>
                 </tr>
                 <tr>
                   <td >Unbalance Area</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">inch² </option>
+                        <option value="mercedes">mm</option>
                     </select>
                   </td>
                   <td style="width:130px;"><input type="text" name="ua" style="width:130px;border: 1px solid white;" value="{{v_list[5]}}"></td>
@@ -196,6 +202,8 @@
                   <td>Stem Dia</td>
                   <td style="width:90px;">
                     <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">inch</option>
+                        <option value="mercedes">mm</option>
                     </select>
                   </td>
                   <td style="width:130px;"><input type="text" name="stemDia" style="width:130px;border: 1px solid white;" value="{{v_list[4]}}"></td>
@@ -204,6 +212,8 @@
                   <td>Plug Dia</td>
                   <td style="width:90px;">
                     <select name=""  style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">inch</option>
+                        <option value="mercedes">mm</option>
                     </select>
                   </td>
                   <td style="width:130px;"><input type="text" name="plugDia" style="width:130px;border: 1px solid white;" value="{{v_list[3]}}"></td>
@@ -212,15 +222,18 @@
                   <td>Valve Travel</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">inch</option>
+                        <option value="mercedes">mm</option>
                     </select>
                   </td>
-                  <td style="width:130px;"><input type="text" name="stroke" style="width:130px;border: 1px solid white;" value="{{v_list[1]}}"></td>
+                  <td style="width:130px;"><input type="text" name="stroke" style="width:130px;border: 1px solid white;" value="{{dummy[2]}}"></td>
                 </tr>
                 <tr>
                   <td>Packing Friction</td>
                   <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
+<!--                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">-->
+<!--                        -->
+<!--                    </select>-->
                   </td>
                   <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{v_list[10]}}"></td>
                 </tr>
@@ -228,6 +241,7 @@
                   <td>Seat Load Force</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">lbf </option>
                     </select>
                   </td>
                   <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{v_list[11]}}"></td>
@@ -236,6 +250,7 @@
                   <td>P1</td>
                   <td style="width:90px;">
                     <select name=""  style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">psig</option>
                     </select>
                   </td>
                   <td style="width:130px;"><input type="text" name="iPres" style="width:130px;border: 1px solid white;" value="{{data[4]}}"></td>
@@ -244,6 +259,7 @@
                   <td>P2</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                         <option value="">psig</option>
                     </select>
                   </td>
                  <td style="width:130px;"><input type="text" name="oPres" style="width:130px;border: 1px solid white;" value="{{data[5]}}"></td>
@@ -253,6 +269,7 @@
                   <td>ΔP Shutoff</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                         <option value="">psig</option>
                     </select>
                   </td>
                  <td style="width:130px;"><input type="text" name="shutoffDelP" style="width:130px;border: 1px solid white;" value="{{data[6]}}"></td>
@@ -263,6 +280,7 @@
                   <td >Unbal Force(Open)</td>
                   <td style="width:90px;">
                     <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">lbf </option>
                     </select>
                   </td>
                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{v_data[2]}}"></td>
@@ -284,6 +302,7 @@
                   <td>ΔP Flowing</td>
                   <td style="width:90px;">
                     <select name="" id=" " style="width:90px; height: 23px;border: 1px solid white;">
+                        <option value="">psig </option>
                     </select>
                   </td>
                   <td style="width:130px;"><input type="text" name="delP" style="width:130px;border: 1px solid white;" value="{{data[7]}}"></td>
@@ -296,6 +315,7 @@
                 <input type="submit" name="valve" value="Calculate">
                 <input type="submit" name="actuator" value="Select Actuator">
                   <a href="{{url_for('stroke_speed', page=page)}}">Stroke Speed</a>
+                  <a href="{{url_for('act_csv', page=page)}}">Spec Sheet</a>
 <!--                <button class=" btn:hover btn" style="width: 100px;margin-left: 0px;margin-top: 20px;text-align: center;" type="submit" name="valve">Calculate</button>-->
 <!--                <button class=" btn:hover btn" style="margin-left: 0px;margin-top: 20px;text-align: center;" type="submit" name="actuator">Select Actuator</button>-->
 
@@ -309,205 +329,222 @@
 
 
 
-        <div class="col-5" style="margin-left:50px;">
-            <h5 style="margin-bottom: 0px;">Calculated Results</h5>
-            <table >
-                <tr>
-                  <th>Description</th>
-                  <th>Units</th>
-                  <th>Values</th>
-                </tr>
-                <tr>
-                  <td>Valve Thrust (close)</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="vClosed" style="width:130px;border: 1px solid white;" value="{{v_data[1]}}"></td>
-                </tr>
+            <div class="col-5" style="margin-left:50px;">
+                <h5 style="margin-bottom: 0px;">Calculated Results</h5>
+                <table >
+                    <tr>
+                      <th>Description</th>
+                      <th>Units</th>
+                      <th>Values</th>
+                    </tr>
+                    <tr>
+                      <td>Valve Thrust (close)</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf </option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="vClosed" style="width:130px;border: 1px solid white;" value="{{v_data[1]}}"></td>
+                    </tr>
 
-                <tr>
-                  <td>Valve Thrust (open)</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="vOpen" style="width:130px;border: 1px solid white;" value="{{act_list[13]}}"></td>
-                </tr>
-
-
-                <tr>
-                  <td>Shut Off Force</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="shutoff+" style="width:130px;border: 1px solid white;" value="{{act_list[14]}}"></td>
-                </tr>
-
-                  <td>Stem Area</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[16]}}"></td>
-                </tr>
-
-                <tr>
-                  <td>Actuator Size</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="actSize" style="width:130px;border: 1px solid white;" value="{{act_list[17]}}"></td>
-                </tr>
-                <tr>
-                  <td> Actuator Travel</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="actStroke" style="width:130px;border: 1px solid white;" value="{{act_list[1]}}"></td>
-                </tr>
-                <tr>
-                  <td> Diaphragm Effective Area</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[0]}}"></td>
-                </tr>
-                <tr>
-                  <td>Lower Benchset</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="sMin" style="width:130px;border: 1px solid white;" value="{{act_list[2]}}"></td>
-                </tr>
-                <tr>
-                  <td>Upper Benchset</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="sMax" style="width:130px;border: 1px solid white;" value="{{act_list[3]}}"></td>
-                </tr>
-
-                <tr>
-                  <td>Spring Rate</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[18]}}"></td>
-                </tr>
+                    <tr>
+                      <td>Valve Thrust (open)</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf </option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="vOpen" style="width:130px;border: 1px solid white;" value="{{act_list[13]}}"></td>
+                    </tr>
 
 
-                <tr>
-                  <td>Spring Windup</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[19]}}"></td>
-                </tr>
+                    <tr>
+                      <td>Shut Off Force</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="shutoff+" style="width:130px;border: 1px solid white;" value="{{act_list[14]}}"></td>
+                    </tr>
+
+                      <td>Stem Area</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">inch² </option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[16]}}"></td>
+                    </tr>
+
+                    <tr>
+                      <td>Actuator Size</td>
+                      <td style="width:90px;">
+    <!--                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">-->
+    <!--                    </select>-->
+                      </td>
+                      <td style="width:130px;"><input type="text" name="actSize" style="width:130px;border: 1px solid white;" value="{{act_list[17]}}"></td>
+                    </tr>
+                    <tr>
+                      <td> Actuator Travel</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">inch</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="actStroke" style="width:130px;border: 1px solid white;" value="{{act_list[1]}}"></td>
+                    </tr>
+                    <tr>
+                      <td> Diaphragm Effective Area</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">inch² </option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[0]}}"></td>
+                    </tr>
+                    <tr>
+                      <td>Lower Benchset</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">psig </option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="sMin" style="width:130px;border: 1px solid white;" value="{{act_list[2]}}"></td>
+                    </tr>
+                    <tr>
+                      <td>Upper Benchset</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">psig</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="sMax" style="width:130px;border: 1px solid white;" value="{{act_list[3]}}"></td>
+                    </tr>
+
+                    <tr>
+                      <td>Spring Rate</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf/inch</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[18]}}"></td>
+                    </tr>
 
 
-                <tr>
-                  <td>Max Spring Load</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[20]}}"></td>
-                </tr>
+                    <tr>
+                      <td>Spring Windup</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">inch</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[19]}}"></td>
+                    </tr>
 
 
-
-                <tr>
-                  <td>Maximum Air Supply</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{air}}"></td>
-                </tr>
-                <tr>
-                  <td>Set pressure</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="setPressure" style="width:130px;border: 1px solid white;" value="{{act_list[5]}}"></td>
-                </tr>
-                <tr>
-                  <td>Actuator Thrust (Valve close)</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  {% if af == 'AFO' %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
-                  {% else %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
-                  {% endif %}
-
-                </tr>
-                <tr>
-                  <td>Actuator Thrust (Valve open)</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  {% if af == 'AFO' %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
-                  {% else %}
-                    <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
-                  {% endif %}
-                </tr>
-
-                <tr>
-                  <td>Friction Band(+/-)</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[21]}}"></td>
-                </tr>
-
-                 <tr>
-                  <td>Req. HandWheel Thrust</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[22]}}"></td>
-                </tr>
-
-                <tr>
-                  <td>Max. Top / Side-Mount HW Thrust</td>
-                  <td style="width:90px;">
-                    <select name="" style="width:90px; height: 23px;border: 1px solid white;">
-                    </select>
-                  </td>
-                  <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[23]}}"></td>
-                </tr>
+                    <tr>
+                      <td>Max Spring Load</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[20]}}"></td>
+                    </tr>
 
 
 
-            </table>
+                    <tr>
+                      <td>Maximum Air Supply</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">psig</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{air}}"></td>
+                    </tr>
+                    <tr>
+                      <td>Set pressure</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">psig</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="setPressure" style="width:130px;border: 1px solid white;" value="{{act_list[5]}}"></td>
+                    </tr>
+                    <tr>
+                      <td>Actuator Thrust (Valve close)</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf</option>
+                        </select>
+                      </td>
+                      {% if af == 'AFO' %}
+                        <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
+                      {% else %}
+                        <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
+                      {% endif %}
+
+                    </tr>
+                    <tr>
+                      <td>Actuator Thrust (Valve open)</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf</option>
+                        </select>
+                      </td>
+                      {% if af == 'AFO' %}
+                        <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[7]}}"></td>
+                      {% else %}
+                        <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[9]}}"></td>
+                      {% endif %}
+                    </tr>
+
+                    <tr>
+                      <td>Friction Band(+/-)</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">psig</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[21]}}"></td>
+                    </tr>
+
+                     <tr>
+                      <td>Req. HandWheel Thrust</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[22]}}"></td>
+                    </tr>
+
+                    <tr>
+                      <td>Max. Top / Side-Mount HW Thrust</td>
+                      <td style="width:90px;">
+                        <select name="" style="width:90px; height: 23px;border: 1px solid white;">
+                            <option value="">lbf</option>
+                        </select>
+                      </td>
+                      <td style="width:130px;"><input type="text" name="" style="width:130px;border: 1px solid white;" value="{{act_list[23]}}"></td>
+                    </tr>
+
+
+
+                </table>
+            </div>
           </div>
-        </div>
 
-        <div class="row" >
+          <div class="row" >
 
-<!--          <div class="col-12" style="text-align: right;">-->
-<!--            <button class=" btn:hover btn" id="Cancel" style="width: 100px; margin-top: 20px; margin-left: 20px; ">Cancel</button>-->
-<!--           <button class=" btn:hover btn" id="Ok" style="width: 100px;margin-left: 20px;margin-top: 20px;">Ok</button>-->
-<!--          </div>-->
-        </div>
+    <!--          <div class="col-12" style="text-align: right;">-->
+    <!--            <button class=" btn:hover btn" id="Cancel" style="width: 100px; margin-top: 20px; margin-left: 20px; ">Cancel</button>-->
+    <!--           <button class=" btn:hover btn" id="Ok" style="width: 100px;margin-left: 20px;margin-top: 20px;">Ok</button>-->
+    <!--          </div>-->
+            </div>
 
       </div>
     </form>
