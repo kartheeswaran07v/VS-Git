@@ -25,6 +25,12 @@
             </div>
           {% endif %}
         {% endfor %}
+        <div class="col-2" style="margin-left:80px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove;margin-top:20px">
+          <a href="{{url_for('actuatorSeries')}}">Actuator Series</a>
+        </div>
+        <div class="col-2" style="margin-left:80px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove;margin-top:20px">
+          <a href="{{url_for('actuatorMode')}}">Actuator Model</a>
+        </div>
       </div>
 
       <div class="row" style="margin-left:10px;margin-right:10px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove; padding-bottom: 40px;">
@@ -47,6 +53,12 @@
             </div>
           {% endif %}
         {% endfor %}
+        <div class="col-2" style="margin-left:80px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove;margin-top:20px">
+          <a href="{{url_for('pipeAreaRender')}}">Pipe Area</a>
+        </div>
+        <div class="col-2" style="margin-left:80px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove;margin-top:20px">
+          <a href="{{url_for('valveAreaRender')}}">Valve Area</a>
+        </div>
       </div>
 
       <div class="row" style="margin-left:10px;margin-right:10px;border-left: 1px groove;border-right: 1px groove;border-bottom: 1px groove;border-top: 1px groove; padding-bottom: 40px;">

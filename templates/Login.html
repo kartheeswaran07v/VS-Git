@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles_login.css')}}">
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="company" style="margin-top: 90px;">
+        <img style="width: 12%;" alt="" src="{{ url_for('static', filename='/images/logo background remove.png') }}">
+    </div>
+    <div class="" style="text-align: center;">
+        <p>Control Valve Sizing Software</p>
+    </div>
+  
+    <div class="container">
+        <div class="form-container">
+            <h2>Login</h2>
+            <form action="{{url_for('login')}}" method="POST">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <label for="" style="color: rgb(133, 133, 133);">New User <label for=""><a href="{{url_for('register')}}">Register</a><label for=""> / </label><a
+                            href="#">Forgot Password</a></label>
+            </form>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

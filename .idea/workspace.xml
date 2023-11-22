@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bccc4f7a-b389-4425-901b-b8b7bb47d948" name="Changes" comment="July Commit 2" />
+    <list default="true" id="bccc4f7a-b389-4425-901b-b8b7bb47d948" name="Changes" comment="db create all">
+      <change afterPath="$PROJECT_DIR$/my_file.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/758771.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/FCC_Logo1-removebg-preview1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/logo background remove.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/styles_login.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/Forgot Password.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/Login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/admin-registration.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/changepassword.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/loginOld.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/render_data_old.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/view_data_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/FCC Sizing 27-02 Multi Select.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/FCC Sizing 27-02 Multi Select.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/instance/fcc_filled_db_v3.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/fcc_filled_db_v3.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/render_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/render_data.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/view_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/view_data.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,10 +56,45 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/FCC/Downloads/FCC Sizing 10-05/FCC Sizing 27-02 Multi Select",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "last_opened_file_path": "C:/Users/FCC/Downloads/FCC New Arch/FCC Sizing 27-02 Multi Select/static",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\FCC\Downloads\FCC New Arch\FCC Sizing 27-02 Multi Select\static" />
+      <recent name="C:\Users\FCC\Downloads\FCC New Arch\FCC Sizing 27-02 Multi Select\templates" />
+      <recent name="C:\Users\FCC\Downloads\FCC New Arch\FCC Sizing 27-02 Multi Select\static\images" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FCC Sizing 27-02 Multi Select" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -61,7 +118,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690278825955</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="db create all">
+      <created>1690278992190</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1690278992190</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -79,6 +143,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="July Commit" />
     <MESSAGE value="July Commit 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="July Commit 2" />
+    <MESSAGE value="db create all" />
+    <option name="LAST_COMMIT_MESSAGE" value="db create all" />
   </component>
 </project>

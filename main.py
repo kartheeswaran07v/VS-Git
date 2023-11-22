@@ -12,6 +12,11 @@ from liquid_noise_formulae import Lpe1m
 from gas_noise_formulae import lpae_1m
 from gas_velocity_iec import getGasVelocities, inletDensity
 from specsheet import createSpecSheet, createActSpecSheet
+from functools import wraps
+from flask import abort
+from forms import *
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_bootstrap import Bootstrap
 
 # -----------^^^^^^^^^^^^^^----------------- IMPORT STATEMENTS -----------------^^^^^^^^^^^^^------------ #
 
@@ -56,16 +61,51 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///fcc_filled_db_v3.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# creating login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+bootstrap = Bootstrap(app)
+
+
+# Create admin-only decorator
+def admin_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # If id is not 1 then return abort with 403 error
+        admin = userMaster.query.all()
+        admin_id = []
+        for i in admin:
+            id_ = i.id
+            admin_id.append(id_)
+
+        if current_user.id not in admin_id:
+            return abort(403)
+        # Otherwise, continue with the route function
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return userMaster.query.get(int(user_id))
+
 
 # TODO ------------------------------------------ DB TABLE CREATION --------------------------------------- #
 
 # CREATE TABLE IN DB
-# class User(UserMixin, db.Model):
-#     __tablename__ = "Users"
-#     id = Column(Integer, primary_key=True)
-#     email = Column(String(100), unique=True)
-#     password = Column(String(100))
-#     name = Column(String(1000))
+class userMaster(UserMixin, db.Model):
+    __tablename__ = "userMaster"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(1000))
+    password = Column(String(100))
+    employeeId = Column(String(100))
+    email = Column(String(100), unique=True)
+    mobile = Column(String(100))
+    designation = Column(String(100))
+
+
 #
 #     # relationships
 #     # TODO 1 - Employee Master
@@ -3119,8 +3159,96 @@ def convert_item_data(list_item):
 
 # TODO - Website Routes ----------------------------------------------------------------------------
 
-# Website routes
+@app.route('/admin-register', methods=["GET", "POST"])
+def register():
+    # form = RegisterForm()
+    if request.method=="POST":
+
+        if userMaster.query.filter_by(email=request.form['email']).first():
+            # user already exists
+            flash("You've already signed up with that email, login instead")
+            return redirect(url_for('login'))
+
+        new_user = userMaster(email=request.form['email'],
+                              password=generate_password_hash(request.form['password'], method='pbkdf2:sha256',
+                                                              salt_length=8),
+                              name=request.form['name'],
+                              employeeId=request.form['employeeId'],
+                              mobile=request.form['mobile'],
+                              designation=request.form['designation']
+                              )
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user)
+        flash('Logged in successfully.')
+        return redirect(url_for('home'))
+
+    return render_template("register.html")
+
+
+@app.route('/login', methods=["GET", "POST"])
+def loginOld():
+    form = LoginForm()
+    if form.validate_on_submit():
+
+        user = userMaster.query.filter_by(email=form.email.data).first()
+
+        # email doesn't exist
+        if not user:
+            flash("That email does not exist, please try again.")
+            return redirect(url_for('login'))
+
+        # Password incorrect
+        elif not check_password_hash(user.password, form.password.data):
+            flash("Password incorrect, please try again.")
+            return redirect(url_for('login'))
+
+        # email exists and password correct
+        else:
+            login_user(user)
+            flash('Logged in successfully.')
+            return redirect(url_for('home'))
+
+    return render_template("loginOld.html", form=form)
+
+
 @app.route('/', methods=["GET", "POST"])
+def login():
+    # form = LoginForm()
+    if request.method == "POST":
+
+        user = userMaster.query.filter_by(email=request.form['email']).first()
+
+        # email doesn't exist
+        if not user:
+            flash("That email does not exist, please try again.")
+            return redirect(url_for('login'))
+
+        # Password incorrect
+        elif not check_password_hash(user.password, request.form['password']):
+            flash("Password incorrect, please try again.")
+            return redirect(url_for('login'))
+
+        # email exists and password correct
+        else:
+            login_user(user)
+            flash('Logged in successfully.')
+            return redirect(url_for('home'))
+
+    return render_template("Login.html")
+
+@app.route('/forgot-pw', methods=["GET", "POST"])
+def forgotPassword():
+    return render_template('Forgot Password.html')
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
+# Website routes
+@app.route('/home', methods=["GET", "POST"])
 def home():
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
@@ -8076,6 +8204,69 @@ def selectValve():
                            item_index=item_index)
 
 
+#
+# @app.route('/view-data', methods=['GET', 'POST'])
+# def viewData():
+#     data2 = table_data_render
+#     return render_template('view_data.html', data=data2, page='viewData')
+#
+#
+# @app.route('/render-data/<topic>', methods=['GET'])
+# def renderData(topic):
+#     table_ = table_data_render[int(topic) - 1]['db']
+#     name = table_data_render[int(topic) - 1]['name']
+#     table_data = table_.query.all()
+#     return render_template("render_data_2.html", data=table_data, topic=topic, page='renderData', name=name)
+#
+#
+# @app.route('/download-data/<topic>', methods=['GET'])
+# def downloadData(topic):
+#     table_ = table_data_render[int(topic) - 1]['db']
+#     table_name = table_data_render[int(topic) - 1]['name']
+#     table_data = table_.query.all()
+#     proj_row = ['Id', 'Data']
+#     final_row = []
+#     a = datetime.datetime.now()
+#     date = a.strftime("%a, %d %b %Y %H-%M-%S")
+#     for i in table_data:
+#         a_ = [i.id, i.name]
+#         final_row.append(a_)
+#     #
+#     # pd = pandas.DataFrame(final_row, columns=proj_row)
+#     # pd.to_csv(f"C:/Users/Suraj/Desktop/{table_name} {topic}-{date}.csv")
+#     return redirect(url_for('renderData', topic=int(topic)))
+#
+#
+# @app.route('/upload-data/<topic>', methods=['GET', 'POST'])
+# def uploadData(topic):
+#     # reading csv file
+#     table_ = table_data_render[int(topic) - 1]['db']
+#     table_name = table_data_render[int(topic) - 1]['name']
+#     table_data = table_.query.all()
+#     if request.method == "POST":
+#         filename_c = request.form.get('directory_csv')
+#         # print(filename_c)
+#         with open(filename_c, 'r') as csvfile:
+#             csvreader = csv.reader(csvfile)
+#             # extracting field names through first row
+#             fields_c = next(csvreader)
+#
+#             # extracting each data row one by one
+#             row_c = []
+#             for row in csvreader:
+#                 row_c.append(row)
+#             # print(row_c)
+#
+#         for i in table_data:
+#             db.session.delete(i)
+#             db.session.commit()
+#         for i in row_c:
+#             new_el_data = table_(name=i[2])
+#             db.session.add(new_el_data)
+#             db.session.commit()
+#         return redirect(url_for('renderData', topic=int(topic)))
+#     return render_template('importproject.html', topic=topic, route='uploadData', page='uploadData')
+
 @app.route('/view-data', methods=['GET', 'POST'])
 def viewData():
     data2 = table_data_render
@@ -8087,7 +8278,73 @@ def renderData(topic):
     table_ = table_data_render[int(topic) - 1]['db']
     name = table_data_render[int(topic) - 1]['name']
     table_data = table_.query.all()
-    return render_template("render_data_2.html", data=table_data, topic=topic, page='renderData', name=name)
+    print(table_.__tablename__)
+    print(len(table_data))
+    return render_template("render_data.html", data=table_data, topic=topic, page='renderData', name=name)
+
+
+@app.route('/download-data/<topic>', methods=['GET'])
+def downloadData(topic):
+    table_ = table_data_render[int(topic) - 1]['db']
+    name = table_data_render[int(topic) - 1]['name']
+    table_data = table_.query.all()
+    with open('my_file.csv', 'w', newline='') as csvfile:
+        # Create a CSV writer object
+        writer = csv.writer(csvfile)
+
+        # Write data to the CSV file
+        if topic != '25':
+            writer.writerow(['Id', 'Name'])
+            for i in table_data:
+                writer.writerow([i.id, i.name])
+        elif topic == '25':
+            writer.writerow(['Id', 'Max Temp', 'Min Temp', 'Pressure', 'Material', 'Rating'])
+            for i in table_data:
+                writer.writerow([i.id, i.maxTemp, i.minTemp, i.pressure, i.material.name, i.rating.name])
+
+        # Close the CSV file
+        csvfile.close()
+    path = 'my_file.csv'
+    return send_file(path, as_attachment=True, download_name=f"{table_.__tablename__}.csv")
+
+
+def data_upload(data_list, table_name):
+    with app.app_context():
+        data_db_list = table_name.query.all()
+        for i in data_db_list:
+            db.session.delete(i)
+            db.session.commit()
+        for data_ in data_list:
+            new_data = table_name(name=data_)
+            db.session.add(new_data)
+            db.session.commit()
+
+
+@app.route('/upload-data/<topic>', methods=['GET', 'POST'])
+def uploadData(topic):
+    table_ = table_data_render[int(topic) - 1]['db']
+    name = table_data_render[int(topic) - 1]['name']
+    table_data = table_.query.all()
+
+    if request.method == 'POST':
+        b_list = request.files.get('file').stream.read().decode().strip().split('\n')
+        if len(b_list[1].split(',')) < 3:
+            b_list_2 = [abc.split(',')[1].split('\r')[0] for abc in b_list[1:]]
+            data_upload(b_list_2, table_)
+        if topic == '25':
+            pt_list = []
+            for i in b_list[1:]:
+                try:
+                    i_dict = {'maxTemp': float(i.split(',')[1]), 'minTemp': float(i.split(',')[2]) * (-1),
+                              'pressure': float(i.split(',')[3]), 'material': i.split(',')[4],
+                              'rating': i.split(',')[5].split('\r')[0]}
+                    pt_list.append(i_dict)
+                except ValueError:
+                    pass
+
+            # pressure_temp_upload(pt_list)
+
+    return redirect(url_for('renderData', topic=topic))
 
 
 @app.route('/render-valve-data', methods=['GET', 'POST'])
@@ -8174,55 +8431,6 @@ def actuatorMode():
     with app.app_context():
         table_data = actuatorModel.query.all()
         return render_template('act_model.html', data=table_data)
-
-
-@app.route('/download-data/<topic>', methods=['GET'])
-def downloadData(topic):
-    table_ = table_data_render[int(topic) - 1]['db']
-    table_name = table_data_render[int(topic) - 1]['name']
-    table_data = table_.query.all()
-    proj_row = ['Id', 'Data']
-    final_row = []
-    a = datetime.datetime.now()
-    date = a.strftime("%a, %d %b %Y %H-%M-%S")
-    for i in table_data:
-        a_ = [i.id, i.name]
-        final_row.append(a_)
-    #
-    # pd = pandas.DataFrame(final_row, columns=proj_row)
-    # pd.to_csv(f"C:/Users/Suraj/Desktop/{table_name} {topic}-{date}.csv")
-    return redirect(url_for('renderData', topic=int(topic)))
-
-
-@app.route('/upload-data/<topic>', methods=['GET', 'POST'])
-def uploadData(topic):
-    # reading csv file
-    table_ = table_data_render[int(topic) - 1]['db']
-    table_name = table_data_render[int(topic) - 1]['name']
-    table_data = table_.query.all()
-    if request.method == "POST":
-        filename_c = request.form.get('directory_csv')
-        # print(filename_c)
-        with open(filename_c, 'r') as csvfile:
-            csvreader = csv.reader(csvfile)
-            # extracting field names through first row
-            fields_c = next(csvreader)
-
-            # extracting each data row one by one
-            row_c = []
-            for row in csvreader:
-                row_c.append(row)
-            # print(row_c)
-
-        for i in table_data:
-            db.session.delete(i)
-            db.session.commit()
-        for i in row_c:
-            new_el_data = table_(name=i[2])
-            db.session.add(new_el_data)
-            db.session.commit()
-        return redirect(url_for('renderData', topic=int(topic)))
-    return render_template('importproject.html', topic=topic, route='uploadData', page='uploadData')
 
 
 @app.route('/del-proj/<item_id>/<page>', methods=['GET', 'POST'])
@@ -8449,7 +8657,7 @@ def downloadFile():
     return send_file(path, as_attachment=True)
 
 
-# getKCValue(8, 'ported', 130, 'globe', 0.9)
+# getKCValue(8, 'ported', 130, 'globe', 0.9f
 ##############
 # with app.app_context():
 #     projects = projectMaster.query.all()
