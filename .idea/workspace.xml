@@ -1,28 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bccc4f7a-b389-4425-901b-b8b7bb47d948" name="Changes" comment="db create all">
-      <change afterPath="$PROJECT_DIR$/my_file.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/758771.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/FCC_Logo1-removebg-preview1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/logo background remove.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/styles_login.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/Forgot Password.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/Login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/admin-registration.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/changepassword.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/loginOld.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/render_data_old.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/view_data_old.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/FCC Sizing 27-02 Multi Select.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/FCC Sizing 27-02 Multi Select.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="bccc4f7a-b389-4425-901b-b8b7bb47d948" name="Changes" comment="forms">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/instance/fcc_filled_db_v3.db" beforeDir="false" afterPath="$PROJECT_DIR$/instance/fcc_filled_db_v3.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/specsheet.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/specsheet.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Accessories_Order_Processing_2.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Accessories_Order_Processing_2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/Project Details.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Project Details.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/render_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/render_data.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/view_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/view_data.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +42,7 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/FCC/Downloads/FCC New Arch/FCC Sizing 27-02 Multi Select/static",
+    "last_opened_file_path": "C:/Users/FCC/Downloads/FCC New Arch/FCC Sizing 27-02 Multi Select",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
@@ -125,7 +111,21 @@
       <option name="project" value="LOCAL" />
       <updated>1690278992190</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="latest commit">
+      <created>1700646952034</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1700646952034</updated>
+    </task>
+    <task id="LOCAL-00005" summary="forms">
+      <created>1700646966888</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1700646966888</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -144,6 +144,8 @@
     <MESSAGE value="July Commit" />
     <MESSAGE value="July Commit 2" />
     <MESSAGE value="db create all" />
-    <option name="LAST_COMMIT_MESSAGE" value="db create all" />
+    <MESSAGE value="latest commit" />
+    <MESSAGE value="forms" />
+    <option name="LAST_COMMIT_MESSAGE" value="forms" />
   </component>
 </project>

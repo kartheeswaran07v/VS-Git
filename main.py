@@ -3179,9 +3179,9 @@ def register():
                               )
         db.session.add(new_user)
         db.session.commit()
-        login_user(new_user)
-        flash('Logged in successfully.')
-        return redirect(url_for('home'))
+        # login_user(new_user)
+        # flash('Logged in successfully.')
+        return redirect(url_for('login'))
 
     return render_template("register.html")
 
@@ -3275,11 +3275,11 @@ def home():
 
             return render_template("dashboard_with_db.html", title='Dashboard', data=data_updated_list, data2=item_list,
                                    item_d=item_details, p_id=proj_id_2, page='home', item_index=item_index,
-                                   len_items=len_items)
+                                   len_items=len_items, user=current_user)
 
         return render_template("dashboard_with_db.html", title='Dashboard', data=data_update_list2, data2=item_list,
                                item_d=item_details, p_id=proj_id, page='home', item_index=item_index,
-                               len_items=len_items)
+                               len_items=len_items, user=current_user)
 
 
 # Website routes
@@ -3301,7 +3301,7 @@ def getItemProject(proj_id):
 
         return render_template("dashboard_with_db.html", title='Dashboard', data=data_updated_list, data2=item_list,
                                item_d=item_details, p_id=proj_id_2, page='home', item_index=item_index,
-                               len_items=len_items)
+                               len_items=len_items, user=current_user)
 
 
 @app.route('/filter', methods=["GET", "POST"])
@@ -3376,7 +3376,7 @@ def filter_dashboard():
             len_items = len(item_list)
 
             return render_template("dashboard_with_db.html", title='Dashboard', data=data_update_list2, data2=item_list,
-                                   item_d=selected_item, page='home', item_index=item_index, len_items=len_items)
+                                   item_d=selected_item, page='home', item_index=item_index, len_items=len_items, user=current_user)
 
 
 @app.route('/items/<item_id>', methods=["GET", "POST"])
@@ -3512,11 +3512,10 @@ def projectDetails():
             db.session.add(new_project)
             db.session.commit()
 
-            return render_template("Project Details.html", title='Project Details', item_d=selected_item,
-                                   page='projectDetails', item_index=item_index)
+            return redirect(url_for('home'))
 
     return render_template("Project Details.html", title='Project Details', item_d=selected_item, page='projectDetails',
-                           item_index=item_index)
+                           item_index=item_index, user=current_user)
 
 
 # @app.route('/valve-selection', methods=["GET", "POST"])
@@ -3871,7 +3870,7 @@ def valveSelection():
         item_index = item_list.index(itemdetails)
         return render_template("Valve Selection.html", title='Valve Selection', data=template_list,
                                item_d=selected_item, v_mat=v_materials, page='valveSelection',
-                               item_index=item_index, style=vType_db, v_dict=v_dict, sNo=s_no)
+                               item_index=item_index, style=vType_db, v_dict=v_dict, sNo=s_no, user=current_user)
 
 
 def sort_list_latest(list_1, selected):
@@ -6158,7 +6157,7 @@ def valveSizing():
         return render_template("Valve Sizing 2.html", title='Valve Sizing', cases=itemCases_1, item_d=item_selected,
                                fluid=fluid_data, len_c=range(case_len), length_unit=getPref(item_selected),
                                fState=f_state, o_val=o_val_list, len_s=case_len, ps=pipe_schedule, page='valveSizing',
-                               item_index=item_index, flxt_def=flxt_def)
+                               item_index=item_index, flxt_def=flxt_def, user=current_user)
 
 
 # @app.route('/actuator-sizing', methods=["GET", "POST"])
@@ -6307,7 +6306,7 @@ def actuatorSizing():
         item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
         item_index = item_list.index(item_details)
         return render_template("actuator1.html", title='Actuator Sizing', item_d=item_details, shutoff=shutoffDelp,
-                               page='actuatorSizing', item_index=item_index)
+                               page='actuatorSizing', item_index=item_index, user=current_user)
 
 
 @app.route('/actuator', methods=["GET", "POST"])
@@ -6442,7 +6441,7 @@ def actuator():
                 return render_template("actuator2.html", title='Actuator Sizing', item_d=item_details, data=data__,
                                        v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list,
                                        air=min_air, af=fail_action_string, page='actuator',
-                                       item_index=item_index, dummy=item_dummy_data)
+                                       item_index=item_index, dummy=item_dummy_data, user=current_user)
             if request.form.get('actuator'):
                 setPressure = float(request.form.get('setPressure'))
                 shutoff_plus = float(request.form.get('vClosed'))
@@ -6496,11 +6495,11 @@ def actuator():
                                               NATMax, NATMin, i.SFMax]
                                     return_actuator_data.append(i_list)
                 return render_template('select_actuator.html', data=return_actuator_data, item_d=item_details,
-                                       setP=setPressure, page='selectActuator', item_index=item_index)
+                                       setP=setPressure, page='selectActuator', item_index=item_index, user=current_user)
 
         return render_template("actuator2.html", title='Actuator Sizing', item_d=item_details, data=data__,
                                v_data=v_data_final, act_list=act_data_list, v_list=act_valve_data_list, air=min_air,
-                               af=fail_action_string, page='actuator', item_index=item_index, dummy=item_dummy_data)
+                               af=fail_action_string, page='actuator', item_index=item_index, dummy=item_dummy_data, user=current_user)
 
 
 def getIntTuple(string_):
@@ -6712,11 +6711,11 @@ def actuatorRotary():
                 print(all_act_data)
                 # return f"ST: {seating_torque__}, PT: {packing_torque__}, FT: {friction_torque__}, BTO: {bto_}, Mast: {mast}, Strength: {strength}"
                 return render_template('select_r_actuator.html', data=all_act_data, item_d=item_details,
-                                       page='selectActuator', item_index=item_index)
+                                       page='selectActuator', item_index=item_index, user=current_user)
 
         return render_template("rotary.html", title='Actuator Sizing', item_d=item_details, page='acutuatorRotary',
                                item_index=item_index, valve_values=valve_list, da=fail_da, act_dict=act_dict,
-                               sp=set_pres_intervals)
+                               sp=set_pres_intervals, user=current_user)
 
 
 @app.route('/select-r-actuator', methods=["GET", "POST"])
@@ -6757,7 +6756,7 @@ def stroke_speed():
                                                                stroke_speed_data.split('+')[6]
         data = [vo, vm, vs, pi_fill, pf_fill, pi_exhaust, pf_exhaust]
         print(data)
-        return render_template('stroke_speed_actuator.html', data=data, item_d=item_details, item_index=item_index)
+        return render_template('stroke_speed_actuator.html', data=data, item_d=item_details, item_index=item_index, user=current_user)
 
 
 # @app.route('/actuator-sizing2', methods=["GET", "POST"])
@@ -7143,7 +7142,7 @@ def accessories():
                                page='accessories',
                                item_index=item_index,
                                data=[manu_list, ser_list, action_list, afr_data, limit_data, solenoid_data],
-                               pos_data=[manuf, ser, action], acc_data=acc_data, acc_el=acc_element_fill)
+                               pos_data=[manuf, ser, action], acc_data=acc_data, acc_el=acc_element_fill, user=current_user)
 
 
 @app.route('/positioner', methods=["GET", "POST"])
@@ -7161,7 +7160,7 @@ def positionerRender():
         positioner_data = positioner.query.all()
         return render_template("select_positioner.html", title='Accessories', item_d=selected_item,
                                page='accessories',
-                               item_index=item_index, data=positioner_data)
+                               item_index=item_index, data=positioner_data, user=current_user)
 
 
 @app.route('/afr', methods=["GET", "POST"])
@@ -7173,7 +7172,7 @@ def afrRender():
         item_index = item_list.index(item_details)
         return render_template("select_afr.html", title='Accessories', item_d=selected_item,
                                page='accessories',
-                               item_index=item_index, data=afr_data)
+                               item_index=item_index, data=afr_data, user=current_user)
 
 
 @app.route('/limit', methods=["GET", "POST"])
@@ -7185,7 +7184,7 @@ def limitRender():
         item_index = item_list.index(item_details)
         return render_template("select_limit_switch.html", title='Accessories', item_d=selected_item,
                                page='accessories',
-                               item_index=item_index, data=limit_data)
+                               item_index=item_index, data=limit_data, user=current_user)
 
 
 @app.route('/solenoid', methods=["GET", "POST"])
@@ -7197,7 +7196,7 @@ def solenoidRender():
         item_index = item_list.index(item_details)
         return render_template("select_solenoid.html", title='Accessories', item_d=selected_item,
                                page='accessories',
-                               item_index=item_index, data=solenoid_data)
+                               item_index=item_index, data=solenoid_data, user=current_user)
 
 
 @app.route('/select-positioner', methods=["GET", "POST"])
@@ -7282,7 +7281,7 @@ def itemNotes():
         data = request.form.get('abc')
         return f"{data}"
     return render_template("Item Notes.html", title='Item Notes', item_d=selected_item, page='itemNotes',
-                           item_index=item_index)
+                           item_index=item_index, user=current_user)
 
 
 @app.route('/project-notes', methods=["GET", "POST"])
@@ -7297,7 +7296,7 @@ def projectNotes():
     #                                                       size=6, coeffID=1)
 
     return render_template("Project Notes.html", title='Project Notes', item_d=selected_item, page='projectNotes',
-                           item_index=item_index)
+                           item_index=item_index, user=current_user)
 
 
 @app.route('/delete-cases/<case_id>', methods=["GET", "POST"])
@@ -7483,13 +7482,19 @@ def generate_csv(page):
 
             act_valve_data = v_details.valve_size
             if act_valve_data:
-                act_valve_data_string = act_valve_data.split('#')
+                if type(act_valve_data) == str:
+                    act_valve_data_string = act_valve_data.split('#')
+                else:
+                    act_valve_data_string = []
             else:
                 act_valve_data_string = []
 
             act_other_ = v_details.serial_no
             if act_other_:
-                act_other = act_other_.split('#')
+                if type(act_valve_data) == str:
+                    act_other = act_other_.split('#')
+                else:
+                    act_other = []
             else:
                 act_other = []
 
@@ -7879,7 +7884,7 @@ def preferences(page):
             return redirect(url_for('valveSizing'))
 
         return render_template('preferences.html', title='Preferences', length_unit=units_pref, item_d=item_1,
-                               page='preferences', item_index=item_index)
+                               page='preferences', item_index=item_index, user=current_user)
 
 
 def interpolate(data, x_db, y_db, vtype):
@@ -8073,7 +8078,7 @@ def selectValve():
                 print(f'The final return globe is: {return_globe_data}')
 
                 return render_template('select_valve_size.html', item_d=item_details, data=return_globe_data,
-                                       page='selectValve', item_index=item_index)
+                                       page='selectValve', item_index=item_index, user=current_user)
             elif request.form.get('select'):
                 for last_case in cases:
                     valve_d_id = request.form.get('valve')
@@ -8201,7 +8206,7 @@ def selectValve():
                 return redirect(url_for('valveSizing', page='valveSizing'))
 
     return render_template('select_valve_size.html', item_d=item_details, data=[], page='selectValve',
-                           item_index=item_index)
+                           item_index=item_index, user=current_user)
 
 
 #
@@ -8270,7 +8275,7 @@ def selectValve():
 @app.route('/view-data', methods=['GET', 'POST'])
 def viewData():
     data2 = table_data_render
-    return render_template('view_data.html', data=data2, page='viewData')
+    return render_template('view_data.html', data=data2, page='viewData', user=current_user)
 
 
 @app.route('/render-data/<topic>', methods=['GET'])
@@ -8280,7 +8285,7 @@ def renderData(topic):
     table_data = table_.query.all()
     print(table_.__tablename__)
     print(len(table_data))
-    return render_template("render_data.html", data=table_data, topic=topic, page='renderData', name=name)
+    return render_template("render_data.html", data=table_data, topic=topic, page='renderData', name=name, user=current_user)
 
 
 @app.route('/download-data/<topic>', methods=['GET'])
@@ -8402,40 +8407,41 @@ def renderValveData():
         #                            valve_data=v_data_2)
         # print(v_data)
         return render_template('render_valve_data.html', data=table_data, len_data=range(len(v_data)),
-                               valve_data=v_data)
+                               valve_data=v_data, user=current_user)
 
 
 @app.route('/pipe-area', methods=['GET', 'POST'])
 def pipeAreaRender():
     with app.app_context():
         table_data = pipeArea.query.all()
-        return render_template('render_pipe_area.html', data=table_data)
+        return render_template('render_pipe_area.html', data=table_data, user=current_user)
 
 
 @app.route('/valve-area', methods=['GET', 'POST'])
 def valveAreaRender():
     with app.app_context():
         table_data = valveArea.query.all()
-        return render_template('render_valve_area.html', data=table_data)
+        return render_template('render_valve_area.html', data=table_data, user=current_user)
 
 
 @app.route('/actuator-series', methods=['GET'])
 def actuatorSeries():
     with app.app_context():
         table_data = actuatorSeriesNew.query.all()
-        return render_template('act_series.html', data=table_data)
+        return render_template('act_series.html', data=table_data, user=current_user)
 
 
 @app.route('/actuator-model', methods=['GET'])
 def actuatorMode():
     with app.app_context():
         table_data = actuatorModel.query.all()
-        return render_template('act_model.html', data=table_data)
+        return render_template('act_model.html', data=table_data, user=current_user)
 
 
 @app.route('/del-proj/<item_id>/<page>', methods=['GET', 'POST'])
 def deleteProject(item_id, page):
     with app.app_context():
+        global selected_item
         item_element = db.session.query(itemMaster).filter_by(id=item_id).first()
         proj_id = item_element.projectID
         proj_to_del = projectMaster.query.get(proj_id)
@@ -8467,9 +8473,11 @@ def deleteProject(item_id, page):
                 db.session.commit()
             if request.form.get('cancel'):
                 pass
+            item_all_ = itemMaster.query.all()
+            selected_item = item_all_[0]
             return redirect(url_for(page))
         data = f"You are about to delete 1 project, {len_items} Item(s) and {len_cases} Case(s)"
-        return render_template('del_confirmation.html', route='deleteProject', data=data, page=page, item_id=item_id)
+        return render_template('del_confirmation.html', route='deleteProject', data=data, page=page, item_id=item_id, user=current_user)
 
 
 @app.route('/del-item/<item_id>/<page>', methods=['GET', 'POST'])
@@ -8495,7 +8503,7 @@ def deleteItem(item_id, page):
                 pass
             return redirect(url_for(page))
         data = f"You are about to delete 1 Item and {len_cases} Case(s)"
-        return render_template('del_confirmation.html', route='deleteItem', data=data, page=page, item_id=item_id)
+        return render_template('del_confirmation.html', route='deleteItem', data=data, page=page, item_id=item_id, user=current_user)
 
 
 @app.route('/copy-proj/<proj_id>/<page>', methods=['GET'])
@@ -8590,7 +8598,7 @@ def importProject(page):
                     db.session.commit()
 
         return redirect(url_for(page))
-    return render_template('importproject2.html', page='importProject')
+    return render_template('importproject2.html', page='importProject', user=current_user)
 
 
 @app.route('/export-proj/<proj_id>/<page>', methods=['GET'])
