@@ -7563,7 +7563,10 @@ def generate_csv(page):
                 bonnet_material = materialMaster.query.get(v_details.bonnet_v).name
                 bonnetExtDimen = v_details.bonnetExtDimension
                 balanceSeal = v_details.balanceScale
-                balanceSeal = balanceSeal.upper()
+                try:
+                    balanceSeal = balanceSeal.upper()
+                except AttributeError:
+                    balaceSeal = ""
                 print(f"stud nut id: {v_details.stud_nut}")
                 studnut = valveTypeMaterial.query.get(v_details.stud_nut).name
 
