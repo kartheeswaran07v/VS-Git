@@ -18,3 +18,7 @@ class RegisterForm(FlaskForm):
     mobile = PasswordField("Mobile", validators=[DataRequired()])
     designation = StringField("Designation", validators=[DataRequired()])
     submit = SubmitField("Register")
+
+
+
+    # Git Test
