@@ -164,16 +164,16 @@
           <tr class="th">
             <td></td>
 <!--            <td></td>-->
-            <td >Industry</td>
-            <td>Region</td>
-            <td>Quote</td>
-            <td>Status</td>
-            <td>Customer</td>
-            <td>Enquiry Ref.</td>
-            <td>Received</td>
-            <td>Engr.</td>
-            <td>Due Date</td>
-            <td>Work Order No</td>
+            <td style="text-align: left;">Industry</td>
+            <td style="text-align: left;">Region</td>
+            <td style="text-align: left;">Quote</td>
+            <td style="text-align: center;">Status</td>
+            <td style="text-align: left;">Customer</td>
+            <td style="text-align: left;">Enquiry Ref.</td>
+            <td style="text-align: left;">Received</td>
+            <td style="text-align: center;">Engr.</td>
+            <td style="text-align: left;">Due Date</td>
+            <td style="text-align: left;">Work Order No</td>
           </tr>
 
           <tbody>
@@ -217,19 +217,19 @@
       <table>
 
         <tr class="th">
-          <td></td>
-          <td>Item</td>
-          <td>Alt</td>
-          <td>Tag Number</td>
-          <td>Series</td>
-          <td>Size</td>
-          <td>Model</td>
-          <td>Type</td>
-          <td>Rating</td>
-          <td>Material</td>
-          <td>Unit Price</td>
-          <td>Qty.</td>
-          <td>Total Price</td>
+          <td style="text-align: left;"></td>
+          <td style="text-align: left;">Item</td>
+          <td style="text-align: center;">Alt</td>
+          <td style="text-align: left;">Tag Number</td>
+          <td style="text-align: center;">Series</td>
+          <td style="text-align: left;">Size</td>
+          <td style="text-align: left;">Model</td>
+          <td style="text-align: left;">Type</td>
+          <td style="text-align: left;">Rating</td>
+          <td style="text-align: left;">Material</td>
+          <td style="text-align: right;">Unit Price</td>
+          <td style="text-align: center;">Qty.</td>
+          <td style="text-align: right;">Total Price</td>
         </tr>
 
         <tbody>
@@ -256,7 +256,7 @@
             <td style="text-align: left;">{{data2[i].materialID}}</td>
             <td style="text-align: right;">{{data2[i].unit_price}}</td>
             <td style="text-align: center;">{{data2[i].qty}}</td>
-            <td style="text-align: left;">{{data2[i].projectID}}</td>
+            <td style="text-align: right;">{{data2[i].projectID}}</td>
           </tr>
 
           {% endfor %}
