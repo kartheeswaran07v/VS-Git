@@ -9,7 +9,7 @@
     <div class="col-1">
       <div class="row" style="margin-top:30px;">
         <div class="col-12">
-          <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="User"></i>
+          <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
         </div>
       </div>
     </div>
@@ -164,7 +164,7 @@
           <tr class="th">
             <td></td>
 <!--            <td></td>-->
-            <td>Industry</td>
+            <td >Industry</td>
             <td>Region</td>
             <td>Quote</td>
             <td>Status</td>
@@ -190,16 +190,16 @@
 <!--              <td><input type="radio" id="project" name="projects" value="{{i.id}}"></td>-->
 <!--              {% endif %}-->
 
-              <td>{{i.IndustryID}}</td>
-              <td>{{i.regionID}}</td>
-              <td>{{i.quote}}</td>
-              <td>{{i.statusID}}</td>
-              <td>{{i.customerID}}</td>
-              <td>{{i.customerID}}</td>
-              <td>{{i.received_date}}</td>
-              <td>{{i.engineerID}}</td>
-              <td>{{i.due_date}}</td>
-              <td>{{i.work_order}}</td>
+              <td style="text-align: left;">{{i.IndustryID}}</td>
+              <td style="text-align: left;">{{i.regionID}}</td>
+              <td style="text-align: left;">{{i.quote}}</td>
+              <td style="text-align: center;">{{i.statusID}}</td>
+              <td style="text-align: left;">{{i.customerID}}</td>
+              <td style="text-align: left;">{{i.customerID}}</td>
+              <td style="text-align: left;">{{i.received_date}}</td>
+              <td style="text-align: center;">{{i.engineerID}}</td>
+              <td style="text-align: left;">{{i.due_date}}</td>
+              <td style="text-align: left;">{{i.work_order}}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -221,7 +221,7 @@
           <td>Item</td>
           <td>Alt</td>
           <td>Tag Number</td>
-          <td>Serial</td>
+          <td>Series</td>
           <td>Size</td>
           <td>Model</td>
           <td>Type</td>
@@ -245,18 +245,18 @@
             {% else %}
             <td><a href="{{url_for('getItems', item_id=data2[i].id)}}" >⦾</a></td>
             {% endif %}
-            <td>{{i+1}}</td>
-            <td>{{data2[i].alt}}</td>
-            <td>{{data2[i].tag_no}}</td>
-            <td>{{data2[i].serialID}}</td>
-            <td>{{data2[i].sizeID}} in.</td>
-            <td>{{data2[i].modelID}}</td>
-            <td>{{data2[i].typeID}}</td>
-            <td>{{data2[i].ratingID}}</td>
-            <td>{{data2[i].materialID}}</td>
-            <td>{{data2[i].unit_price}}</td>
-            <td>{{data2[i].qty}}</td>
-            <td>{{data2[i].projectID}}</td>
+            <td style="text-align: left;">{{i+1}}</td>
+            <td style="text-align: center;">{{data2[i].alt}}</td>
+            <td style="text-align: left;">{{data2[i].tag_no}}</td>
+            <td style="text-align: center;">{{data2[i].serialID}}</td>
+            <td style="text-align: left;">{{data2[i].sizeID}} in.</td>
+            <td style="text-align: left;">{{data2[i].modelID}}</td>
+            <td style="text-align: left;">{{data2[i].typeID}}</td>
+            <td style="text-align: left;">{{data2[i].ratingID}}</td>
+            <td style="text-align: left;">{{data2[i].materialID}}</td>
+            <td style="text-align: right;">{{data2[i].unit_price}}</td>
+            <td style="text-align: center;">{{data2[i].qty}}</td>
+            <td style="text-align: left;">{{data2[i].projectID}}</td>
           </tr>
 
           {% endfor %}
