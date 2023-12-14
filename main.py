@@ -2611,10 +2611,16 @@ def valveForces(p1_, p2_, d1, d2, d3, ua, rating, material, leakageClass, trimty
         print(trimtype, d1)
         sf_element = db.session.query(seatLoad).filter_by(trimtype=trimtype, seatBore=d1).first()
         # print(trimtype, d1)
-        b_ = {'six': sf_element.six, 'two': sf_element.two, 'three': sf_element.three, 'four': sf_element.four,
-              'five': sf_element.five}
-        B = float(a_[material])
-        C = math.pi * d1 * float(b_[leakageClass])
+        try:
+            b_ = {'six': sf_element.six, 'two': sf_element.two, 'three': sf_element.three, 'four': sf_element.four,
+                'five': sf_element.five}
+            B = float(a_[material])
+            C = math.pi * d1 * float(b_[leakageClass])
+        except AttributeError:
+            b_ = {'six': None, 'two': None, 'three': None, 'four': None,
+                'five': None}
+            B = 0
+            C = 0
         # print(f"Packing friction: {B}, Seat Load Force: {C}")
     print((trimtype, balance, flow, case))
     for i in valve_force_dict:
@@ -6412,80 +6418,89 @@ def actuator():
         cases = db.session.query(itemCases).filter_by(itemID=item_details.id).all()
         item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
         item_index = item_list.index(item_details)
-        last_case = cases[len(cases) - 1]
         v_details = db.session.query(valveDetails).filter_by(itemID=item_details.id).first()
-
         # item dummy
         item_dummy = db.session.query(itemDummy).filter_by(item_id=item_details.id).first()
         valve_element__ = db.session.query(globeTable).filter_by(id=int(item_dummy.valve_id)).first()
         v_seat_bore = float(valve_element__.charac.split('#')[7])
         v_travel = float(valve_element__.charac.split('#')[6])
         v_size__ = int(valve_element__.size)
-        item_dummy_data = [v_size__, v_seat_bore, v_travel]
-        # end of dummy
+        
+        try:
+            last_case = cases[len(cases) - 1]
+            
+            # end of dummy
 
-        # get min air supply into act data
-        act_data_prev = v_details.serial_no
-        act_data_prev_list = act_data_prev.split('#')
-        min_air = act_data_prev_list[5]
+            # get min air supply into act data
+            act_data_prev = v_details.serial_no
+            act_data_prev_list = act_data_prev.split('#')
+            min_air = act_data_prev_list[5]
 
-        trimType_act = trimtype_dict[int(v_details.trimType_v)]
-        fl_direction = flowDirection.query.get(v_details.flowDirection_v).name
-        valve_size = last_case.vaporInlet
-        aaaaa = last_case.reqStage
-        aaaaa_list = aaaaa.split('+')
-        # print(aaaaa_list, len(aaaaa_list))
-        seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, vSizeUnit, iPipeSchUnit, oPipeSchUnit, iTempUnit, sg_choice = \
-            float(aaaaa_list[0]), aaaaa_list[1], float(aaaaa_list[2]), float(aaaaa_list[3]), float(
-                aaaaa_list[4]), aaaaa_list[5], \
-            aaaaa_list[6], \
-            aaaaa_list[7], aaaaa_list[8], aaaaa_list[9], aaaaa_list[10], aaaaa_list[11], aaaaa_list[12], \
-            aaaaa_list[13], aaaaa_list[14], aaaaa_list[15], aaaaa_list[16]
+            trimType_act = trimtype_dict[int(v_details.trimType_v)]
+            fl_direction = flowDirection.query.get(v_details.flowDirection_v).name
+            valve_size = last_case.vaporInlet
+            aaaaa = last_case.reqStage
+            aaaaa_list = aaaaa.split('+')
+            # print(aaaaa_list, len(aaaaa_list))
+            seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, vSizeUnit, iPipeSchUnit, oPipeSchUnit, iTempUnit, sg_choice = \
+                float(aaaaa_list[0]), aaaaa_list[1], float(aaaaa_list[2]), float(aaaaa_list[3]), float(
+                    aaaaa_list[4]), aaaaa_list[5], \
+                aaaaa_list[6], \
+                aaaaa_list[7], aaaaa_list[8], aaaaa_list[9], aaaaa_list[10], aaaaa_list[11], aaaaa_list[12], \
+                aaaaa_list[13], aaaaa_list[14], aaaaa_list[15], aaaaa_list[16]
 
-        iPressure = last_case.iPressure
-        oPressure = last_case.oPressure
-        iPressure = round(meta_convert_P_T_FR_L('P', iPressure, iPresUnit, 'psia', 1000))
-        oPressure = round(meta_convert_P_T_FR_L('P', oPressure, oPresUnit, 'psia', 1000))
-        seatDia_act = round(meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'inch', 1000), 2)
-        act_data_new = v_details.serial_no
-        act_data_new_list = act_data_new.split('#')
-        shutoffDelP = float(act_data_new_list[7]) * 14.5
-        sLeak_act = leakage_dict[int(v_details.seatLeakageClass_v)]
-        rating_id = v_details.rating
-        valveSize_act = round(meta_convert_P_T_FR_L('L', valve_size, vSizeUnit, 'inch', 1000))
-        rating_act = rating.query.get(rating_id).size
-        packing_id = v_details.packing
-        packing_act = valveTypeMaterial.query.get(packing_id).name
+            iPressure = last_case.iPressure
+            oPressure = last_case.oPressure
+            iPressure = round(meta_convert_P_T_FR_L('P', iPressure, iPresUnit, 'psia', 1000))
+            oPressure = round(meta_convert_P_T_FR_L('P', oPressure, oPresUnit, 'psia', 1000))
+            seatDia_act = round(meta_convert_P_T_FR_L('L', seatDia, seatDiaUnit, 'inch', 1000), 2)
+            act_data_new = v_details.serial_no
+            act_data_new_list = act_data_new.split('#')
+            shutoffDelP = float(act_data_new_list[7]) * 14.5
+            sLeak_act = leakage_dict[int(v_details.seatLeakageClass_v)]
+            rating_id = v_details.rating
+            valveSize_act = round(meta_convert_P_T_FR_L('L', valve_size, vSizeUnit, 'inch', 1000))
+            rating_act = rating.query.get(rating_id).size
+            packing_id = v_details.packing
+            packing_act = valveTypeMaterial.query.get(packing_id).name
 
-        # get actuator sized data from v_detials.rating_v, valve data from v_details.valve_size
-        # if data is available, render it in acSizing, else, blank
-        if v_details.rating_v is None:
-            act_data_list = []
-        else:
-            act_data_string = v_details.rating_v
-            act_data_list = act_data_string.split('#')
+            # get actuator sized data from v_detials.rating_v, valve data from v_details.valve_size
+            # if data is available, render it in acSizing, else, blank
+            if v_details.rating_v is None:
+                act_data_list = []
+            else:
+                act_data_string = v_details.rating_v
+                act_data_list = act_data_string.split('#')
 
-        if v_details.valve_size is None:
-            act_valve_data_list = []
-        else:
-            act_valve_string = v_details.valve_size
-            act_valve_data_list = act_valve_string.split('#')
+            if v_details.valve_size is None:
+                act_valve_data_list = []
+            else:
+                act_valve_string = v_details.valve_size
+                act_valve_data_list = act_valve_string.split('#')
 
-        if len(act_valve_data_list) > 0:
-            v_data_final = act_valve_data_list[6:]
-        else:
-            v_data_final = []
-        data__ = [trimType_act, fl_direction, valve_size, seatDia_act, iPressure, oPressure, shutoffDelP,
-                  iPressure - oPressure]
-        data = [iPressure, oPressure, seatDia_act, valveSize_act, rating_act, trimType_act, fl_direction, packing_act,
-                sLeak_act]
-        print(f"v_data_final: {v_data_final}")
-        print(f"act_valve_dat_final:{act_valve_data_list}")
-        print(f"act_data_list:{act_data_list}")
-        # get fail action
-        action_string = v_details.serial_no
-        fail_action_string = action_string.split('#')[1]
-        print(f"fail action: {fail_action_string}")
+            if len(act_valve_data_list) > 0:
+                v_data_final = act_valve_data_list[6:]
+            else:
+                v_data_final = []
+            data__ = [trimType_act, fl_direction, valve_size, seatDia_act, iPressure, oPressure, shutoffDelP,
+                    iPressure - oPressure]
+            data = [iPressure, oPressure, seatDia_act, valveSize_act, rating_act, trimType_act, fl_direction, packing_act,
+                    sLeak_act]
+            
+            # get fail action
+            action_string = v_details.serial_no
+            fail_action_string = action_string.split('#')[1]
+            item_dummy_data = [v_size__, v_seat_bore, v_travel]
+        except (IndexError, TypeError):
+            data__ = [None, None, None, None, None, None, None, None]
+            v_data_final = None
+            act_valve_data_list = None
+            act_data_list = None
+            min_air = None
+            fail_action_string = None
+            item_dummy_data = [None, None, None]
+            
+        
         if request.method == 'POST':
             if request.form.get('valve'):
                 plugDia = float(request.form.get('plugDia'))
@@ -7697,11 +7712,36 @@ def generate_csv(page):
                              'dB',
                              i_pipe_vel,
                              o_pipe_vel, t_vel, iPipeUnit, oPipeUnit]
+                
+                # unit_list_dict = {
+                #     "flUnit": fl_unit,
+                #     "iPresUnit": iPresUnit,
+                #     "oPresUnit": oPresUnit,
+                #     "iTempUnit": iTempUnit,
+                #     "sGravityUnit": None,
+                #     "viscosityUnit": 'centipose',
+                #     "vPresUnit": vPresUnit,
+                #     "flUnit": None,
+                #     "cvUnit": None,
+                #     "percentageOpening": percent__,
+                #     "splUnit": 'dBA',
+                #     "i_pipe_vel": i_pipe_vel,
+                #     "o_pipe_vel": o_pipe_vel,
+                #     "t_vel": t_vel,
+                #     "iPipeUnit": iPipeUnit,
+                #     "oPipeUnit": oPipeUnit
+                # }
+
                 other_val_list = [serial__, 1, project_, cPressure, cPresUnit, shutoffDelp, vSize, vSizeUnit, rating_,
                                   material_, bonnet_type, nde1, nde2, gasket_mat, trim_type, flow_dir, seat_mat,
                                   disc_mat,
                                   seat_leak, end_connection, end_finish, v_model_lower, model_str, bonnet_material,
                                   bonnetExtDimen, studnut, cv_, balanceSeal, acc_list]
+                
+                other_val_list_dict = {
+
+                }
+                
                 for i in itemCases_1[:6]:
                     case_list = [i.flowrate, i.iPressure, i.oPressure, i.iTemp, i.sGravity, i.viscosity, i.vPressure,
                                  i.Xt,
@@ -7711,42 +7751,85 @@ def generate_csv(page):
                                  itemCases_1[0].iPipeSize, itemCases_1[0].oPipeSize, size__, rating__, project__.quote,
                                  project__.work_order,
                                  customer__]
+                    
+                    # case_list_dict = {
+                    #                     "flowrate": i.flowrate, "iPressure": i.iPressure, "oPressure": i.oPressure,
+                    #                     "iTemp": i.iTemp, "sGravity": i.sGravity, "viscosity": i.viscosity, "vPressure": i.vPressure,
+                    #                     "Xt": i.Xt, "CV": i.CV, "openPercent": i.openPercent, "valveSPL": i.valveSPL,
+                    #                     "iVelocity": i.iVelocity, "oVelocity": i.oVelocity, "trimExVelocity": i.trimExVelocity, "tagNo": item.tag_no,
+                    #                     "itemId": item.id, "fluidState": itemCases_1[0].fluidState, "criticalPressure": itemCases_1[0].criticalPressure,
+                    #                     "iPipeSize": itemCases_1[0].iPipeSize, "oPipeSize": itemCases_1[0].oPipeSize, "size_": size__, "rating": rating__,
+                    #                     "quote": project__.quote, "workOrder": project__.work_order, "customer": customer__
+                    #                 }
                     rows___.append(case_list)
 
                 cases__.append(rows___)
                 units__.append(unit_list)
                 others__.append(other_val_list)
-                act_dict_ = {'v_type': v_details.ratedCV, 'trim_type': trim_type, 'Balancing': v_details.balanceScale,
-                             'fl_direction': flow_dir, 'v_size': vSize,
-                             'v_size_unit': vSizeUnit,
-                             'Seat_Dia': seatDia,
-                             'seat_dia_unit': seatDiaUnit, 'unbalance_area': act_valve_data_string[5],
-                             'unbalance_area_unit': 'inch^2',
-                             'Stem_size': act_valve_data_string[4], 'Stem_size_unit': 'inch',
-                             'Travel': act_valve_data_string[1],
-                             'travel_unit': 'inch', 'Packing_Friction': act_data_string[13],
-                             'packing_friction_unit': 'mm', 'Seat_Load_Factor': act_data_string[24],
-                             'Additional_Factor': 0,
-                             'P1': itemCases_1[-1].iPressure,
-                             'p1_unit': iPresUnit,
-                             'P2': itemCases_1[-1].oPressure, 'p2_unit': oPresUnit,
-                             'delP_Shutoff': v_details.shutOffDelP, 'delP_Shutoff_unit': 'bar', 'unbal_force': 0,
-                             'Kn': act_data_string[15], 'delP_flowing': 0,
-                             'act_type': act_other[0],
-                             'fail_action': act_data_string[4], 'act_size': act_data_string[0],
-                             'act_size_unit': 'inch',
-                             'act_travel': act_data_string[1], 'act_travel_unit': 'inch',
-                             'eff_area': act_data_string[0], 'eff_area_unit': 'inch^2',
-                             'sMin': act_data_string[2], 'sMax': act_data_string[3], 'spring_rate': act_data_string[18],
-                             'spring_windup': act_data_string[19], 'max_spring_load': act_data_string[20],
-                             'max_air_supply': act_other[6],
-                             'set_pressure': act_data_string[5], 'set_pressure_unit': 'bar', 'act_thrust_down': 0,
-                             'act_thrust_up': 0, 'handwheel': act_other[2],
-                             'friction_band': act_data_string[21],
-                             'req_handWheel_thrust': act_data_string[22], 'max_thrust': act_data_string[23],
-                             'v_thrust_close': 0, 'v_thrust_open': 0, 'seat_load': act_data_string[14],
-                             'orientation': act_other[3]
-                             }
+                try:
+                    act_dict_ = {'v_type': v_details.ratedCV, 'trim_type': trim_type, 'Balancing': v_details.balanceScale,
+                                'fl_direction': flow_dir, 'v_size': vSize,
+                                'v_size_unit': vSizeUnit,
+                                'Seat_Dia': seatDia,
+                                'seat_dia_unit': seatDiaUnit, 'unbalance_area': act_valve_data_string[5],
+                                'unbalance_area_unit': 'inch^2',
+                                'Stem_size': act_valve_data_string[4], 'Stem_size_unit': 'inch',
+                                'Travel': act_valve_data_string[1],
+                                'travel_unit': 'inch', 'Packing_Friction': act_data_string[13],
+                                'packing_friction_unit': 'mm', 'Seat_Load_Factor': act_data_string[24],
+                                'Additional_Factor': 0,
+                                'P1': itemCases_1[-1].iPressure,
+                                'p1_unit': iPresUnit,
+                                'P2': itemCases_1[-1].oPressure, 'p2_unit': oPresUnit,
+                                'delP_Shutoff': v_details.shutOffDelP, 'delP_Shutoff_unit': 'bar', 'unbal_force': 0,
+                                'Kn': act_data_string[15], 'delP_flowing': 0,
+                                'act_type': act_other[0],
+                                'fail_action': act_data_string[4], 'act_size': act_data_string[0],
+                                'act_size_unit': 'inch',
+                                'act_travel': act_data_string[1], 'act_travel_unit': 'inch',
+                                'eff_area': act_data_string[0], 'eff_area_unit': 'inch^2',
+                                'sMin': act_data_string[2], 'sMax': act_data_string[3], 'spring_rate': act_data_string[18],
+                                'spring_windup': act_data_string[19], 'max_spring_load': act_data_string[20],
+                                'max_air_supply': act_other[6],
+                                'set_pressure': act_data_string[5], 'set_pressure_unit': 'bar', 'act_thrust_down': 0,
+                                'act_thrust_up': 0, 'handwheel': act_other[2],
+                                'friction_band': act_data_string[21],
+                                'req_handWheel_thrust': act_data_string[22], 'max_thrust': act_data_string[23],
+                                'v_thrust_close': 0, 'v_thrust_open': 0, 'seat_load': act_data_string[14],
+                                'orientation': act_other[3]
+                                }
+                except IndexError:
+                    act_dict_ = {'v_type': v_details.ratedCV, 'trim_type': trim_type, 'Balancing': v_details.balanceScale,
+                                'fl_direction': flow_dir, 'v_size': vSize,
+                                'v_size_unit': vSizeUnit,
+                                'Seat_Dia': seatDia,
+                                'seat_dia_unit': seatDiaUnit, 'unbalance_area': None,
+                                'unbalance_area_unit': 'inch^2',
+                                'Stem_size': None, 'Stem_size_unit': 'inch',
+                                'Travel': None,
+                                'travel_unit': 'inch', 'Packing_Friction': None,
+                                'packing_friction_unit': 'mm', 'Seat_Load_Factor': None,
+                                'Additional_Factor': 0,
+                                'P1': itemCases_1[-1].iPressure,
+                                'p1_unit': iPresUnit,
+                                'P2': itemCases_1[-1].oPressure, 'p2_unit': oPresUnit,
+                                'delP_Shutoff': v_details.shutOffDelP, 'delP_Shutoff_unit': 'bar', 'unbal_force': 0,
+                                'Kn': None, 'delP_flowing': 0,
+                                'act_type': None,
+                                'fail_action': None, 'act_size': None,
+                                'act_size_unit': 'inch',
+                                'act_travel': None, 'act_travel_unit': 'inch',
+                                'eff_area': None, 'eff_area_unit': 'inch^2',
+                                'sMin': None, 'sMax': None, 'spring_rate': None,
+                                'spring_windup': None, 'max_spring_load': None,
+                                'max_air_supply': None,
+                                'set_pressure': None, 'set_pressure_unit': 'bar', 'act_thrust_down': 0,
+                                'act_thrust_up': 0, 'handwheel': None,
+                                'friction_band': None,
+                                'req_handWheel_thrust': None, 'max_thrust': None,
+                                'v_thrust_close': 0, 'v_thrust_open': 0, 'seat_load': None,
+                                'orientation': None
+                                }
                 act_dict = act_dict_
 
         print(act_dict)
