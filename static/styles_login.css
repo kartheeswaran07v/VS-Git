@@ -96,3 +96,13 @@ label {
 .company{
     text-align: center;
 }
+
+.flashes {
+    color: rgb(165, 65, 65);
+    margin: 0;
+    padding-bottom: 7px;
+    max-width: 250;
+    padding-left: 7px;
+    text-align: center;
+    font-size: 0.8rem;
+}

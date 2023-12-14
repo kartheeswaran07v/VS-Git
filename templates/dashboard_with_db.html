@@ -9,7 +9,9 @@
     <div class="col-1">
       <div class="row" style="margin-top:30px;">
         <div class="col-12">
-          <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+          <a href="{{url_for('addCustomer')}}">
+            <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -150,13 +152,25 @@
       </div>
     </div>
   </form>
+  <div class="row">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            
+                {% for category, message in messages %}
+                    <p class="flashes-{{category}}" style="text-align: center;">{{ message }}</p>
+                {% endfor %}
+            
+        {% endif %}
+    {% endwith %}
+    {% block body %}{% endblock %}
+  </div>
+  
   
 
 
   <form action="{{ url_for('home') }}" method="post">
     <div class="row tools" style="text-align: center;margin-top: 30px;margin-left: 3px; margin-right: 3px; ">
       <h5 style="text-align: left" ;>Projects </h5>
-
       <div class="col-12" style="overflow-x:auto;height:200px;">
 
         <table>
@@ -288,7 +302,21 @@
   $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
   });
+
+  $(document).ready(function() {
+  setTimeout(function() {
+      $(".flashes-error").fadeOut('slow');
+  }, 4000); // <-- time in milliseconds
+  });
+
+  $(document).ready(function() {
+  setTimeout(function() {
+      $(".flashes-success").fadeOut('slow');
+  }, 4000); // <-- time in milliseconds
+  });
 </script>
+
+
 
 
 

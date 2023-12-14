@@ -11,7 +11,9 @@
         <div class="col-1">
           <div class="row" style="margin-top:30px;">
             <div class="col-12">
-              <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+              <a href="{{url_for('addCustomer')}}">
+                <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -369,6 +371,16 @@
 
                 <input type="submit" value="Calculate" name="calculate" style="height: 30px;">
                 <a href="{{url_for('selectValve')}}">Select Valve</a>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        
+                            {% for category, message in messages %}
+                                <p class="flashes-{{category}}" style="text-align: center;">{{ message }}</p>
+                            {% endfor %}
+                        
+                    {% endif %}
+                {% endwith %}
+                {% block body %}{% endblock %}
 
 <!--                -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
 
@@ -1995,6 +2007,29 @@
 
     </div>
   </div>
+  <script>
+    // When the user clicks on div, open the popup
+    function myFunction() {
+      var popup = document.getElementById("myPopup");
+      popup.classList.toggle("show");
+    };
+    
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes-error").fadeOut('slow');
+    }, 4000); // <-- time in milliseconds
+    });
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes-success").fadeOut('slow');
+    }, 4000); // <-- time in milliseconds
+    });
+  </script>
 
 {% include "footer.html" %}
 {% endblock %}

@@ -85,8 +85,8 @@
         </div>
 
 
-        <div class="col-3">
-          <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove; ">
+        <div class="col-3" >
+          <div class="row" style="margin-top:15px;border-left: 1px groove;border-right:  1px groove;">
           <h5 style="text-align: center;">Item</h5>
             <div class="col-2">
               <a href="{{url_for('addItem', page=page, alt='A')}}">
@@ -130,94 +130,69 @@
         </div>
       </div>
 
+      <form action="{{ url_for('addCustomer') }}" method="post">
 
-      <div class="row tools" style="text-align: center; margin-left: 3px; margin-right: 3px;margin-top: 30px; width:800px;">
-    <div class="col-6 tools">
 
-      <div class="table-responsive-sm">
+        <div class="row tools " style="text-align: center; margin-left: 3px; margin-right: 3px;  margin-top: 30px; ">
+          <div class="col-5 " style="background-color: #EAEAEA;">
+            <div class=" row">
+              <div class="col-12">
+                <h5 class="" style="text-align: left" ;>Customer details</h5>
+              </div>
+              <div class="row">
+                <div class="col-6" style='text-align: right;'>
+                  <label for="customer">Customer Name</label>
+                </div>
+                <div class="col-3">
+                  <input type="text" name="customer_name" list="customer_data" style="width:165px">
+                  <datalist id="customer_data">
+                    {% for customer_ in customers %}
+                      <option value="{{ customer_ }}">
+                    {% endfor %}  
+                  </datalist>
+                </div>
+              </div>
 
-        <div class="col-md-12">
+              <div class="row">
+                <div class="col-6" style='text-align: right;'>
+                  <label for="eRef">Address</label>
+                </div>
+                <div class="col-3">
+                  <input type="text" name="address" value="" id="address" style="width:165px">
+                </div>
+              </div>
+            </div>
+          </div>
+          <br><br>
+          <div class="row" style="margin-top: 20px;">
+            <div class="col-6">
+              <input type="submit" value="Add Customer" style="width:165px;height: 30px; background-color: #B4B4B3;">
+            </div>
+            <div class="col-6">
+              <p style="color: red">{{error_message}}</p>
+            </div>
 
-          <table class="table table-bordered">
+          </div>
 
-            <h5 style="text-align: left" ;>General Enquiry Notes</h5>
-            <tr>
-              <th>Process is Flashing Duty</th>
-            </tr>
+         
 
-            <tr>
-              <td>Process requires Anti-Cavitation Trim</td>
-            </tr>
-            <tr>
-              <td>Process requires Butterfly Valve Max.Cv</td>
-            </tr>
-          </table>
+
+
+
+
+
+
+
+
+
         </div>
 
-      </div>
-    </div>
 
-    <div class="col-6 tools">
-      <div class="table-responsive-sm">
-        <table class="table table-bordered">
 
-          <h5 style="text-align: left" ;>Item Revision Record</h5>
-          <tr>
-            <th>Rev</th>
-            <th>Description & Checked by</th>
-            <th>By</th>
-            <th>Date</th>
-          </tr>
-
-          <tr>
-            <td></td>
-              <td></td>
-                <td></td>
-                  <td></td>
-          </tr>
-          <tr>
-            <td></td>
-              <td></td>
-                <td></td>
-                  <td></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
+      </form>
 
 
 
-
-  <div class="row tools" style="text-align: center; margin-left: 3px; margin-right: 3px; width:400px;">
-    <div class="col-12 tools" style="margin-top: 30px;">
-      <div class="table-responsive-sm">
-        <table class="table table-bordered">
-
-          <h5 style="text-align: left" ;>Item Specific Notes</h5>
-          <tr>
-            <td></td>
-              <td></td>
-                <td></td>
-                  <td></td>
-          </tr>
-
-          <tr>
-            <td></td>
-              <td></td>
-                <td></td>
-                  <td></td>
-          </tr>
-          <tr>
-            <td></td>
-              <td></td>
-                <td></td>
-                  <td></td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    </div>
 
 
 
@@ -225,6 +200,8 @@
 
     </div>
   </div>
+
+  <!-- <script>alert({{customers|safe}})</script> -->
 
 {% include "footer.html" %}
 {% endblock %}

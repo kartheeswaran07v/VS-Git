@@ -22,6 +22,16 @@
             <form action="{{url_for('login')}}" method="POST">
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        
+                            {% for message in messages %}
+                                <p class="flashes">{{ message }}</p>
+                            {% endfor %}
+                        
+                    {% endif %}
+                {% endwith %}
+                {% block body %}{% endblock %}
                 <button type="submit">Login</button>
                 <label for="" style="color: rgb(133, 133, 133);">New User <label for=""><a href="{{url_for('register')}}">Register</a><label for=""> / </label><a
                             href="#">Forgot Password</a></label>

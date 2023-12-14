@@ -8,7 +8,9 @@
     <div class="col-1">
       <div class="row" style="margin-top:30px;">
         <div class="col-12">
-          <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+          <a href="{{url_for('addCustomer')}}">
+            <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -128,6 +130,18 @@
   </div>
 
   <form action="{{ url_for('valveSelection') }}" method="post">
+    <div class="row">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              
+                  {% for category, message in messages %}
+                      <p class="flashes-{{category}}" style="text-align: center;">{{ message }}</p>
+                  {% endfor %}
+              
+          {% endif %}
+      {% endwith %}
+      {% block body %}{% endblock %}
+    </div>
     <div class="row">
       <div class="row tools" style="text-align: center; margin-left: 3px; margin-right: 3px;margin-top:20px; ">
         <div class="col-12">
@@ -972,7 +986,8 @@
     <input type="submit" name="new" value="Create New Item">
   </form>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  
+
 
 <!--<script>-->
 <!--$(document).ready(function(){-->
@@ -994,14 +1009,25 @@
     function myFunction() {
       var popup = document.getElementById("myPopup");
       popup.classList.toggle("show");
-    }
-  </script>
-
-  <script>
+    };
+    
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
     });
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes-error").fadeOut('slow');
+    }, 4000); // <-- time in milliseconds
+    });
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes-success").fadeOut('slow');
+    }, 4000); // <-- time in milliseconds
+    });
   </script>
+
 
 
 

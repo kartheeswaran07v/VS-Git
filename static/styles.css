@@ -333,3 +333,26 @@ table#fixed {
     /*margin: 10px 0 0;*/
 }
 
+.flashes {
+  color: rgb(165, 65, 65);
+  margin: 0;
+  /* padding-bottom: 7px; */
+  padding-left: 15px;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.flashes-error {
+  color: rgb(112, 26, 26);
+  padding-left: 15px;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.flashes-success {
+  color: #0F4564;
+  padding-left: 15px;
+  text-align: left;
+  font-size: 1.2rem;
+}
+

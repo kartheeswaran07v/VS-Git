@@ -31,8 +31,8 @@
         <p><a href="{{url_for('itemNotes')}}">Item Notes</a></p>
         <p><a href="{{url_for('projectNotes')}}">Project Notes</a></p>
          <p><a href="{{url_for('viewData')}}">View Data</a></p>
-        <button style="font-size:18px;border:1px groove;">Logout <i class="fa fa-sign-out"></i></button><br><br>
-        <hr>
+         <button style="font-size:18px;border:1px groove;"><a href="{{url_for('logout')}}">Logout </a><i class="fa fa-sign-out"></i></button>
+         <hr>
         <p style="font-size: 20px;"><a href="#"><i class="fa-solid fa-circle-user"></i>  {{user.name}}</a></p>
       </div>
 
@@ -44,7 +44,9 @@
           <div class="col-1">
             <div class="row" style="margin-top:30px;">
               <div class="col-12">
-                <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+                <a href="{{url_for('addCustomer')}}">
+                  <i class="fa-solid fa-users fa-2x" data-toggle="tooltip" title="Customer Master"></i>
+                </a>
               </div>
             </div>
           </div>
@@ -178,16 +180,22 @@
                     <label for="customer">Customer Name</label>
                   </div>
                   <div class="col-3">
-                    <input type="text" name="customer" id="customer" value="" style="width:165px">
+                    <input type="text" name="customer" value="{{data['defaults']['customer_name']}}" list="customer_data" style="width:165px" required>
+                    <datalist id="customer_data">
+                      {% for customer_ in data['customers'] %}
+                        <option value="{{ customer_ }}">
+                      {% endfor %}  
+                    </datalist>
                   </div>
+
                 </div>
 
                 <div class="row">
                   <div class="col-6" style='text-align: right;'>
-                    <label for="eRef">Project Ref.</label>
+                    <label for="eRef">Enquiry Ref.</label>
                   </div>
                   <div class="col-3">
-                    <input type="text" name="eRef" value="" id="eRef" style="width:165px">
+                    <input type="text" name="eRef" value="{{data['defaults']['proj_ref']}}" id="eRef" style="width:165px" required>
                   </div>
                 </div>
 
@@ -196,7 +204,7 @@
                     <label for="eDate">Enquiry Date</label>
                   </div>
                   <div class="col-3">
-                    <input type="date" name="eDate" value="2023-01-01" id="eDate" style="width:165px">
+                    <input type="date" name="eDate" value="{{data['defaults']['enquiry_date']}}" id="eDate" style="width:165px" required>
                   </div>
                 </div>
 
@@ -205,7 +213,7 @@
                     <label for="rDate">Received Date</label>
                   </div>
                   <div class="col-3">
-                    <input type="date" name="rDate" value="2023-01-01" id="rDate" style="width:165px">
+                    <input type="date" name="rDate" value="{{data['defaults']['received_date']}}" id="rDate" style="width:165px" required>
                   </div>
                 </div>
 
@@ -214,7 +222,7 @@
                     <label for="bDate">Bid Due Date</label>
                   </div>
                   <div class="col-3">
-                    <input type="date" name="bDate" value="2023-01-01" id="bDate" style="width:165px">
+                    <input type="date" name="bDate" value="{{data['defaults']['due_date']}}" id="bDate" style="width:165px" required>
                   </div>
                 </div>
 
@@ -224,11 +232,14 @@
                   </div>
 
                   <div class="col-3">
-                    <select name="aEng" id="aEng" style=" height: 25px; width: 165px;">
-                      <option value="Divya">Divya</option>
-                      <option value="Nisha">Nisha</option>
-                      <option value="Suraj">Suraj</option>
-                      <option value="Veerapandi">Veerapandi</option>
+                    <select name="aEng" id="aEng" style=" height: 25px; width: 165px;" required>
+                      {% for er in data['engineer_list'] %}
+                        {% if data['defaults']['application_engineer'] == er%}
+                          <option value="{{er}}" selected>{{er}}</option>
+                        {% else %}
+                        <option value="{{er}}">{{er}}</option>
+                        {% endif %}
+                      {% endfor %}
 
                     </select>
                   </div>
@@ -243,11 +254,13 @@
                   </div>
                   <div class="col-3">
                     <select name="purpose" id="purpose" style=" height: 25px; width: 165px;">
-                      <option value="Bid ON">Bid On</option>
-                      <option value="Budget">Budget</option>
-                      <option value="Example">Example</option>
-                      <option value="OrdertoPlace">Order to Place</option>
-                      <option value="Technical">Technical</option>
+                      {% for er in data['purpose_list'] %}
+                        {% if data['defaults']['purpose'] == er %}
+                          <option value="{{er}}" selected>{{er}}</option>
+                        {% else %}
+                        <option value="{{er}}">{{er}}</option>
+                        {% endif %}
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -259,23 +272,13 @@
                   </div>
                   <div class="col-3">
                     <select name="industry" id="industry" style=" height: 25px; width: 165px;">
-                      <option value="Agriculture">Agriculture</option>
-                      <option value="Chemical">Chemical</option>
-                      <option value="Drink">Drink</option>
-                      <option value="Food">Food</option>
-                      <option value="Gas Transport / Distribution">Gas Transport / Distribution</option>
-                      <option value="Heating and Ventilation">Heating and Ventilation</option>
-                      <option value="Industrial Gas Production">Industrial Gas Production</option>
-                      <option value="Iron & Steel Production">Iron & Steel Production</option>
-                      <option value="Marine">Marine</option>
-                      <option value="Minig">Minig</option>
-                      <option value="Miscellaneous">Miscellaneous</option>
-                      <option value="Oil & Gas Production Offshore">Oil & Gas Production Offshore</option>
-                      <option value="Oil & Gas Production Onshore">Oil & Gas Production Onshore</option>
-                      <option value="OEM">OEM</option>
-                      <option value="Paper & Board">Paper & Board</option>
-                      <option value="Petrochemical">Petrochemical</option>
-                    </select>
+                      {% for er in data['industry_list'] %}
+                        {% if data['defaults']['industry'] == er%}
+                          <option value="{{er}}" selected>{{er}}</option>
+                        {% else %}
+                          <option value="{{er}}">{{er}}</option>
+                        {% endif %}
+                      {% endfor %}
                   </div>
                 </div>
 
@@ -284,7 +287,12 @@
                     <label for="region">Region</label>
                   </div>
                   <div class="col-3">
-                    <input type="text" name="region" value="" id="region" style="width:165px">
+                    <input type="text" name="region" placeholder="Region" value="{{data['defaults']['region']}}" list="region" style="width:165px" required>
+                    <datalist id="region">
+                      {% for region_ in data['regions'] %}
+                        <option value="{{ region_ }}">
+                      {% endfor %}  
+                    </datalist>
                   </div>
                 </div>
 
@@ -293,7 +301,7 @@
                     <label for="projectRev">Project Revision</label>
                   </div>
                   <div class="col-3">
-                    <input type="text" name="projectRev" value="" id="projectRev" style="width:165px">
+                    <input type="text" name="projectRev" value="{{data['defaults']['rev']}}" id="projectRev" style="width:165px" required>
                   </div>
                 </div>
               </div>
@@ -309,8 +317,13 @@
                 </div>
                 <div class="col-6">
                   <select name="cEng" id="cEng" style=" height: 25px; width: 165px;">
-                    <option value="Nishanth">Nishanth</option>
-                    <option value="Suraj">Suraj</option>
+                    {% for er in data['engineer_list'] %}
+                        {% if data['defaults']['contract_engineer'] == er%}
+                          <option value="{{er}}" selected>{{er}}</option>
+                        {% else %}
+                        <option value="{{er}}">{{er}}</option>
+                        {% endif %}
+                      {% endfor %}
                   </select>
                 </div>
               </div>
@@ -319,8 +332,8 @@
                 <div class="col-6" style='text-align: right;'>
                   <label for="cNo">Customer PO No</label>
                 </div>
-                <div class="col-6" style=''>
-                  <input type="text" name="cNo" value="" id="cNo" style="width:165px">
+                <div class="col-6">
+                  <input type="text" name="cNo" value="{{data['defaults']['customer_po']}}" id="cNo" style="width:165px" required>
                 </div>
               </div>
 
@@ -329,7 +342,7 @@
                   <label for="wNo">Work Order No</label>
                 </div>
                 <div class="col-6">
-                  <input type="text" name="wNo" value="" id="wNo" style="width:165px">
+                  <input type="text" name="wNo" value="{{data['defaults']['work_order']}}" id="wNo" style="width:165px" required>
                 </div>
                 <div class="row" style="height:30px;">
                   <h1></h1>
@@ -339,6 +352,9 @@
               <div class="row">
                 <div class="col-6">
                   <input type="submit" value="Add Project" style="width:165px">
+                </div>
+                <div class="col-6">
+                  <p style="color: red;">{{error_message}}</p>
                 </div>
 
               </div>

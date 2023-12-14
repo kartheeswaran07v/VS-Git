@@ -38,17 +38,19 @@
   <div class="row" style="margin-top:3px;">
     <div class="col-2 nav-items" style="height:700px;">
       <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="" style="width: 80%; text-align: left;margin-bottom: 10px;">
-      <p><a href="#"> DashBoard</a></p>
-      <p><a href="#">Project Details</a></p>
-      <p><a href="#" >Valve Selection</a></p>
-      <p><a href="#" >Valve Sizing</a></p>
-      <!-- <p><a href="D:\FCC Sizing UI\Sizing UI\Materials.html">Materials</a></p> -->
-      <p><a href="#">Actuator Sizing</a></p>
-      <p><a href="#">Accessories, Order Processing</a></p>
-      <p><a href="#">Item Notes</a></p>
-      <p><a href="#">Project Notes</a></p>
-      <p><a href="{{url_for('viewData')}}">View Data</a></p>
+      <p><a href="{{url_for('home')}}"> DashBoard</a></p>
+        <p><a href="{{url_for('projectDetails')}}">Project Data</a></p>
+        <p><a href="{{url_for('valveSelection')}}">Valve Selection</a></p>
+        <p><a href="{{url_for('valveSizing')}}">Valve Sizing</a></p>
+        <!-- <p><a href="D:\FCC Sizing UI\Sizing UI\Materials.html">Materials</a></p> -->
+        <p><a href="{{url_for('actuatorSizing')}}">Actuator Sizing</a></p>
+        <p><a href="{{url_for('accessories')}}">Accessories, Order Processing</a></p>
+        <p><a href="{{url_for('itemNotes')}}">Item Notes</a></p>
+        <p><a href="{{url_for('projectNotes')}}">Project Notes</a></p>
+            <p><a href="{{url_for('viewData')}}">View Data</a></p>
       <button style="font-size:18px;border:1px groove;"><a href="{{url_for('logout')}}">Logout </a><i class="fa fa-sign-out"></i></button>
+      <br><hr>
+      <p style="font-size: 20px;"><a href="#"><i class="fa-solid fa-circle-user"></i>  {{user.name}}</a></p>
     </div>
 
 

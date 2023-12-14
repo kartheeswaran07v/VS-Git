@@ -17,6 +17,7 @@ from flask import abort
 from forms import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_bootstrap import Bootstrap
+from flask_migrate import Migrate
 
 # -----------^^^^^^^^^^^^^^----------------- IMPORT STATEMENTS -----------------^^^^^^^^^^^^^------------ #
 
@@ -60,6 +61,7 @@ app.config['SECRET_KEY'] = "kkkkk"
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///fcc_filled_db_v3.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # creating login manager
 login_manager = LoginManager()
@@ -184,9 +186,18 @@ class customerMaster(db.Model):  # TODO - Paandi
     __tablename__ = "customerMaster"
     id = Column(Integer, primary_key=True)
     name = Column(String(300))
+    # address = Column(String(300))
+    # customer_id = Column(String(300))
 
     # relationship as parent
     project = relationship("projectMaster", back_populates="customer")
+
+# class customer2Master(db.Model):  # TODO - Paandi
+#     __tablename__ = "customer2Master"
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String(300))
+#     address = Column(String(300))
+#     customer_id = Column(String(300))
 
 
 # 6
@@ -2176,8 +2187,8 @@ def eta2(valveDia, pipeDia):
 
 def sigmaEta(valveDia, inletDia, outletDia):
     a_ = eta1(valveDia, inletDia) + eta2(valveDia, outletDia) + etaB(valveDia, inletDia) - etaB(valveDia, outletDia)
-    print(
-        f"sigma eta inputs: {eta1(valveDia, inletDia)}, {eta2(valveDia, outletDia)}, {etaB(valveDia, inletDia)}, {valveDia}, {outletDia}")
+    # print(
+    #     f"sigma eta inputs: {eta1(valveDia, inletDia)}, {eta2(valveDia, outletDia)}, {etaB(valveDia, inletDia)}, {valveDia}, {outletDia}")
     return a_
 
 
@@ -2190,7 +2201,7 @@ def fP(C, valveDia, inletDia, outletDia, N2_value):
     a = (sigmaEta(valveDia, inletDia, outletDia) / N2_value) * ((C / valveDia ** 2) ** 2)
     # print(
     #     f"fp numerator: {a}, n2 value: {N2_value}, valveDia: {valveDia}, sigmaeta: {sigmaEta(valveDia, inletDia, outletDia)}, CV: {C}")
-    print(f"Sigma eta: {sigmaEta(valveDia, inletDia, outletDia)}")
+    # print(f"Sigma eta: {sigmaEta(valveDia, inletDia, outletDia)}")
     b_ = 1 / math.sqrt(1 + a)
     # return 0.71
     return b_
@@ -2198,16 +2209,16 @@ def fP(C, valveDia, inletDia, outletDia, N2_value):
 
 def flP(C, valveDia, inletDia, N2_value, Fl):
     K1 = eta1(valveDia, inletDia) + etaB(valveDia, inletDia)
-    print(f"k1, valvedia, inlet, C: {K1}, {valveDia}, {inletDia}, {N2_value}, {Fl}, {C}")
+    # print(f"k1, valvedia, inlet, C: {K1}, {valveDia}, {inletDia}, {N2_value}, {Fl}, {C}")
     a = (K1 / N2_value) * ((C / valveDia ** 2) ** 2)
-    print(f"a for flp: {a}")
+    # print(f"a for flp: {a}")
     b_ = 1 / math.sqrt((1 / (Fl * Fl)) + a)
     return b_
 
 
 def delPMax(Fl, Ff, inletPressure, vaporPressure):
     a_ = Fl * Fl * (inletPressure - (Ff * vaporPressure))
-    print(f"delpmax: {Fl}, {inletPressure}, {Ff}, {vaporPressure}")
+    # print(f"delpmax: {Fl}, {inletPressure}, {Ff}, {vaporPressure}")
     return round(a_, 3)
 
 
@@ -2221,7 +2232,7 @@ def selectDelP(Fl, criticalPressure, inletPressure, vaporPressure, outletPressur
 def Cvt(flowrate, N1_value, inletPressure, outletPressure, sGravity):
     a_ = N1_value * math.sqrt((inletPressure - outletPressure) / sGravity)
     b_ = flowrate / a_
-    print(f"CVt: {b_}")
+    # print(f"CVt: {b_}")
     return round(b_, 3)
 
 
@@ -2240,7 +2251,7 @@ def reynoldsNumber(N4_value, Fd, flowrate, viscosity, Fl, N2_value, pipeDia, N1_
 def getFR(N4_value, Fd, flowrate, viscosity, Fl, N2_value, pipeDia, N1_value, inletPressure, outletPressure, sGravity):
     RE = reynoldsNumber(N4_value, Fd, flowrate, viscosity, Fl, N2_value, pipeDia, N1_value, inletPressure,
                         outletPressure, sGravity)
-    print(RE)
+    # print(RE)
     if 56 <= RE <= 40000:
         a = 0
         while True:
@@ -2282,7 +2293,7 @@ def CV(flowrate, C, valveDia, inletDia, outletDia, N2_value, inletPressure, outl
     fp_val = fP(C, valveDia, inletDia + 2 * thickness, outletDia + 2 * thickness, N2_value)
     a_ = N1_value * fp_val * Fr * math.sqrt(delP / sGravity)
     b_ = flowrate / a_
-    print(f"FR: {Fr}")
+    # print(f"FR: {Fr}")
     return round(b_, 3)
 
 
@@ -2484,13 +2495,14 @@ def tex_new(calculatedCV, ratedCV, port_area, flowrate, iPres, oPres, MW, R, iTe
 # TODO - Trim exit velocities and other velocities
 
 def trimExitVelocity(inletPressure, outletPressure, density, trimType, numberOfTurns):
-    a_ = math.sqrt(((inletPressure - outletPressure) * 201) / density)
+    a_ = math.sqrt(((inletPressure - outletPressure)) / density)
     K1, K2 = getMultipliers(trimType, numberOfTurns)
-    return a_ * K1 * K2
+    print(f"tex values: {inletPressure}, {outletPressure}, {K1}, {density}, {a_}")
+    return a_ * K1
 
 
 def getMultipliers(trimType, numberOfTurns):
-    trimDict = {"Baffle Plate": 0.7, "Trickle": 0.92, "Contoured": 0.92, "Cage": 0.57, "MLT": 0.53}
+    trimDict = {"microspline": 0.7, "Trickle": 0.92, "Contoured": 3.4167, "Cage": 3.2, "MLT": 0.53, "other": 0.7, "1cc": 3, "2cc": 1.8641, "3cc": 1.2548, "4cc": 0.9615, "do": 2.5, "to": 2.5}
     turnsDict = {2: 0.88, 4: 0.9, 6: 0.91, 8: 0.92, 10: 0.93, 12: 0.96, "other": 1}
 
     K1 = trimDict[trimType]
@@ -3166,50 +3178,50 @@ def register():
 
         if userMaster.query.filter_by(email=request.form['email']).first():
             # user already exists
-            flash("You've already signed up with that email, login instead")
+            flash("Email-ID already exists")
+            return redirect(url_for('register'))
+        else:
+            new_user = userMaster(email=request.form['email'],
+                                password=generate_password_hash(request.form['password'], method='pbkdf2:sha256',
+                                                                salt_length=8),
+                                name=request.form['name'],
+                                employeeId=request.form['employeeId'],
+                                mobile=request.form['mobile'],
+                                designation=request.form['designation']
+                                )
+            db.session.add(new_user)
+            db.session.commit()
+            # login_user(new_user)
+            # flash('Logged in successfully.')
             return redirect(url_for('login'))
-
-        new_user = userMaster(email=request.form['email'],
-                              password=generate_password_hash(request.form['password'], method='pbkdf2:sha256',
-                                                              salt_length=8),
-                              name=request.form['name'],
-                              employeeId=request.form['employeeId'],
-                              mobile=request.form['mobile'],
-                              designation=request.form['designation']
-                              )
-        db.session.add(new_user)
-        db.session.commit()
-        # login_user(new_user)
-        # flash('Logged in successfully.')
-        return redirect(url_for('login'))
 
     return render_template("register.html")
 
 
-@app.route('/login', methods=["GET", "POST"])
-def loginOld():
-    form = LoginForm()
-    if form.validate_on_submit():
+# @app.route('/login', methods=["GET", "POST"])
+# def loginOld():
+#     form = LoginForm()
+#     if form.validate_on_submit():
 
-        user = userMaster.query.filter_by(email=form.email.data).first()
+#         user = userMaster.query.filter_by(email=form.email.data).first()
 
-        # email doesn't exist
-        if not user:
-            flash("That email does not exist, please try again.")
-            return redirect(url_for('login'))
+#         # email doesn't exist
+#         if not user:
+#             flash("That email does not exist, please try again.")
+#             return redirect(url_for('login'))
 
-        # Password incorrect
-        elif not check_password_hash(user.password, form.password.data):
-            flash("Password incorrect, please try again.")
-            return redirect(url_for('login'))
+#         # Password incorrect
+#         elif not check_password_hash(user.password, form.password.data):
+#             flash("Password incorrect, please try again.")
+#             return redirect(url_for('login'))
 
-        # email exists and password correct
-        else:
-            login_user(user)
-            flash('Logged in successfully.')
-            return redirect(url_for('home'))
+#         # email exists and password correct
+#         else:
+#             login_user(user)
+#             # flash('Logged in successfully.')
+#             return redirect(url_for('home'))
 
-    return render_template("loginOld.html", form=form)
+#     return render_template("loginOld.html", form=form)
 
 
 @app.route('/', methods=["GET", "POST"])
@@ -3232,7 +3244,7 @@ def login():
         # email exists and password correct
         else:
             login_user(user)
-            flash('Logged in successfully.')
+            # flash('Logged in successfully.')
             return redirect(url_for('home'))
 
     return render_template("Login.html")
@@ -3416,12 +3428,62 @@ def getItems(item_id):
 #         db.session.commit()
 
 
+@app.route('/add-customer', methods=["GET", "POST"])
+def addCustomer():
+    with app.app_context():
+        item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
+        customers_ = customerMaster.query.all()
+        cust_name = [cust.name for cust in customers_]
+    
+        if request.method == "POST":
+            customer_name = request.form.get('customer_name')
+            customer_address = request.form.get('address')
+
+            check_cust = db.session.query(customerMaster).filter_by(name=customer_name).all()
+            if len(check_cust) > 0:
+                return render_template("Add Customer.html", item_d=selected_item, page='addCustomer',
+                            item_index=item_index, user=current_user, error_message="Customer Already Exists",
+                            customers=cust_name)
+            else:
+                new_customer = customerMaster(name=customer_name)
+                db.session.add(new_customer)
+                db.session.commit()
+                
+                customers_ = customerMaster.query.all()
+                cust_name = [cust.name for cust in customers_]
+                return render_template("Add Customer.html", item_d=selected_item, page='addCustomer',
+                            item_index=item_index, user=current_user, error_message=f"Added Successfully: {customer_name}",
+                            customers=cust_name)
+        return render_template("Add Customer.html", item_d=selected_item, page='addCustomer',
+                            item_index=item_index, user=current_user, error_message="", customers=cust_name)
+
+
 @app.route('/project-details', methods=["GET", "POST"])
 def projectDetails():
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
         item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
         item_index = item_list.index(item_details)
+        purpose_list = ['Bid On','Budget','Example','Order to Place','Technical']
+        industry_list = ['Agriculture','Chemical','Drink','Food','Gas Transport / Distribution','Heating and Ventilation','Iron & Steel Production','Marine','Minig','Miscellaneous','Oil & Gas Production Offshore','Oil & Gas Production Onshore','OEM','Paper & Board','Petrochemical']
+        engineer_list = ['Suraj B','Divya M','Nishanth S P Nikhail','Shakthi R','Soundarya M']
+        customers_ = customerMaster.query.all()
+        cust_name = [cust.name for cust in customers_]
+
+        regions_ = regionMaster.query.all()
+        region_name = [reg.name for reg in regions_]
+        default_data = {"customer_name": "", "proj_ref": "", "enquiry_date": "2023-01-01", "received_date": "2023-01-01", "due_date": "2023-01-01", "application_engineer": "", "purpose": "", "industry": "", "region": "", "rev": "","contract_engineer": "", "customer_po": "", "work_order": ""}
+
+        required_data = {
+            "customers": cust_name,
+            "regions": region_name,
+            "purpose_list": purpose_list,
+            "industry_list": industry_list,
+            "engineer_list": engineer_list,
+            "defaults": default_data
+        }
     if request.method == 'POST':
         customer = request.form.get('customer')
         engRef = request.form.get('eRef')
@@ -3438,84 +3500,100 @@ def projectDetails():
         cEng = request.form.get('cEng')
         cNo = request.form.get('cNo')
         wNo = request.form.get('wNo')
+
+        default_data = {"customer_name": customer, "proj_ref": engRef, "enquiry_date": enqDate, "received_date": recDate_1, "due_date": bDate_1, "application_engineer": aEng, "purpose": purpose, "industry": industry, "region": region, "rev": projectRev,"contract_engineer": cEng, "customer_po": cNo, "work_order": wNo}
+        required_data['defaults'] = default_data
         with app.app_context():
             customer_element = db.session.query(customerMaster).filter_by(name=customer).first()
             engineer_element = db.session.query(engineerMaster).filter_by(name=aEng).first()
             industry_element = db.session.query(industryMaster).filter_by(name=industry).first()
             region_element = db.session.query(regionMaster).filter_by(name=region).first()
 
+            if customer_element and region_element:
+                new_project = projectMaster(industry=industry_element, region=region_element, quote=purpose,
+                                            customer=customer_element,
+                                            received_date=recDate,
+                                            engineer=engineer_element,
+                                            work_order=wNo,
+                                            due_date=bDate,
+                                            status=status_element_1)
+
+                db.session.add(new_project)
+                db.session.commit()
+
+                # Add dummy new item
+                model_element = db.session.query(modelMaster).filter_by(name='Model_1').first()
+                serial_element = db.session.query(valveSeries).filter_by(id=1).first()
+                size_element = db.session.query(valveSize).filter_by(id=1).first()
+                rating_element = db.session.query(rating).filter_by(id=1).first()
+                material_element = db.session.query(materialMaster).filter_by(id=1).first()
+                type_element = db.session.query(valveStyle).filter_by(id=1).first()
+
+                item4 = {"alt": 'A', "tagNo": 101, "serial": serial_element, "size": size_element,
+                        "model": model_element, "type": type_element, "rating": rating_element,
+                        "material": material_element, "unitPrice": 1, "Quantity": 13221, "Project": new_project}
+
+                itemsList__ = [item4]
+
+                for i in itemsList__:
+                    new_item = itemMaster(alt=i['alt'], tag_no=i['tagNo'], serial=i['serial'], size=i['size'],
+                                        model=i['model'],
+                                        type=i['type'], rating=i['rating'], material=i['material'],
+                                        unit_price=i['unitPrice'],
+                                        qty=i['Quantity'], project=i['Project'])
+
+                    db.session.add(new_item)
+                    db.session.commit()
+
+                    new_valve_details = valveDetails(tag=1, quantity=1,
+                                                    application='None',
+                                                    serial_no=1,
+                                                    rating=1,
+                                                    body_material=1,
+                                                    shutOffDelP=1,
+                                                    maxPressure=1,
+                                                    maxTemp=1,
+                                                    minTemp=1,
+                                                    valve_series=1,
+                                                    valve_size=1,
+                                                    rating_v=1,
+                                                    ratedCV='globe',
+                                                    endConnection_v=1,
+                                                    endFinish_v=1,
+                                                    bonnetType_v=1,
+                                                    bonnetExtDimension=1,
+                                                    packingType_v='Liquid',
+                                                    trimType_v=1,
+                                                    flowCharacter_v=1,
+                                                    flowDirection_v=1,
+                                                    seatLeakageClass_v=1, body_v=1,
+                                                    bonnet_v=1,
+                                                    nde1=1, nde2=1, plug=1, stem=1, seat=1,
+                                                    cage_clamp=None,
+                                                    balanceScale=1, packing=1, stud_nut=1, gasket=1,
+                                                    item=new_item)
+
+                    db.session.add(new_valve_details)
+                    db.session.commit()
+
+                
+                flash("Successfully added project", 'success')
+                return redirect(url_for('home'))
+            else:
+                if (not customer_element) and (not region_element):
+                    error_message = "Entered Customer and Region Does not Exist"
+                elif not customer_element:
+                    error_message = "Entered Customer Does not Exist"
+                elif not region_element:
+                    error_message = "Entered Region Does not Exist"
+                return render_template("Project Details.html", title='Project Details', item_d=selected_item, page='projectDetails',
+                           item_index=item_index, user=current_user, data=required_data, error_message=error_message)
+
             # print(wNo)
 
-            new_project = projectMaster(industry=industry_element, region=region_element, quote=purpose,
-                                        customer=customer_element,
-                                        received_date=recDate,
-                                        engineer=engineer_element,
-                                        work_order=wNo,
-                                        due_date=bDate,
-                                        status=status_element_1)
-
-            # Add dummy new item
-            model_element = db.session.query(modelMaster).filter_by(name='Model_1').first()
-            serial_element = db.session.query(valveSeries).filter_by(id=1).first()
-            size_element = db.session.query(valveSize).filter_by(id=1).first()
-            rating_element = db.session.query(rating).filter_by(id=1).first()
-            material_element = db.session.query(materialMaster).filter_by(id=1).first()
-            type_element = db.session.query(valveStyle).filter_by(id=1).first()
-
-            item4 = {"alt": 'A', "tagNo": 101, "serial": serial_element, "size": size_element,
-                     "model": model_element, "type": type_element, "rating": rating_element,
-                     "material": material_element, "unitPrice": 1, "Quantity": 13221, "Project": new_project}
-
-            itemsList__ = [item4]
-
-            for i in itemsList__:
-                new_item = itemMaster(alt=i['alt'], tag_no=i['tagNo'], serial=i['serial'], size=i['size'],
-                                      model=i['model'],
-                                      type=i['type'], rating=i['rating'], material=i['material'],
-                                      unit_price=i['unitPrice'],
-                                      qty=i['Quantity'], project=i['Project'])
-
-                db.session.add(new_item)
-                db.session.commit()
-
-                new_valve_details = valveDetails(tag=1, quantity=1,
-                                                 application='None',
-                                                 serial_no=1,
-                                                 rating=1,
-                                                 body_material=1,
-                                                 shutOffDelP=1,
-                                                 maxPressure=1,
-                                                 maxTemp=1,
-                                                 minTemp=1,
-                                                 valve_series=1,
-                                                 valve_size=1,
-                                                 rating_v=1,
-                                                 ratedCV='globe',
-                                                 endConnection_v=1,
-                                                 endFinish_v=1,
-                                                 bonnetType_v=1,
-                                                 bonnetExtDimension=1,
-                                                 packingType_v='Liquid',
-                                                 trimType_v=1,
-                                                 flowCharacter_v=1,
-                                                 flowDirection_v=1,
-                                                 seatLeakageClass_v=1, body_v=1,
-                                                 bonnet_v=1,
-                                                 nde1=1, nde2=1, plug=1, stem=1, seat=1,
-                                                 cage_clamp=None,
-                                                 balanceScale=1, packing=1, stud_nut=1, gasket=1,
-                                                 item=new_item)
-
-                db.session.add(new_valve_details)
-                db.session.commit()
-
-            db.session.add(new_project)
-            db.session.commit()
-
-            return redirect(url_for('home'))
 
     return render_template("Project Details.html", title='Project Details', item_d=selected_item, page='projectDetails',
-                           item_index=item_index, user=current_user)
+                           item_index=item_index, user=current_user, error_message="", data=required_data)
 
 
 # @app.route('/valve-selection', methods=["GET", "POST"])
@@ -3796,7 +3874,7 @@ def valveSelection():
 
                     db.session.add(new_valve_details)
                     db.session.commit()
-
+                flash("Valve Details Updated", "success")
                 return redirect(url_for('valveSelection'))
 
             elif request.form.get('new'):
@@ -3864,6 +3942,7 @@ def valveSelection():
                                                  item=new_item)
                 db.session.add(new_valve_details)
                 db.session.commit()
+                flash("Item Added and Valve Details Updated", "success")
                 return redirect(url_for('valveSelection'))
 
         item_list = db.session.query(itemMaster).filter_by(projectID=itemdetails.projectID).all()
@@ -3940,7 +4019,7 @@ def getPref(item):
         # return_list3 = sort_list_latest(list__[3], list__[3][0]['id'])  # temp
 
         list_return = [return_list0, return_list1, return_list2, return_list3]
-        print(f"from getpref: {list_return}")
+        # print(f"from getpref: {list_return}")
         return list_return
 
 
@@ -4551,9 +4630,9 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
                                           'inch', specificGravity * 1000))
 
     # convert pressure for tex, p in bar, l in inch
-    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
+    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'psia',
                                             1000)
-    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
+    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'psia',
                                              1000)
 
     v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
@@ -4563,9 +4642,9 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
     elif trimtype == 'ported':
         t_caps = 'Cage'
     else:
-        t_caps = 'other'
+        t_caps = trimtype
 
-    # tEX = trimExitVelocity(inletPressure_v, outletPressure_v, specificGravity * 1000, t_caps, 'other')
+    tEX = trimExitVelocity(inletPressure_v, outletPressure_v, specificGravity, t_caps, 'other')
 
     if int(v_det_element.flowCharacter_v) == 1:
         flow_character = 'equal'
@@ -4696,7 +4775,7 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
                          valveSPL=round(summation, 3), iVelocity=round(iVelocity, 3),
                          oVelocity=round(oVelocity, 3), pVelocity=round(pVelocity, 3),
                          chokedDrop=chokedP,
-                         Xt=xt_fl, warning=1, trimExVelocity=tex_,
+                         Xt=xt_fl, warning=1, trimExVelocity=round(tEX, 3),
                          sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Liquid",
                          criticalPressure=criticalPressure_form, iPipeSize=inletPipeDia_form,
                          oPipeSize=outletPipeDia_form,
@@ -5420,9 +5499,9 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
                                           'inch', specificGravity * 1000))
 
     # convert pressure for tex, p in bar, l in in
-    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'bar',
+    inletPressure_v = meta_convert_P_T_FR_L('P', inletPressure_form, iPresUnit_form, 'psia',
                                             1000)
-    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'bar',
+    outletPressure_v = meta_convert_P_T_FR_L('P', outletPressure_form, oPresUnit_form, 'psia',
                                              1000)
     v_det_element = db.session.query(valveDetails).filter_by(itemID=item_selected.id).first()
     trimtype = v_det_element.body_v
@@ -5431,10 +5510,14 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
     elif trimtype == 'ported':
         t_caps = 'Cage'
     else:
-        t_caps = 'other'
+        t_caps = trimtype
 
-    tEX = trimExitVelocity(inletPressure_v, outletPressure_v, 1000 * specificGravity, t_caps,
-                           'other')
+    # try:
+    tEX = trimExitVelocity(inletPressure_v, outletPressure_v, specificGravity, t_caps,
+                        'other')
+    print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk tex done")
+    # except:
+    #     tEX = 0
     if v_det_element.flowCharacter_v == 1:
         flow_character = 'equal'
     else:
@@ -6035,9 +6118,9 @@ def valveSizing():
                 for i in itemCases_1:
                     db.session.delete(i)
                     db.session.commit()
-
-                for k in range(len_cases_input):
-                    try:
+                try:
+                    for k in range(len_cases_input):
+                    
                         output = getOutputs(a['flowrate'][k], a['flowrate_unit'][0], a['iPressure'][k],
                                             a['iPresUnit'][0],
                                             a['oPressure'][k], a['oPresUnit'][0],
@@ -6080,9 +6163,14 @@ def valveSizing():
 
                         db.session.add(new_case)
                         db.session.commit()
-                    except ValueError:
-                        pass
 
+                    flash_message = "Calculation Complete"
+                    flash_category = "success"
+                except ValueError:
+                    flash_message = "Data Incomplete"
+                    flash_category = "error"
+
+                flash(flash_message, flash_category)
                 # print(data)
                 # print(f"The calculated Cv is: {result}")
                 return redirect(url_for('valveSizing'))
@@ -6094,9 +6182,9 @@ def valveSizing():
                 for i in itemCases_1:
                     db.session.delete(i)
                     db.session.commit()
-
-                for k in range(len_cases_input):
-                    try:
+                
+                try:
+                    for k in range(len_cases_input):
                         output = getOutputsGas(a['flowrate'][k], a['flowrate_unit'][0], a['iPressure'][k],
                                                a['iPresUnit'][0],
                                                a['oPressure'][k], a['oPresUnit'][0],
@@ -6128,12 +6216,17 @@ def valveSizing():
 
                         db.session.add(new_case)
                         db.session.commit()
-                    except ValueError:
-                        pass
-
+                    flash_message = "Calculation Complete"
+                    flash_category = "success"
+                except ValueError:
+                    flash_message = "Data Incomplete"
+                    flash_category = "error"
+            
+                flash(flash_message, flash_category)
                 return redirect(url_for('valveSizing'))
 
             else:
+                flash("No Computation for Two-Phase", "error")
                 return redirect(url_for('valveSizing'))
 
         # to render other values
@@ -6154,6 +6247,7 @@ def valveSizing():
         flxt_dict = {('globe', 'Liquid'): 0.9, ('globe', 'Gas'): 0.65, ('butterfly', 'Liquid'): 0.55,
                      ('butterfly', 'Gas'): 0.200}
         flxt_def = flxt_dict[(v_style.lower(), f_state)]
+
         return render_template("Valve Sizing 2.html", title='Valve Sizing', cases=itemCases_1, item_d=item_selected,
                                fluid=fluid_data, len_c=range(case_len), length_unit=getPref(item_selected),
                                fState=f_state, o_val=o_val_list, len_s=case_len, ps=pipe_schedule, page='valveSizing',
@@ -7365,7 +7459,7 @@ def addItem(page, alt):
 
         db.session.add(new_valve_details)
         db.session.commit()
-
+        flash("Item Added", "success")
         return redirect(url_for(page))
 
 
@@ -7946,7 +8040,7 @@ def interpolate_fd(data, x_db, y_db, vtype):
         else:
             value_interpolate = y_list[a - 1]
         # print(f"fd: {value_interpolate}, a: {a}")
-        print(f"diff:{diff}, opening: {opening}, interpolates: {y_list[a]}, {y_list[a - 1]}")
+        # print(f"diff:{diff}, opening: {opening}, interpolates: {y_list[a]}, {y_list[a - 1]}")
 
         return round(value_interpolate, 3)
     else:
@@ -8478,6 +8572,7 @@ def deleteProject(item_id, page):
                 pass
             item_all_ = itemMaster.query.all()
             selected_item = item_all_[0]
+            flash("Project Deleted", "success")
             return redirect(url_for(page))
         data = f"You are about to delete 1 project, {len_items} Item(s) and {len_cases} Case(s)"
         return render_template('del_confirmation.html', route='deleteProject', data=data, page=page, item_id=item_id, user=current_user)
@@ -8486,6 +8581,7 @@ def deleteProject(item_id, page):
 @app.route('/del-item/<item_id>/<page>', methods=['GET', 'POST'])
 def deleteItem(item_id, page):
     with app.app_context():
+        global selected_item
         item_to_del = itemMaster.query.get(int(item_id))
         cases = db.session.query(itemCases).filter_by(itemID=item_to_del.id).all()
         len_cases = len(cases)
@@ -8504,6 +8600,9 @@ def deleteItem(item_id, page):
                 db.session.commit()
             if request.form.get('cancel'):
                 pass
+            item_all_ = itemMaster.query.all()
+            selected_item = item_all_[0]
+            flash("Item Deleted", "error")
             return redirect(url_for(page))
         data = f"You are about to delete 1 Item and {len_cases} Case(s)"
         return render_template('del_confirmation.html', route='deleteItem', data=data, page=page, item_id=item_id, user=current_user)
