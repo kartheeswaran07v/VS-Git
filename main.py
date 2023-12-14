@@ -76,12 +76,14 @@ def admin_only(f):
     def decorated_function(*args, **kwargs):
         # If id is not 1 then return abort with 403 error
         admin = userMaster.query.all()
-        admin_id = []
-        for i in admin:
-            id_ = i.id
-            admin_id.append(id_)
+        # admin_id = []
+        # for i in admin:
+        #     id_ = i.id
+        #     admin_id.append(id_)
 
-        if current_user.id not in admin_id:
+        if current_user not in admin:
+            return abort(403)
+        if not current_user:
             return abort(403)
         # Otherwise, continue with the route function
         return f(*args, **kwargs)
@@ -1058,6 +1060,21 @@ class yieldStrength(db.Model):
     id = Column(Integer, primary_key=True)
     shaft_material = Column(String(200))
     yield_strength = Column(String(200))
+
+
+class projectDummy(db.Model):
+    __tablename__ = "projectDummy"
+    id = Column(Integer, primary_key=True)
+    project_id = Column(String(200))
+    enq_ref = Column(String(200))
+    enq_date = Column(String(200))
+    proj_rev = Column(String(200))
+    customer_po = Column(String(200))
+    other_4 = Column(String(200))
+    other_5 = Column(String(200))
+    other_6 = Column(String(200))
+    other_7 = Column(String(200))
+    other_8 = Column(String(200))
 
 
 with app.app_context():
@@ -3266,7 +3283,9 @@ def logout():
 
 
 # Website routes
+
 @app.route('/home', methods=["GET", "POST"])
+@admin_only
 def home():
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
@@ -3600,6 +3619,93 @@ def projectDetails():
 
     return render_template("Project Details.html", title='Project Details', item_d=selected_item, page='projectDetails',
                            item_index=item_index, user=current_user, error_message="", data=required_data)
+
+
+
+@app.route('/project-details-update', methods=["GET", "POST"])
+def projectDetailsUpdate():
+    with app.app_context():
+        item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
+        project_element = item_details.project
+
+        # Input data
+        purpose_list = ['Bid On','Budget','Example','Order to Place','Technical']
+        industry_list = ['Agriculture','Chemical','Drink','Food','Gas Transport / Distribution','Heating and Ventilation','Iron & Steel Production','Marine','Minig','Miscellaneous','Oil & Gas Production Offshore','Oil & Gas Production Onshore','OEM','Paper & Board','Petrochemical']
+        engineer_list = ['Suraj B','Divya M','Nishanth S P Nikhail','Shakthi R','Soundarya M']
+        
+        customers_ = customerMaster.query.all()
+        cust_name = [cust.name for cust in customers_]
+
+        regions_ = regionMaster.query.all()
+        region_name = [reg.name for reg in regions_]
+        default_data = {"customer_name": project_element.customer.name, "proj_ref": "", "enquiry_date": "2023-01-01", "received_date": project_element.due_date, "due_date": str(project_element.due_date)[10], "application_engineer": project_element.engineer.name, "purpose": project_element.quote, "industry": project_element.industry.name, "region": project_element.region.name, "rev": "","contract_engineer": "", "customer_po": "", "work_order": project_element.work_order}
+        print(default_data)
+        required_data = {
+            "customers": cust_name,
+            "regions": region_name,
+            "purpose_list": purpose_list,
+            "industry_list": industry_list,
+            "engineer_list": engineer_list,
+            "defaults": default_data
+        }
+        if request.method == 'POST':
+            customer = request.form.get('customer')
+            engRef = request.form.get('eRef')
+            enqDate = request.form.get('eDate')
+            recDate_1 = request.form.get('rDate')
+            recDate = datetime.datetime.strptime(recDate_1, '%Y-%m-%d')
+            aEng = request.form.get('aEng')
+            bDate_1 = request.form.get('bDate')
+            bDate = datetime.datetime.strptime(bDate_1, '%Y-%m-%d')
+            purpose = request.form.get('purpose')
+            industry = request.form.get('industry')
+            region = request.form.get('region')
+            projectRev = request.form.get('projectRev')
+            cEng = request.form.get('cEng')
+            cNo = request.form.get('cNo')
+            wNo = request.form.get('wNo')
+
+            default_data = {"customer_name": customer, "proj_ref": engRef, "enquiry_date": enqDate, "received_date": recDate_1, "due_date": bDate_1, "application_engineer": aEng, "purpose": purpose, "industry": industry, "region": region, "rev": projectRev,"contract_engineer": cEng, "customer_po": cNo, "work_order": wNo}
+            required_data['defaults'] = default_data
+            customer_element = db.session.query(customerMaster).filter_by(name=customer).first()
+            engineer_element = db.session.query(engineerMaster).filter_by(name=aEng).first()
+            industry_element = db.session.query(industryMaster).filter_by(name=industry).first()
+            region_element = db.session.query(regionMaster).filter_by(name=region).first()
+
+            if customer_element and region_element:
+                project_element.industry = industry_element
+                project_element.region=region_element
+                project_element.quote=purpose
+                project_element.customer=customer_element
+                project_element.received_date=recDate
+                project_element.engineer=engineer_element
+                project_element.work_order=wNo
+                project_element.due_date=bDate
+                project_element.status=status_element_1
+                db.session.commit()
+
+
+                
+                flash("Successfully Updated Project Data", 'success')
+                return redirect(url_for('home'))
+            else:
+                if (not customer_element) and (not region_element):
+                    error_message = "Entered Customer and Region Does not Exist"
+                elif not customer_element:
+                    error_message = "Entered Customer Does not Exist"
+                elif not region_element:
+                    error_message = "Entered Region Does not Exist"
+                return render_template("Project Details Update.html", title='Project Details Update', item_d=selected_item, page='projectDetailsUpdate',
+                            item_index=item_index, user=current_user, data=required_data, error_message=error_message)
+
+                # print(wNo)
+
+
+        return render_template("Project Details Update.html", title='Project Details Update', item_d=selected_item, page='projectDetailsUpdate',
+                            item_index=item_index, user=current_user, error_message="", data=required_data)
+
 
 
 # @app.route('/valve-selection', methods=["GET", "POST"])
@@ -4427,7 +4533,7 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
               xt_fl, viscosity, seatDia, seatDiaUnit, sosPipe, densityPipe, rw_noise, item_selected, fl_unit_form,
               iPresUnit_form, oPresUnit_form, vPresUnit_form, cPresUnit_form, iPipeUnit_form, oPipeUnit_form,
               vSizeUnit_form,
-              iSch, iPipeSchUnit_form, oSch, oPipeSchUnit_form, iTempUnit_form, open_percent, fd, travel, rated_cv_tex):
+              iSch, iPipeSchUnit_form, oSch, oPipeSchUnit_form, iTempUnit_form, open_percent, fd, travel, rated_cv_tex, fluidName):
     # check whether flowrate, pres and l are in correct units
     inletPipeDia_v = round(meta_convert_P_T_FR_L('L', inletPipeDia_form, iPipeUnit_form, 'inch',
                                                  1000))
@@ -4782,7 +4888,7 @@ def liqSizing(flowrate_form, specificGravity, inletPressure_form, outletPressure
                          oVelocity=round(oVelocity, 3), pVelocity=round(pVelocity, 3),
                          chokedDrop=chokedP,
                          Xt=xt_fl, warning=1, trimExVelocity=round(tEX, 3),
-                         sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Liquid",
+                         sigmaMR=pLevel, reqStage=units_string, fluidName=fluidName, fluidState="Liquid",
                          criticalPressure=criticalPressure_form, iPipeSize=inletPipeDia_form,
                          oPipeSize=outletPipeDia_form,
                          iPipeSizeSch=iSch, oPipeSizeSch=oSch,
@@ -4801,7 +4907,7 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
               sosPipe, densityPipe, criticalPressure_form, viscosity, item_selected, fl_unit_form, iPresUnit_form,
               oPresUnit_form, vPresUnit_form, iPipeUnit_form, oPipeUnit_form, vSizeUnit_form, iSch,
               iPipeSchUnit_form, oSch, oPipeSchUnit_form, iTempUnit_form, xt_fl, sg_vale, sg_choice,
-              open_percent, fd, travel, rated_cv_tex):
+              open_percent, fd, travel, rated_cv_tex, fluidName):
     # Unit Conversion
     # 1. Flowrate
 
@@ -5266,7 +5372,7 @@ def gasSizing(inletPressure_form, outletPressure_form, inletPipeDia_form, outlet
                          pVelocity=data['pVelocity'],
                          chokedDrop=round((data['choked'] * inletPressure_form), 3),
                          Xt=float(xt_fl), warning=1, trimExVelocity=tex_,
-                         sigmaMR=pLevel, reqStage=units_string, fluidName=None, fluidState="Gas",
+                         sigmaMR=pLevel, reqStage=units_string, fluidName=fluidName, fluidState="Gas",
                          criticalPressure=round(criticalPressure_form, 3), iPipeSize=inletPipeDia_form,
                          oPipeSize=outletPipeDia_form,
                          iPipeSizeSch=iSch, oPipeSizeSch=oSch,
@@ -5290,7 +5396,7 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
                cPresUnit_form,
                inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe, sosPipe,
                valveSize_form, vSizeUnit_form,
-               seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected):
+               seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected, fluidName):
     # change into float/ num
     flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, outletPressure_form, oPresUnit_form, inletTemp_form, iTempUnit_form, vaporPressure, vPresUnit_form, specificGravity, viscosity, xt_fl, criticalPressure_form, cPresUnit_form, inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe, sosPipe, valveSize_form, vSizeUnit_form, seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected = float(
         flowrate_form), fl_unit_form, float(inletPressure_form), iPresUnit_form, float(
@@ -5634,7 +5740,7 @@ def getOutputs(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, 
                    valveSize_form, other_factors_string, round(result, 3), data['percent'],
                    round(summation, 3), round(iVelocity, 3),
                    round(oVelocity, 3), round(pVelocity, 3),
-                   round(chokedP, 4), xt_fl, 1, tex_, pLevel, units_string, None, "Liquid",
+                   round(chokedP, 4), xt_fl, 1, tex_, pLevel, units_string, fluidName, "Liquid",
                    criticalPressure_form, inletPipeDia_form,
                    outletPipeDia_form, iSch, oSch,
                    item_selected]
@@ -5651,7 +5757,7 @@ def getOutputsGas(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_for
                   inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe,
                   sosPipe,
                   valveSize_form, vSizeUnit_form,
-                  seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected, sg_choice, z_factor, sg_vale):
+                  seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected, sg_choice, z_factor, sg_vale, fluidName):
     flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_form, outletPressure_form, oPresUnit_form, inletTemp_form, iTempUnit_form, vaporPressure, vPresUnit_form, specificGravity, viscosity, xt_fl, criticalPressure_form, cPresUnit_form, inletPipeDia_form, iPipeUnit_form, iSch, outletPipeDia_form, oPipeUnit_form, oSch, densityPipe, sosPipe, valveSize_form, vSizeUnit_form, seatDia, seatDiaUnit, ratedCV, rw_noise, item_selected, z_factor, sg_vale = float(
         flowrate_form), fl_unit_form, float(inletPressure_form), iPresUnit_form, float(
         outletPressure_form), oPresUnit_form, float(inletTemp_form), iTempUnit_form, float(
@@ -6073,7 +6179,7 @@ def getOutputsGas(flowrate_form, fl_unit_form, inletPressure_form, iPresUnit_for
                    vaporPressure, viscosity, float(sg_vale), valveSize_form, other_factors_string,
                    round(Cv1, 3), data['percent'], data['spl'], data['iVelocity'], data['oVelocity'],
                    data['pVelocity'], round(data['choked'] * inletPressure_form, 3), float(xt_fl), 1, tex_,
-                   pLevel, units_string, None, "Gas", round(criticalPressure_form, 3), inletPipeDia_form,
+                   pLevel, units_string, fluidName, "Gas", round(criticalPressure_form, 3), inletPipeDia_form,
                    outletPipeDia_form, iSch, oSch, item_selected]
 
     return result_list
@@ -6137,7 +6243,7 @@ def valveSizing():
                                             a['oPipeSize'][0], a['oPipeUnit'][0], a['oSch'][0], a['densityP'][0],
                                             a['sosPipe'][0], a['vSize'][0],
                                             a['vSizeUnit'][0], a['seatDia'][0], a['seatDiaUnit'][0], a['ratedCV'][0],
-                                            rw_noise, item_selected)
+                                            rw_noise, item_selected, a['fName'][0])
                         print(a['flowrate'][k], a['flowrate_unit'][0], a['iPressure'][k],
                               a['iPresUnit'][0],
                               a['oPressure'][k], a['oPresUnit'][0],
@@ -6201,7 +6307,7 @@ def valveSizing():
                                                a['oPipeSize'][0], a['oPipeUnit'][0], a['oSch'][0], a['densityP'][0],
                                                a['sosPipe'][0], a['vSize'][0],
                                                a['vSizeUnit'][0], a['seatDia'][0], a['seatDiaUnit'][0], a['ratedCV'][0],
-                                               rw_noise, item_selected, a['sg'][0], a['z'][k], a['sg_value'][k])
+                                               rw_noise, item_selected, a['sg'][0], a['z'][k], a['sg_value'][k], a['fName'][0])
 
                         new_case = itemCases(flowrate=output[0], iPressure=output[1],
                                              oPressure=output[2],
@@ -7675,7 +7781,7 @@ def generate_csv(page):
                 try:
                     balanceSeal = balanceSeal.upper()
                 except AttributeError:
-                    balaceSeal = ""
+                    balanceSeal = ""
                 print(f"stud nut id: {v_details.stud_nut}")
                 studnut = valveTypeMaterial.query.get(v_details.stud_nut).name
 
@@ -7732,11 +7838,22 @@ def generate_csv(page):
                 #     "oPipeUnit": oPipeUnit
                 # }
 
+                application_ = v_details.application
+                fluidName_id = itemCases_1[0].fluidName
+                maxPressure_, maxTemp_, minTemp_ = v_details.maxPressure, v_details.maxTemp, v_details.minTemp
+                iPipeSch, oPipeSch = itemCases_1[0].iPipeSizeSch, itemCases_1[0].oPipeSizeSch
+                print(fluidName_id)
+                if fluidName_id:
+                    fluidName__ = db.session.query(fluidName).filter_by(id=int(fluidName_id)).first().name
+                else:
+                    fluidName__ = ""
+
                 other_val_list = [serial__, 1, project_, cPressure, cPresUnit, shutoffDelp, vSize, vSizeUnit, rating_,
                                   material_, bonnet_type, nde1, nde2, gasket_mat, trim_type, flow_dir, seat_mat,
                                   disc_mat,
                                   seat_leak, end_connection, end_finish, v_model_lower, model_str, bonnet_material,
-                                  bonnetExtDimen, studnut, cv_, balanceSeal, acc_list]
+                                  bonnetExtDimen, studnut, cv_, balanceSeal, acc_list, application_, fluidName__, 
+                                  maxPressure_, maxTemp_, minTemp_, iPipeSch, oPipeSch]
                 
                 other_val_list_dict = {
 

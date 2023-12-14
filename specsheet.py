@@ -16,9 +16,9 @@ def createSpecSheet(case_data, units, other, act_):
                           'Pressure Drop Ratio (Xt)']
 
         if other[i][21] == 'globe':
-            data_trim = ['CV/Characteristic', 'Balancing', 'Trim Material', 'Soft Seat Material', '%', 'm/s']
+            data_trim = ['CV/Characteristic', 'Balancing', 'Stem Material', 'Plug Material', 'Seat Material', 'Cage or Clamp Material',"Percentage Opening", '%', 'm/s']
         else:
-            data_trim = ['CV/Characteristic', 'Shaft Material', 'Disc Material', 'Seat Material', 'degree', 'mach']
+            data_trim = ['CV/Characteristic', '', 'Shaft Material', 'Disc Material', 'Seat Material', "", "Degree of Opening", 'degree', 'mach']
         str_current_datetime = str(current_datetime)
         a__ = datetime.now()
         a_ = a__.strftime("%a, %d %b %Y %H-%M-%S")
@@ -163,10 +163,10 @@ def createSpecSheet(case_data, units, other, act_):
         worksheet.merge_range("B14:C14", 'Inlet Temperature', cell_format)
         worksheet.merge_range("B15:C15", data_valve[0], cell_format)
         worksheet.merge_range("B16:C16", data_valve[1], cell_format)
-        worksheet.merge_range("B17:C17", 'Vapour Pressure', cell_format)
-        worksheet.merge_range("B18:C18", 'Liquid Pr. Recovery factor, Fl', cell_format)
+        worksheet.merge_range("B17:C17", data_valve[2], cell_format)
+        worksheet.merge_range("B18:C18", data_valve[3], cell_format)
         worksheet.merge_range("B19:C19", 'Calculated Cv', cell_format)
-        worksheet.merge_range("B20:C20", 'Percentage Opening / Degree', cell_format)
+        worksheet.merge_range("B20:C20", data_trim[6], cell_format)
         worksheet.merge_range("B21:C21", 'Noise level at 1m distance', cell_format)
         worksheet.merge_range("B22:C22", 'Inlet Pipe Velocity', cell_format)
         worksheet.merge_range("B23:C23", 'Outlet Pipe Velocity', cell_format)
@@ -199,11 +199,11 @@ def createSpecSheet(case_data, units, other, act_):
 
         worksheet.merge_range("B48:C48", 'Trim Size / Type', cell_format1)
         worksheet.merge_range("B49:C49", 'Rated CV / Characteristic', cell_format1)
-        worksheet.merge_range("B50:C50", 'Flow Direction / Balancing', cell_format1)
-        worksheet.merge_range("B51:C51", 'Stem Material', cell_format1)
-        worksheet.merge_range("B52:C52", 'Plug Material', cell_format1)
-        worksheet.merge_range("B53:C53", 'Seat Material', cell_format1)
-        worksheet.merge_range("B54:C54", 'Cage or Clamp Material', cell_format1)
+        worksheet.merge_range("B50:C50", data_trim[1], cell_format1)
+        worksheet.merge_range("B51:C51", data_trim[2], cell_format1)
+        worksheet.merge_range("B52:C52", data_trim[3], cell_format1)
+        worksheet.merge_range("B53:C53", data_trim[4], cell_format1)
+        worksheet.merge_range("B54:C54", data_trim[5], cell_format1)
         worksheet.merge_range("B55:C55", 'Seat Leakage Class', cell_format1)
         worksheet.merge_range("B56:C56", 'Bellows Material', cell_format1)
         # worksheet.merge_range("B56:J56", 'Bellows Material', cell_format1)
@@ -714,13 +714,13 @@ def createSpecSheet(case_data, units, other, act_):
 
         # add data
         worksheet.write('D3', str(case_data[i][0][-1]), cell_format1)
-        worksheet.write('C9', str(case_data[i][0][16]), f1)
+        worksheet.write('C9', f"{str(case_data[i][0][16])}/{other[i][30]}")
         worksheet.write('J3', str(case_data[i][0][22]), cell_format1)
         worksheet.write('J4', str(case_data[i][0][23]), cell_format1)
         worksheet.write('J6', str(case_data[i][0][14]), cell_format1)
         worksheet.write('J7', str(case_data[i][0][15]), cell_format1)
-        worksheet.write('D27', str(case_data[i][0][18]), cell_format1)
-        worksheet.write('D28', str(case_data[i][0][19]), cell_format1)
+        worksheet.write('D27', f"{str(case_data[i][0][18])} {units[i][-1]}", cell_format1)
+        worksheet.write('D28', f"{str(case_data[i][0][19])} {units[i][-2]}", cell_format1)
 
         column_dict_tuple = [('E', 0), ('G', 1), ('I', 2), ('J', 3), ('L', 4)]
         len_cases = len(case_data[i])
@@ -731,19 +731,19 @@ def createSpecSheet(case_data, units, other, act_):
                 worksheet.write(f'{k[0]}{j + 11}', case_data[i][k[1]][j], cell_format)
         for j in range(14):
             worksheet.write(f'D{j + 11}', units[i][j], cell_format)
-        worksheet.write(f'E27', units[i][-1], cell_format1)
-        worksheet.write(f'E28', units[i][-2], cell_format1)
+        worksheet.write(f'E27', str(other[i][33]), cell_format1)
+        worksheet.write(f'E28', str(other[i][34]), cell_format1)
 
         # other[i] values input
         worksheet.write(f'J5', other[i][0], cell_format1)
         worksheet.write(f'H8', str(other[i][1]), cell_format1)
         worksheet.write(f'D4', str(other[i][2]), cell_format)
-        worksheet.write(f'I9', f"{other[i][3]} {other[i][4]}", f1)
+        worksheet.write(f'I9', f"{other[i][3]} {other[i][4]}")
         # worksheet.write(f'J11', other[i][4], f1)
-        worksheet.write(f'L9', other[i][5], f1)
-        worksheet.write(f'D34', f"{other[i][6]} {other[i][7]}", f1)
+        worksheet.write(f'L9', other[i][5])
+        worksheet.write(f'D34', f"{other[i][6]} {other[i][7]}")
         # worksheet.write(f'D38', other[i][7], cell_format1)
-        worksheet.write(f'E34', other[i][8], f1)
+        worksheet.write(f'E34', f"ASME {other[i][8]}")
         worksheet.write(f'D36', other[i][9], cell_format1)
         worksheet.write(f'D40', other[i][10], cell_format1)
         worksheet.write(f'D43', other[i][11], cell_format1)
@@ -767,6 +767,10 @@ def createSpecSheet(case_data, units, other, act_):
         worksheet.write(f'D44', other[i][25], cell_format1)
         worksheet.write(f'D49', other[i][26], cell_format1)
         worksheet.write(f'E50', other[i][27], cell_format1)
+        worksheet.write(f'C8', other[i][29], cell_format1)
+        worksheet.write(f'D30', str(other[i][31]), cell_format1)
+        worksheet.write(f'D31', str(other[i][33]), cell_format1)
+        worksheet.write(f'E31', str(other[i][32]), cell_format1)
 
         # Actuator Data
         worksheet.write(f'J27', act_['act_type'], cell_format1)
@@ -1022,7 +1026,7 @@ def createActSpecSheet(act_data, proj_data):
     worksheet.write('D30', '', cell_format)
     worksheet.write('D31', '', cell_format)
     worksheet.write('D32', 'Values', bold)
-    worksheet.write('D33', '', br)
+    worksheet.write('D33', 'FCC', br)
     worksheet.write('D34', '', br)
     worksheet.write('D35', '', br)
     worksheet.write('D49', '', )
