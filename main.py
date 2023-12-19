@@ -1077,6 +1077,15 @@ class projectDummy(db.Model):
     other_8 = Column(String(200))
 
 
+
+class itemNotesList(db.Model):
+    __tablename__ = "itemNotesList"
+    id = Column(Integer, primary_key=True)
+    itemID = Column(Integer)
+    content = Column(String(300))
+    notesNumber = Column(String(300))
+
+
 with app.app_context():
     db.create_all()
 
@@ -6502,7 +6511,8 @@ def actuatorSizing():
             min_air = request.form.get('min')
             max_air = request.form.get('max')
             shutoffDel = request.form.get('shutoffDelP')
-            act_data_string = f"{act_type}#{failAct}#{mount}#{orientation}#{airsupply_unit}#{min_air}#{max_air}#{shutoffDel}"
+            limit_ = request.form.get('limit')
+            act_data_string = f"{act_type}#{failAct}#{mount}#{orientation}#{airsupply_unit}#{min_air}#{max_air}#{shutoffDel}#{limit_}"
             v_details.serial_no = act_data_string
             db.session.commit()
             if request.form.get('sliding'):
@@ -7713,6 +7723,13 @@ def generate_csv(page):
             else:
                 act_other = []
 
+            # Get actuator model
+            if (len(act_other) > 0) and (len(act_data_string) > 0):
+                act_model = getActuatorModel(act_other[0], act_data_string[17], act_other[1], act_other[3], act_other[8])
+                print("Actuator Model input")
+                print(act_other[0], act_data_string[17], act_other[1], act_other[3], act_other[8])
+            else:
+                act_model = None
             # VAlve type
 
             model_str = getModelNo(v_details)
@@ -7727,13 +7744,45 @@ def generate_csv(page):
                 v_model_lower = 'globe'
             # serial, quantity and project ID, material
             serial_ = db.session.query(valveSeries).filter_by(id=item.serialID).first()
-            material_updated = db.session.query(valveTypeMaterial).filter_by(id=v_details.body_material).first()
+            material_updated = db.session.query(materialMaster).filter_by(id=v_details.body_material).first()
+            packing_material_updated = db.session.query(valveTypeMaterial).filter_by(id=v_details.packing).first()
+            stem_material_updated = db.session.query(valveTypeMaterial).filter_by(id=v_details.stem).first()
+            # print(material_updated.name)
             serial___ = serial_.name
             item_d_element = db.session.query(itemDummy).filter_by(item_id=item.id).first()
             if item_d_element:
                 serial__ = item_d_element.other_4
+                valve_id = item_d_element.valve_id
             else:
                 serial__ = 'N/A'
+                valve_id = None
+
+            if valve_id:
+                globe_valve_element = globeTable.query.get(int(valve_id))
+                details_ = globe_valve_element.charac
+                details_list = details_.split('#')
+                seat_bore = details_list[-1]
+                travel_ = details_list[-2]
+                flow_dir_ = details_list[-5]
+                flow_charc = details_list[-6]
+                trim_type_ = details_list[-7]
+                flow_dir_dict = {"over": "Over", "under": "Under", "down": "Flow To Close"}
+                flow_charc_dict = {"linear": "Linear", "equal": "Equal %", "mod_equal": "Mod Eq %"}
+                trim_type_dict = {"ported": "Ported Cage", "contour": "Contoured", "do": "Double Offset", "to": "Triple Offset", "microspline": "Microspline", "ac_trim": "Anti Cavitation Trim", "an_trim": "Low Noise Trim"}
+
+                final_flow_dir = flow_dir_dict[flow_dir_]
+                final_flow_charc = flow_charc_dict[flow_charc]
+                final_trim_type = trim_type_dict[trim_type_]
+            else:
+                seat_bore = None
+                travel_ = None
+                final_flow_dir = None
+                final_flow_charc = None
+                final_trim_type = None
+
+                
+            
+            
 
             material_ = material_updated.name
             itemCases_1 = db.session.query(itemCases).filter_by(itemID=item.id).all()
@@ -7849,15 +7898,16 @@ def generate_csv(page):
                     fluidName__ = ""
 
                 other_val_list = [serial__, 1, project_, cPressure, cPresUnit, shutoffDelp, vSize, vSizeUnit, rating_,
-                                  material_, bonnet_type, nde1, nde2, gasket_mat, trim_type, flow_dir, seat_mat,
+                                  material_, bonnet_type, nde1, nde2, gasket_mat, final_trim_type, flow_dir, seat_mat,
                                   disc_mat,
                                   seat_leak, end_connection, end_finish, v_model_lower, model_str, bonnet_material,
                                   bonnetExtDimen, studnut, cv_, balanceSeal, acc_list, application_, fluidName__, 
-                                  maxPressure_, maxTemp_, minTemp_, iPipeSch, oPipeSch]
+                                  maxPressure_, maxTemp_, minTemp_, iPipeSch, oPipeSch, packing_material_updated.name,
+                                  seat_bore, travel_, final_flow_dir, final_flow_charc, stem_material_updated.name]
                 
-                other_val_list_dict = {
+                # other_val_list_dict = {
 
-                }
+                # }
                 
                 for i in itemCases_1[:6]:
                     case_list = [i.flowrate, i.iPressure, i.oPressure, i.iTemp, i.sGravity, i.viscosity, i.vPressure,
@@ -7913,7 +7963,7 @@ def generate_csv(page):
                                 'friction_band': act_data_string[21],
                                 'req_handWheel_thrust': act_data_string[22], 'max_thrust': act_data_string[23],
                                 'v_thrust_close': 0, 'v_thrust_open': 0, 'seat_load': act_data_string[14],
-                                'orientation': act_other[3]
+                                'orientation': act_other[3], 'act_model': act_model, 'travel_stops': act_other[8]
                                 }
                 except IndexError:
                     act_dict_ = {'v_type': v_details.ratedCV, 'trim_type': trim_type, 'Balancing': v_details.balanceScale,
@@ -7945,7 +7995,7 @@ def generate_csv(page):
                                 'friction_band': None,
                                 'req_handWheel_thrust': None, 'max_thrust': None,
                                 'v_thrust_close': 0, 'v_thrust_open': 0, 'seat_load': None,
-                                'orientation': None
+                                'orientation': None, 'act_model': act_model, 'travel_stops': None
                                 }
                 act_dict = act_dict_
 
@@ -8469,6 +8519,8 @@ def selectValve():
                     seat_bore = float(valve_data_.charac.split('#')[7])
                     travel = valve_data_.charac.split('#')[6]
 
+                    fluidName_ = last_case.fluidName
+
                     if last_case.fluidState == 'Liquid':
                         liqSizing(last_case.flowrate, last_case.sGravity, last_case.iPressure, last_case.oPressure,
                                   last_case.vPressure, last_case.criticalPressure, last_case.oPipeSize,
@@ -8478,7 +8530,7 @@ def selectValve():
                                   item_details,
                                   fl_unit, iPresUnit, oPresUnit, vPresUnit, cPresUnit, iPipeUnit, oPipeUnit, 'inch',
                                   last_case.iPipeSizeSch, iPipeSchUnit, last_case.oPipeSizeSch, oPipeSchUnit, iTempUnit,
-                                  o_percent, fd, travel, rated_cv_tex)
+                                  o_percent, fd, travel, rated_cv_tex, fluidName_)
                         db.session.delete(last_case)
                         db.session.commit()
                     else:
@@ -8493,7 +8545,7 @@ def selectValve():
                                   oPresUnit, vPresUnit, iPipeUnit, oPipeUnit, 'inch',
                                   last_case.iPipeSizeSch,
                                   iPipeSchUnit, last_case.oPipeSizeSch, oPipeSchUnit, iTempUnit, xt, last_case.vaporMW,
-                                  sg_choice, o_percent, fd, travel, rated_cv_tex)
+                                  sg_choice, o_percent, fd, travel, rated_cv_tex,fluidName_)
 
                         db.session.delete(last_case)
                         db.session.commit()

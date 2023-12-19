@@ -217,3 +217,33 @@ def conver_FR_noise(val, unit_in):
 # Flow Rate units: m3/hr, scfh, gpm, lb/hr, kg/hr
 
 
+def getActuatorModel(act_type, act_size, fail_action, handwheel, travel_stops):
+    try:
+        act_size_dict = {"38": "1A", "75": "1B", "150": "1C", "300": "1D", "60": "2A", "100": "2B", "160": "2C", "30": "3A", "50": "3B", "110": "3C", "110L": "3D", "220": "3E"}
+        act_size_model_comp = act_size_dict[str(int(float(act_size)))]
+        
+        fail_action_dict = {"AFO": 1, "AFC": 2, "DA": 3, "Stay Put Drift Open": 4, "Stay Put Drift Close": 5}
+        fail_actions_model_comp = fail_action_dict[fail_action]
+
+        handwheel_dict = {'none': "N", "Top Mounted": "T", "Side Mounted": "S"}
+        handwheel_model_comp = handwheel_dict[handwheel]
+
+        travel_stop_dict = {'none': "3", "Open": "1", "Close": "2"}
+        travel_model_comp = travel_stop_dict[travel_stops]
+
+        act_type_dict = {"sd": 30, "msd": 31, "ps2": 32, "p_2": 32, "sy": 33}
+        act_type_model_comp = act_type_dict[act_type]
+
+        if act_type == "sy":
+            type_ = 'rotary'
+        else:
+            type_ = 'sliding'
+
+        if type_ == 'sliding':
+            model_string = f"{act_size_model_comp}-{act_type_model_comp}-{fail_actions_model_comp}-{handwheel_model_comp}-{travel_model_comp}"
+        else:
+            model_string = "See N2"
+    except:
+        model_string = None
+    
+    return model_string

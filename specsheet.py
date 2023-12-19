@@ -762,7 +762,7 @@ def createSpecSheet(case_data, units, other, act_):
         worksheet.write(f'C34', case_data[i][0][1], cell_format1)
         worksheet.write(f'C35', case_data[i][0][3], cell_format1)
         worksheet.write(f'E33', other[i][22], cell_format1)
-        worksheet.write(f'D41', other[i][23], cell_format1)
+        worksheet.write(f'D41', other[i][9], cell_format1)
         worksheet.write(f'D42', other[i][24], cell_format1)
         worksheet.write(f'D44', other[i][25], cell_format1)
         worksheet.write(f'D49', other[i][26], cell_format1)
@@ -771,6 +771,14 @@ def createSpecSheet(case_data, units, other, act_):
         worksheet.write(f'D30', str(other[i][31]), cell_format1)
         worksheet.write(f'D31', str(other[i][33]), cell_format1)
         worksheet.write(f'E31', str(other[i][32]), cell_format1)
+        worksheet.write(f'D46', str(other[i][36]), cell_format1)
+
+        worksheet.write(f'D48', other[i][37], cell_format1)
+        worksheet.write(f'L28', other[i][38], cell_format1)
+        worksheet.write(f'D50', other[i][39], cell_format1)
+        worksheet.write(f'E49', other[i][40], cell_format1)
+        worksheet.write(f'D51', other[i][41], cell_format1)
+        # worksheet.write(f'D48', other[i][37], cell_format1)
 
         # Actuator Data
         worksheet.write(f'J27', act_['act_type'], cell_format1)
@@ -782,10 +790,15 @@ def createSpecSheet(case_data, units, other, act_):
         worksheet.write(f'L31', f'{act_["set_pressure"]}', cell_format1)
         worksheet.write(f'J32', act_['orientation'], cell_format1)
         worksheet.write(f'J33', act_['handwheel'], cell_format1)
+        worksheet.write(f'J28', act_['act_model'], cell_format1)
+        worksheet.write(f'L29', f"{act_['sMin']}-{act_['sMax']}", cell_format1)
+        worksheet.write(f'J34', act_['travel_stops'], cell_format1)
 
         # Accessories data
         worksheet.write(f'J39', other[i][28][0], cell_format1)
-        worksheet.write(f'L39', other[i][28][1], cell_format1)
+        # worksheet.write(f'L39', other[i][28][1], cell_format1)
+        worksheet.write(f'L39', "See N3", cell_format1)
+        worksheet.write(f'L41', "See N4", cell_format1)
         worksheet.write(f'J40', other[i][28][2], cell_format1)
         worksheet.write(f'J41', other[i][28][3], cell_format1)
         worksheet.write(f'L41', other[i][28][4], cell_format1)
