@@ -7527,10 +7527,15 @@ def itemNotes():
         if request.method == 'POST':
             note_number = request.form.get('note')
             note_content = request.form.get('nvalues')
-            print(note_number, note_content)
-            new_item_note = itemNotesData(itemID=item_details.id, content=note_content, notesNumber=note_number)
-            db.session.add(new_item_note)
-            db.session.commit()
+            content_list = [abc.content for abc in item_notes_list]
+            if note_content in content_list:
+                flash(f'Note: "{note_content}" already exists', "error")
+            else:
+                print(note_number, note_content)
+                new_item_note = itemNotesData(itemID=item_details.id, content=note_content, notesNumber=note_number)
+                db.session.add(new_item_note)
+                db.session.commit()
+                flash("Note Added Successfully", "success")
             
             return redirect(url_for('itemNotes'))
         return render_template("Item Notes.html", title='Item Notes', item_d=selected_item, page='itemNotes',
@@ -7545,6 +7550,7 @@ def delItemNote(id):
         del_element = itemNotesData.query.get(id)
         db.session.delete(del_element)
         db.session.commit()
+        flash("Note Removed Successfully", "success")
         return redirect(url_for('itemNotes'))
 
 

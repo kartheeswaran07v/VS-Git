@@ -130,8 +130,20 @@
         </div>
       </div>
 
-
+      
       <div class="row tools" style="text-align: center; margin-left: 3px; margin-right: 3px;margin-top: 30px; width:800px;">
+        <div class="col-12" >
+          {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                  
+                      {% for category, message in messages %}
+                          <p class="flashes-{{category}}" style="text-align: center;">{{ message }}</p>
+                      {% endfor %}
+                  
+              {% endif %}
+          {% endwith %}
+          {% block body %}{% endblock %}
+        </div>
         <div class="col-12 tools">
           <!-- <div class="row" style="text-align: left;">
             <div class="col-6">
@@ -235,6 +247,24 @@
       }
       
     }
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes-error").fadeOut('slow');
+    }, 4000); // <-- time in milliseconds
+    });
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes").fadeOut('slow');
+    }, 2000); // <-- time in milliseconds
+    });
+
+    $(document).ready(function() {
+    setTimeout(function() {
+        $(".flashes-success").fadeOut('slow');
+    }, 4000); // <-- time in milliseconds
+    });
     // alert(notesObject)
   </script>
 
