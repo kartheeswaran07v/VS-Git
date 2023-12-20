@@ -133,21 +133,55 @@
 
       <div class="row tools" style="text-align: center; margin-left: 3px; margin-right: 3px;margin-top: 30px; width:800px;">
         <div class="col-12 tools">
-          <div class="row" style="text-align: left;">
+          <!-- <div class="row" style="text-align: left;">
             <div class="col-6">
               <p>1. Item Notes One</p>
             </div>
             <div class="col-3"><a href="#">Del</a></div>
             <div class="col-3"><a href="#">Edit</a></div>
-          </div>
-          <form action="">
+          </div> -->
+          
+          <form action="{{url_for('itemNotes')}}" method="post">
             <div class="row">
-                <div class="col-6">
-                  <input type="text" name="" id="">
+                <div class="col-2" style="text-align: right;">
+                  <select name="note" id="note">
+                    <!-- <option value="N1">N1</option>
+                    <option value="N2">N2</option>
+                    <option value="N3">N3</option> -->
+                  </select>
                 </div>
-                <div class="col-6"><input type="submit" value="Add" name="add"></div>
+                <div class="col-9">
+                  <!-- <input type="text" name="" id="" list="nvalues" >
+                  <datalist id="nvalues">
+                    <option value="Option 1">
+                    <option value="Option 2">
+                    <option value="Option 3">
+                  </datalist> -->
+                  <select name="nvalues" id="nvalues" style="width: 500px">
+                    <!-- <option value="N1">N1</option>
+                    <option value="N2">N2</option>
+                    <option value="N3">N3</option> -->
+                  </select>
+                  
+                </div>
+                <div class="col-1">
+                  <input type="submit" value="Add" name="add">
+                </div>
             </div>
           </form>
+          <div class="row" style="margin-top: 20px;">
+            {% for note in notes_list %}
+              <div class="col-2" style="text-align: right;">
+                <p>{{note.notesNumber}}</p>
+              </div>
+              <div class="col-9">
+                <p>{{note.content}}</p>
+              </div>
+              <div class="col-1">
+                <a href="{{url_for('delItemNote', id=note.id)}}">Remove</a>
+              </div>
+            {% endfor %}
+          </div>
 
           
         </div>
@@ -163,6 +197,46 @@
 
     </div>
   </div>
+  <script>
+    // alert('js working')
+    var notesObject = JSON.parse({{dropdown|tojson}});
+    // var notesObject = {
+    //     "N1": ["Option 1", "Option 2", "Option 3"],
+    //     "N2": ["Option 4", "Option 5", "Option 6"],
+    //     "N3": ["Option 7", "Option 8", "Option 9"]
+    //   }
+
+    window.onload = function() {
+      var notesSelect = document.getElementById("note");
+      var nvaluesSelect = document.getElementById("nvalues");
+      for (var x in notesObject) {
+        notesSelect.options[notesSelect.options.length] = new Option(x, x);
+      }
+
+      console.log(nvaluesSelect.options.length)
+
+      if (nvaluesSelect.options.length === 0){
+        
+        console.log(notesObject["N1"])
+        for (var y in notesObject["N1"]) {
+          nvaluesSelect.options[nvaluesSelect.options.length] = new Option(notesObject["N1"][y], notesObject["N1"][y]);
+        }
+      }
+
+      notesSelect.onchange = function() {
+        //empty Chapters- and Topics- dropdowns
+        nvalues.length = 0;
+        //display correct values
+        console.log(notesObject[this.value])
+        for (var y in notesObject[this.value]) {
+          console.log(y)
+          nvaluesSelect.options[nvaluesSelect.options.length] = new Option(notesObject[this.value][y], notesObject[this.value][y]);
+        }
+      }
+      
+    }
+    // alert(notesObject)
+  </script>
 
 {% include "footer.html" %}
 {% endblock %}

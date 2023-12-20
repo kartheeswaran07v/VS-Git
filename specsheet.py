@@ -210,7 +210,6 @@ def createSpecSheet(case_data, units, other, act_):
 
 
         worksheet.merge_range("B57:J57", 'Notes', bold)
-        worksheet.merge_range("B58:J58", 'N1- MPI-Body/Bnt Castings/Forgings to ASME B16.34 at Foundry/Forge', cell_format)
         worksheet.merge_range("B59:J59", '', cell_format)
         worksheet.merge_range("B60:J60", '', cell_format)
         worksheet.merge_range("B61:J61", '', cell_format)
@@ -778,6 +777,11 @@ def createSpecSheet(case_data, units, other, act_):
         worksheet.write(f'D50', other[i][39], cell_format1)
         worksheet.write(f'E49', other[i][40], cell_format1)
         worksheet.write(f'D51', other[i][41], cell_format1)
+
+        # Adding Item Notes
+        if len(other[i][42]) > 0:
+            for note_index in range(len(other[i][42])):
+                worksheet.write(f'B{58 + note_index}', f"{other[i][42][note_index].notesNumber}-{other[i][42][note_index].content}", cell_format1) # item notes
         # worksheet.write(f'D48', other[i][37], cell_format1)
 
         # Actuator Data

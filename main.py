@@ -18,6 +18,7 @@ from forms import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_bootstrap import Bootstrap
 from flask_migrate import Migrate
+import json
 
 # -----------^^^^^^^^^^^^^^----------------- IMPORT STATEMENTS -----------------^^^^^^^^^^^^^------------ #
 
@@ -1078,12 +1079,18 @@ class projectDummy(db.Model):
 
 
 
-class itemNotesList(db.Model):
-    __tablename__ = "itemNotesList"
+class itemNotesData(db.Model):
+    __tablename__ = "itemNotesData"
     id = Column(Integer, primary_key=True)
     itemID = Column(Integer)
     content = Column(String(300))
     notesNumber = Column(String(300))
+
+class notesMaster(db.Model):
+    __tablename__ = "notesMaster"
+    id = Column(Integer, primary_key=True)
+    notesNumber = Column(String(10))
+    content = Column(String(300))
 
 
 with app.app_context():
@@ -7499,14 +7506,46 @@ def selectSolenoid():
 
 @app.route('/item-notes', methods=["GET", "POST"])
 def itemNotes():
-    item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
-    item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
-    item_index = item_list.index(item_details)
-    if request.method == 'POST':
-        data = request.form.get('abc')
-        return f"{data}"
-    return render_template("Item Notes.html", title='Item Notes', item_d=selected_item, page='itemNotes',
-                           item_index=item_index, user=current_user)
+    with app.app_context():
+        item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
+        item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
+        item_index = item_list.index(item_details)
+
+        item_notes_list = db.session.query(itemNotesData).filter_by(itemID=item_details.id).order_by('notesNumber').all()
+
+        uniqueNotes = []
+        for notes_ in db.session.query(notesMaster.notesNumber).distinct():
+            uniqueNotes.append(notes_.notesNumber)
+        
+        notes_dict = {}
+        for nnn in uniqueNotes:
+            contents = db.session.query(notesMaster).filter_by(notesNumber=nnn).all()
+            content_list = [cont.content for cont in contents]
+            notes_dict[nnn] = content_list
+        
+
+        if request.method == 'POST':
+            note_number = request.form.get('note')
+            note_content = request.form.get('nvalues')
+            print(note_number, note_content)
+            new_item_note = itemNotesData(itemID=item_details.id, content=note_content, notesNumber=note_number)
+            db.session.add(new_item_note)
+            db.session.commit()
+            
+            return redirect(url_for('itemNotes'))
+        return render_template("Item Notes.html", title='Item Notes', item_d=selected_item, page='itemNotes',
+                            item_index=item_index, user=current_user, dropdown=json.dumps(notes_dict),
+                            notes_list=item_notes_list)
+
+
+
+@app.route('/item-note-del/<id>', methods=["GET", "POST"])
+def delItemNote(id):
+    with app.app_context():
+        del_element = itemNotesData.query.get(id)
+        db.session.delete(del_element)
+        db.session.commit()
+        return redirect(url_for('itemNotes'))
 
 
 @app.route('/project-notes', methods=["GET", "POST"])
@@ -7897,13 +7936,16 @@ def generate_csv(page):
                 else:
                     fluidName__ = ""
 
+
+                item_notes_list = db.session.query(itemNotesData).filter_by(itemID=item.id).order_by('notesNumber').all()
+
                 other_val_list = [serial__, 1, project_, cPressure, cPresUnit, shutoffDelp, vSize, vSizeUnit, rating_,
                                   material_, bonnet_type, nde1, nde2, gasket_mat, final_trim_type, flow_dir, seat_mat,
                                   disc_mat,
                                   seat_leak, end_connection, end_finish, v_model_lower, model_str, bonnet_material,
                                   bonnetExtDimen, studnut, cv_, balanceSeal, acc_list, application_, fluidName__, 
                                   maxPressure_, maxTemp_, minTemp_, iPipeSch, oPipeSch, packing_material_updated.name,
-                                  seat_bore, travel_, final_flow_dir, final_flow_charc, stem_material_updated.name]
+                                  seat_bore, travel_, final_flow_dir, final_flow_charc, stem_material_updated.name, item_notes_list]
                 
                 # other_val_list_dict = {
 
