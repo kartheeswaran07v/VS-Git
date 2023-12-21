@@ -781,7 +781,11 @@ def createSpecSheet(case_data, units, other, act_):
         # Adding Item Notes
         if len(other[i][42]) > 0:
             for note_index in range(len(other[i][42])):
-                worksheet.write(f'B{58 + note_index}', f"{other[i][42][note_index].notesNumber}-{other[i][42][note_index].content}", cell_format1) # item notes
+                if other[i][42][note_index].notesNumber != "General":
+                    worksheet.write(f'B{58 + note_index}', f"{other[i][42][note_index].notesNumber}-{other[i][42][note_index].content}", cell_format1) # item notes
+                else:
+                    worksheet.write(f'B{58 + note_index}', f"{other[i][42][note_index].content}", cell_format1) # item notes
+                
         # worksheet.write(f'D48', other[i][37], cell_format1)
 
         # Actuator Data

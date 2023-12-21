@@ -3596,7 +3596,7 @@ def projectDetails():
                                                     maxTemp=1,
                                                     minTemp=1,
                                                     valve_series=1,
-                                                    valve_size=1,
+                                                    valve_size=None,
                                                     rating_v=1,
                                                     ratedCV='globe',
                                                     endConnection_v=1,
@@ -7506,6 +7506,7 @@ def selectSolenoid():
 
 @app.route('/item-notes', methods=["GET", "POST"])
 def itemNotes():
+    MAX_NOTE_LENGTH = 2
     with app.app_context():
         item_details = db.session.query(itemMaster).filter_by(id=selected_item.id).first()
         item_list = db.session.query(itemMaster).filter_by(projectID=item_details.projectID).all()
@@ -7522,22 +7523,28 @@ def itemNotes():
             contents = db.session.query(notesMaster).filter_by(notesNumber=nnn).all()
             content_list = [cont.content for cont in contents]
             notes_dict[nnn] = content_list
-        
-
+        print("len of notes comparison")
+        print(len(item_notes_list))
+        print(MAX_NOTE_LENGTH)
         if request.method == 'POST':
-            note_number = request.form.get('note')
-            note_content = request.form.get('nvalues')
-            content_list = [abc.content for abc in item_notes_list]
-            if note_content in content_list:
-                flash(f'Note: "{note_content}" already exists', "error")
+            item_notes_list_2 = db.session.query(itemNotesData).filter_by(itemID=item_details.id).order_by('notesNumber').all()
+
+            if len(item_notes_list_2) <= MAX_NOTE_LENGTH:
+                note_number = request.form.get('note')
+                note_content = request.form.get('nvalues')
+                content_list = [abc.content for abc in item_notes_list_2]
+                if note_content in content_list:
+                    flash(f'Note: "{note_content}" already exists', "error")
+                else:
+                    print(note_number, note_content)
+                    new_item_note = itemNotesData(itemID=item_details.id, content=note_content, notesNumber=note_number)
+                    db.session.add(new_item_note)
+                    db.session.commit()
+                    flash("Note Added Successfully", "success")
             else:
-                print(note_number, note_content)
-                new_item_note = itemNotesData(itemID=item_details.id, content=note_content, notesNumber=note_number)
-                db.session.add(new_item_note)
-                db.session.commit()
-                flash("Note Added Successfully", "success")
-            
+                flash(f"Max Length ({MAX_NOTE_LENGTH}) of Notes reached", "error")
             return redirect(url_for('itemNotes'))
+
         return render_template("Item Notes.html", title='Item Notes', item_d=selected_item, page='itemNotes',
                             item_index=item_index, user=current_user, dropdown=json.dumps(notes_dict),
                             notes_list=item_notes_list)
